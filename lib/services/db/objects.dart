@@ -22,33 +22,33 @@ class Project extends HiveObject {
   @HiveField(5)
   Device device;
 
-  Project(this.dateCreated, this.dateModified, this.name, this.repo, this.description, this.device);
+  Project(this.dateCreated, this.dateModified,
+      this.name, this.repo, this.description,
+      this.device);
 
   // Convert a Dog into a Map. The keys must correspond to the names of the
   // columns in the database.
   Map<String, dynamic> toMap() {
     return {
       'date_created': dateCreated,
+      'date_modified': dateModified,
       'name': name,
       'description': description,
-      'path': repo.toMap(),
+      'repo': repo.toMap(),
     };
   }
 }
 
 @HiveType(typeId: 1)
 class Repo extends HiveObject {
+
   @HiveField(0)
-  String name;
+  Device device;
 
   @HiveField(1)
   String path;
-
-
-  @HiveField(2, defaultValue: null)
-  SSHDevice? sshDevice;
   
-  Repo(this.name, this.path, {this.sshDevice});
+  Repo(this.device, this.path);
 
   Map<String, dynamic> toMap() {
     return {};
@@ -81,27 +81,22 @@ class Device extends HiveObject {
   DeviceModel model;
 
   Device(this.name, this.model, {this.sshDevice});
+
+  Repo toRepo(String path) {
+    return Repo(this, path);
+  }
 }
 
-@HiveType(typeId: 4)
-class DeviceModel extends HiveObject {
-  @HiveField(0)
-  SBCModels name;
-
-  @HiveField(1)
-  DeviceDiagram? diagram;
-
-  DeviceModel(this.name, {this.diagram});
-}
+// TODO: SBCModel to diagram DICT
 
 
 // TODO: Match with DeviceDiagram, not yet implemented
-@HiveType(typeId: 5)
+@HiveType(typeId: 4)
 class DeviceDiagram extends HiveObject {
 }
 
-@HiveType(typeId: 6)
-enum SBCModels {
+@HiveType(typeId: 5)
+enum DeviceModel {
   @HiveField(0)
   rpi3Bp,
 
@@ -110,4 +105,7 @@ enum SBCModels {
 
   @HiveField(2)
   rpiPico,
+
+  @HiveField(3)
+  unknown,
 }

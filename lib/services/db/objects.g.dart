@@ -66,22 +66,19 @@ class RepoAdapter extends TypeAdapter<Repo> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return Repo(
-      fields[0] as String,
+      fields[0] as Device,
       fields[1] as String,
-      sshDevice: fields[2] as SSHDevice?,
     );
   }
 
   @override
   void write(BinaryWriter writer, Repo obj) {
     writer
-      ..writeByte(3)
-      ..writeByte(0)
-      ..write(obj.name)
-      ..writeByte(1)
-      ..write(obj.path)
       ..writeByte(2)
-      ..write(obj.sshDevice);
+      ..writeByte(0)
+      ..write(obj.device)
+      ..writeByte(1)
+      ..write(obj.path);
   }
 
   @override
@@ -175,46 +172,9 @@ class DeviceAdapter extends TypeAdapter<Device> {
           typeId == other.typeId;
 }
 
-class DeviceModelAdapter extends TypeAdapter<DeviceModel> {
-  @override
-  final int typeId = 4;
-
-  @override
-  DeviceModel read(BinaryReader reader) {
-    final numOfFields = reader.readByte();
-    final fields = <int, dynamic>{
-      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
-    };
-    return DeviceModel(
-      fields[0] as SBCModels,
-      diagram: fields[1] as DeviceDiagram?,
-    );
-  }
-
-  @override
-  void write(BinaryWriter writer, DeviceModel obj) {
-    writer
-      ..writeByte(2)
-      ..writeByte(0)
-      ..write(obj.name)
-      ..writeByte(1)
-      ..write(obj.diagram);
-  }
-
-  @override
-  int get hashCode => typeId.hashCode;
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is DeviceModelAdapter &&
-          runtimeType == other.runtimeType &&
-          typeId == other.typeId;
-}
-
 class DeviceDiagramAdapter extends TypeAdapter<DeviceDiagram> {
   @override
-  final int typeId = 5;
+  final int typeId = 4;
 
   @override
   DeviceDiagram read(BinaryReader reader) {
@@ -237,35 +197,40 @@ class DeviceDiagramAdapter extends TypeAdapter<DeviceDiagram> {
           typeId == other.typeId;
 }
 
-class SBCModelsAdapter extends TypeAdapter<SBCModels> {
+class DeviceModelAdapter extends TypeAdapter<DeviceModel> {
   @override
-  final int typeId = 6;
+  final int typeId = 5;
 
   @override
-  SBCModels read(BinaryReader reader) {
+  DeviceModel read(BinaryReader reader) {
     switch (reader.readByte()) {
       case 0:
-        return SBCModels.rpi3Bp;
+        return DeviceModel.rpi3Bp;
       case 1:
-        return SBCModels.rpi4;
+        return DeviceModel.rpi4;
       case 2:
-        return SBCModels.rpiPico;
+        return DeviceModel.rpiPico;
+      case 3:
+        return DeviceModel.unknown;
       default:
-        return SBCModels.rpi3Bp;
+        return DeviceModel.rpi3Bp;
     }
   }
 
   @override
-  void write(BinaryWriter writer, SBCModels obj) {
+  void write(BinaryWriter writer, DeviceModel obj) {
     switch (obj) {
-      case SBCModels.rpi3Bp:
+      case DeviceModel.rpi3Bp:
         writer.writeByte(0);
         break;
-      case SBCModels.rpi4:
+      case DeviceModel.rpi4:
         writer.writeByte(1);
         break;
-      case SBCModels.rpiPico:
+      case DeviceModel.rpiPico:
         writer.writeByte(2);
+        break;
+      case DeviceModel.unknown:
+        writer.writeByte(3);
         break;
     }
   }
@@ -276,7 +241,7 @@ class SBCModelsAdapter extends TypeAdapter<SBCModels> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is SBCModelsAdapter &&
+      other is DeviceModelAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }
