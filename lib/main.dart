@@ -1,12 +1,10 @@
 import 'dart:isolate';
 
-import 'package:codde_pi/app/screens/controller.dart';
-import 'package:codde_pi/app/home.dart';
+import 'package:codde_pi/app/pages/controller/controller.dart';
 import 'package:codde_pi/services/db/objects.dart';
 import 'package:codde_pi/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 void main() async {
   await Hive.initFlutter('/home/matt/Projects/codde_pi/');
@@ -18,7 +16,7 @@ void main() async {
     ..registerAdapter(RepoAdapter())
     ..registerAdapter(SSHDeviceAdapter());
   await Hive.openBox('projects');
-  runApp(const ProviderScope(child: MyApp()));
+  runApp(const MyApp());
   await Isolate.run(save);
 }
 
@@ -29,10 +27,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'C.O.D.D.E. Pi',
       theme: cddTheme,
       darkTheme: cddTheme,
-      home: const Home(),
+      home: ControllerDraft(),
     );
   }
 }
@@ -41,12 +39,12 @@ Future<void> save() async {
   var count = 0.0;
   bool flag = true;
 
-  var futureThatStopsIt = Future.delayed(const Duration(seconds: 5), (){
+  var futureThatStopsIt = Future.delayed(const Duration(seconds: 5), () {
     flag = false;
   });
 
   var futureWithTheLoop = () async {
-    while (flag){
+    while (flag) {
       count++;
       print("going on: $count");
       await Future.delayed(const Duration(seconds: 1));

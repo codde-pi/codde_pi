@@ -40,6 +40,7 @@ ColorScheme _dopyColorScheme = ColorScheme(
 IconThemeData iconAccent = IconThemeData();
 
 ThemeData cddTheme = ThemeData(
+  useMaterial3: true,
   dividerColor: light_grey,
   highlightColor: accent,
   indicatorColor: accent,
