@@ -1,15 +1,17 @@
 part of 'edit_controller_bloc.dart';
 
 class EditControllerState extends Equatable {
-  final ControllerMap map;
+  late ControllerMap map = ControllerMap(path: path);
   final Map<int, ControllerWidget> widgets;
   final int? showDetails;
   final int? movable;
   final ControllerWidget? lastDeletedWidget;
   final ControllerStatus status;
+  final String path;
 
-  const EditControllerState(
-      {required this.map,
+  EditControllerState(
+      {required this.path,
+      ControllerMap? map,
       this.widgets = const <int, ControllerWidget>{},
       this.showDetails,
       this.movable,
@@ -17,6 +19,7 @@ class EditControllerState extends Equatable {
       this.status = ControllerStatus.loading});
 
   EditControllerState copyWith({
+    String? path,
     ControllerMap? map,
     Map<int, ControllerWidget>? widgets,
     int? showDetails,
@@ -25,6 +28,7 @@ class EditControllerState extends Equatable {
     ControllerStatus? status,
   }) {
     return EditControllerState(
+        path: path ?? this.path,
         map: map ?? this.map,
         widgets: widgets ?? this.widgets,
         showDetails: showDetails ?? this.showDetails,
@@ -37,20 +41,22 @@ class EditControllerState extends Equatable {
   List<Object?> get props =>
       [map, widgets, showDetails, movable, lastDeletedWidget, status];
 
-  EditControllerState removeWidget(int id) {
+  /* EditControllerState removeWidget(int id) {
     var newMap = Map.of(widgets);
     final removedWidget = newMap.remove(id);
     return copyWith(lastDeletedWidget: removedWidget, widgets: newMap);
-  }
+  } */
 
-  EditControllerState addWidget(ControllerWidget widget) {
-    final newList = Map.of(widgets);
-    newList[widget.id] = widget;
+ /*  EditControllerState addWidget(ControllerWidget widget) {
+    final newMap = {...widgets};
+    //Map<int, ControllerWidget>.of(widgets);
+    newMap[widget.id] = widget;
     final isLayer = widget.background != null;
     return copyWith(
-        widgets: newList,
-        map: map.copyWith(
+      widgets: newMap,
+      /* map: map.copyWith(
             nextLayerId: isLayer ? widget.id + 1 : null,
-            nextObjectId: !isLayer ? widget.id + 1 : null));
-  }
+            nextObjectId: !isLayer ? widget.id + 1 : null) */
+    );
+  } */
 }

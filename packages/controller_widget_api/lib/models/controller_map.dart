@@ -1,21 +1,16 @@
-import 'dart:ui';
-
+import 'package:controller_widget_api/controller_widget_api.dart';
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:uuid/uuid.dart';
-
-import 'controller_background.dart';
-import 'controller_layer.dart';
-import 'controller_widget.dart';
 
 part 'controller_map.g.dart';
 
 @JsonSerializable()
 class ControllerMap extends Equatable {
   final String uid;
-  final Size size;
+  final ControllerSize size;
   final String path;
-  final ControllerLayer layer;
+  final ControllerLayer? layer;
   final List<ControllerBackground> backgrounds;
   final List<ControllerWidget> widgets;
   final int nextLayerId;
@@ -23,15 +18,15 @@ class ControllerMap extends Equatable {
 
   ControllerMap(
       {required this.path,
-      required this.layer,
+      this.layer,
       String? uid,
-      Size? size,
+      ControllerSize? size,
       List<ControllerBackground>? backgrounds,
       List<ControllerWidget>? widgets,
       int? nextLayerId,
       int? nextObjectId})
       : uid = uid ?? Uuid().v4(),
-        size = size ?? Size(1920, 1080),
+        size = size ?? ControllerSize(1920, 1080),
         backgrounds = backgrounds ?? <ControllerBackground>[],
         widgets = widgets ?? <ControllerWidget>[],
         nextLayerId = nextLayerId ?? 1,
@@ -40,17 +35,30 @@ class ControllerMap extends Equatable {
   String get name => path.split("/").last;
 
   @override
-  List<Object?> get props =>
-      [uid, size, path, layer, backgrounds, widgets, nextLayerId, nextObjectId];
+  List<Object?> get props => [
+        uid,
+        size,
+        path,
+        layer,
+        backgrounds,
+        widgets,
+        nextLayerId,
+        nextObjectId,
+        path
+      ];
 
   ControllerMap copyWith(
       {String? uid,
-      Size? size,
+      ControllerSize? size,
+      String? path,
+      ControllerLayer? layer,
       List<ControllerBackground>? backgrounds,
       List<ControllerWidget>? widgets,
       int? nextLayerId,
       int? nextObjectId}) {
     return ControllerMap(
+        path: path ?? this.path,
+        layer: layer ?? this.layer,
         uid: uid ?? this.uid,
         size: size ?? this.size,
         backgrounds: backgrounds ?? this.backgrounds,

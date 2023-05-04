@@ -46,3 +46,4 @@ app.*.map.json
 # Flutter generated
 **/pubspec.lock
 **/GeneratedPluginRegistrant.swift
+.vscode/launch.json

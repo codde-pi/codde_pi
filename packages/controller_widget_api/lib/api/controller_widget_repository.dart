@@ -17,7 +17,19 @@ class ControllerWidgetRepository {
     return controllerWidgetApi.addWidget(widget);
   }
 
+  List<ControllerWidget> addAll(List<ControllerWidget> widgets) {
+    return controllerWidgetApi.addAll(widgets);
+  }
+
+  List<ControllerWidget> parseLayers(List<Layer> layers) {
+    return controllerWidgetApi.parseLayers(layers);
+  }
+
   Future<File> saveMap(ControllerMap map) {
     return controllerWidgetApi.saveMap(map);
+  }
+
+  ControllerWidget modifyWidget(ControllerWidget widget) {
+    return controllerWidgetApi.modifyWidget(widget);
   }
 }

@@ -7,9 +7,7 @@ abstract class EditControllerEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class EditControllerSubscriptionRequested extends EditControllerEvent {
-  const EditControllerSubscriptionRequested();
-}
+class ControllerWidgetSubscriptionRequested extends EditControllerEvent {}
 
 class ControllerWidgetRemoved extends EditControllerEvent {
   const ControllerWidgetRemoved(this.id);
@@ -27,6 +25,15 @@ class ControllerWidgetAdded extends EditControllerEvent {
 
   @override
   List<Object> get props => [widget];
+}
+
+class ControllerLayerParsed extends EditControllerEvent {
+  const ControllerLayerParsed(this.layers);
+
+  final List<Layer> layers;
+
+  @override
+  List<Object> get props => [layers];
 }
 
 class ControllerWidgetClicked extends EditControllerEvent {
@@ -64,7 +71,7 @@ class ControllerWidgetMoved extends EditControllerEvent {
   const ControllerWidgetMoved(this.id, this.position);
 
   final int id;
-  final Offset position;
+  final ControllerPosition position;
 
   @override
   List<Object> get props => [id, position];

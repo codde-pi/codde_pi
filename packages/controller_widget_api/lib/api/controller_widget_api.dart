@@ -1,8 +1,8 @@
 import 'dart:io';
 
-import 'package:controller_widget_api/models/controller_map.dart';
-import 'package:controller_widget_api/models/controller_size.dart';
-import 'package:controller_widget_api/models/controller_widget.dart';
+import 'package:controller_widget_api/controller_widget_api.dart';
+import 'package:enum_to_string/enum_to_string.dart';
+import 'package:flame_tiled/flame_tiled.dart';
 import 'package:rxdart/subjects.dart';
 import 'package:xml/xml.dart';
 
@@ -17,6 +17,26 @@ class ControllerWidgetApi {
   Stream<List<ControllerWidget>> getWidgets() {
     return controllerWidgetStreamController.asBroadcastStream();
   }
+
+  /* Future<ControllerMap> openMap(String path) async {
+    File file = new File(path);
+    final document = XmlDocument.parse(file.readAsStringSync());
+    final layer = document
+        .findElements('layer')
+        .map((XmlElement e) => ControllerLayer(
+            id: e.getAttribute('id'),
+            data: e.getAttribute('data').split(',').map((e) => int.parse(e)).toList(), // FIXME: encoding
+            size: Size(e.getAttribute('width'), e.getAttribute('height')),
+            x: e.getAttribute('offsetx'),
+            y: double.parse(e.getAttribute('offsety')),))
+        .toList();
+    if (layer.isEmpty) {
+      throw ControllerWidgetInvalidTiled;
+    }
+    final tilesets = document.findElements('tileset'),
+    ControllerMap map = ControllerMap(path: path, layer: layer.first, backgrounds: tilesets);
+    return map;
+  } */
 
   Future<FileSystemEntity>? deleteMap(ControllerMap map) {
     return File(map.path).delete();
@@ -33,6 +53,38 @@ class ControllerWidgetApi {
     }
   }
 
+  ControllerWidget modifyWidget(ControllerWidget newVersion) {
+    final files = [...controllerWidgetStreamController.value];
+    final index = files.indexWhere((element) => newVersion.id == element.id);
+    if (index == -1) {
+      throw ControllerWidgetNotFoundException;
+    }
+    files.replaceRange(index, index, [newVersion]);
+    controllerWidgetStreamController.add(files);
+
+    return newVersion;
+  }
+
+  List<ControllerWidget> parseLayers(List<Layer> layers) {
+    Iterable<ControllerWidget?> widgets = layers.map((layer) {
+      if (layer.id != null) {
+        return ControllerWidget(
+            id: layer.id!,
+            background: null,
+            class_: EnumToString.fromString(
+                ControllerClass.values, layer.class_ ?? ''),
+            name: layer.name,
+            position: ControllerPosition(layer.x, layer.y));
+      }
+    });
+    List<ControllerWidget> nullSafetyWidgets = [
+      for (var element in widgets)
+        if (element != null) element
+    ];
+    addAll(nullSafetyWidgets);
+    return nullSafetyWidgets;
+  }
+
   ControllerWidget addWidget(ControllerWidget widget) {
     // file list stream event
     final files = [...controllerWidgetStreamController.value];
@@ -42,6 +94,15 @@ class ControllerWidgetApi {
     return widget;
   }
 
+  List<ControllerWidget> addAll(List<ControllerWidget> widgets) {
+    // file list stream event
+    final files = [...controllerWidgetStreamController.value];
+    files.addAll(widgets);
+    controllerWidgetStreamController.add(files);
+
+    return widgets;
+  }
+
   void parseWidget(ControllerWidget widget, XmlBuilder builder) {
     if (widget.widgets.isNotEmpty) {
       builder.element('objectgroup', nest: () {
@@ -49,9 +110,9 @@ class ControllerWidgetApi {
         builder.attribute('name', widget.name);
         builder.attribute('class', widget.class_);
         builder.attribute(
-            'offsetx', widget.position.dx.toInt()); // TODO: differs from x ?
+            'offsetx', widget.position.x); // TODO: differs from x ?
         builder.attribute(
-            'offsety', widget.position.dy.toInt()); // TODO: differs from y ?
+            'offsety', widget.position.y); // TODO: differs from y ?
         widget.widgets.forEach((child) {
           parseWidget(child, builder);
         });
@@ -71,8 +132,8 @@ class ControllerWidgetApi {
     builder.attribute('id', widget.id);
     builder.attribute('name', widget.name);
     builder.attribute('class', widget.class_);
-    builder.attribute('x', widget.position.dx.toInt());
-    builder.attribute('y', widget.position.dy.toInt());
+    builder.attribute('x', widget.position.x);
+    builder.attribute('y', widget.position.y);
   }
 
   Future<File> saveMap(ControllerMap map) {
@@ -85,8 +146,8 @@ class ControllerWidgetApi {
       builder.attribute("tiledversion", "1.9.2");
       builder.attribute("orientation", "orthogonal");
       builder.attribute("renderorder", "right-down");
-      builder.attribute("width", map.size.width.toInt());
-      builder.attribute("height", map.size.height.toInt());
+      builder.attribute("width", map.size.width);
+      builder.attribute("height", map.size.height);
       builder.attribute("tilewidth", TILE_SIZE);
       builder.attribute("tileheight", TILE_SIZE);
       builder.attribute("infinite", "0");
@@ -112,8 +173,8 @@ class ControllerWidgetApi {
             builder.attribute('columns', bg.size.height);
             builder.element('image', nest: () {
               builder.attribute('source', bg.source);
-              builder.attribute('width', bg.image.width);
-              builder.attribute('height', bg.image.height);
+              // builder.attribute('width', bg.image.width); // FIXME: jsonserializable
+              // builder.attribute('height', bg.image.height);
             });
           });
         });
@@ -122,11 +183,11 @@ class ControllerWidgetApi {
       builder.element('layer', nest: () {
         builder.attribute('id', 1);
         builder.attribute('name', 'Controller');
-        builder.attribute("width", map.size.width.toInt());
-        builder.attribute("height", map.size.height.toInt());
+        builder.attribute("width", map.size.width);
+        builder.attribute("height", map.size.height);
         builder.element('data', nest: () {
           builder.attribute('encoding', 'csv');
-          builder.text(map.layer.data.join(','));
+          builder.text(map.layer!.data.join(','));
         });
       });
       // widgets
@@ -141,3 +202,5 @@ class ControllerWidgetApi {
 
 /// Error thrown when a [ControllerWidget] with a given id is not found.
 class ControllerWidgetNotFoundException implements Exception {}
+
+class ControllerWidgetInvalidTiled implements Exception {}

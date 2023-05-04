@@ -1,4 +1,1 @@
-enum ControllerClass {
-  simple_button,
-  joystick
-} 
+enum ControllerClass { unknown, simple_button, joystick }

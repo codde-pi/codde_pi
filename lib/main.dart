@@ -1,6 +1,6 @@
 import 'dart:isolate';
 
-import 'package:codde_pi/app/pages/controller/controller.dart';
+import 'package:codde_pi/core/play_controller/views/play_controller_page.dart';
 import 'package:codde_pi/services/db/objects.dart';
 import 'package:codde_pi/theme.dart';
 import 'package:flutter/material.dart';
@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
       title: 'C.O.D.D.E. Pi',
       theme: cddTheme,
       darkTheme: cddTheme,
-      home: ControllerDraft(),
+      home: PlayControllerPage(), // EditControllerPage(),
     );
   }
 }

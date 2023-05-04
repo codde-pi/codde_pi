@@ -1,7 +1,6 @@
-import 'dart:ui';
-
 import 'package:controller_widget_api/controller_widget_api.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flame_tiled/flame_tiled.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'edit_controller_event.dart';
@@ -10,22 +9,24 @@ part 'edit_controller_state.dart';
 class EditControllerBloc
     extends Bloc<EditControllerEvent, EditControllerState> {
   EditControllerBloc({
+    required path,
     required this.repo,
-    required ControllerMap map,
-  }) : super(EditControllerState(map: map)) {
-    on<EditControllerSubscriptionRequested>(_onSubscriptionRequested);
+  }) : super(EditControllerState(path: path)) {
+    on<ControllerWidgetSubscriptionRequested>(_onSubscriptionRequested);
     on<ControllerWidgetAdded>(_widgetAdded);
+    on<ControllerLayerParsed>(_layerParsed);
     on<ControllerWidgetRemoved>(_widgetRemoved);
     on<ControllerWidgetClicked>(_widgetClicked);
     on<ControllerWidgetLongTaped>(_widgetLongTaped);
     on<ControllerWidgetCanceled>(_widgetCanceled);
     on<ControllerWidgetSelectedCanceled>(_widgetSelectedCanceled);
+    on<ControllerWidgetMoved>(_widgetMoved);
   }
 
   final ControllerWidgetRepository repo;
 
   Future<void> _onSubscriptionRequested(
-    EditControllerSubscriptionRequested event,
+    ControllerWidgetSubscriptionRequested event,
     Emitter<EditControllerState> emit,
   ) async {
     emit(state.copyWith(status: ControllerStatus.loading));
@@ -38,7 +39,7 @@ class EditControllerBloc
           map[element.id] = element;
         });
         return state.copyWith(
-          status: ControllerStatus.loading,
+          status: ControllerStatus.success,
           widgets: map,
         );
       },
@@ -49,11 +50,22 @@ class EditControllerBloc
   }
 
   void _widgetAdded(ControllerWidgetAdded event, emit) {
-    emit(state.addWidget(event.widget));
+    // emit(state.addWidget(event.widget));
+    repo.addWidget(event.widget);
+    print('added');
+  }
+
+  void _layerParsed(ControllerLayerParsed event, emit) {
+    repo.parseLayers(event.layers);
+  }
+
+  void _widgetMoved(ControllerWidgetMoved event, emit) {
+    repo.modifyWidget(
+        state.widgets[event.id]!.copyWith(position: event.position));
   }
 
   void _widgetRemoved(ControllerWidgetRemoved event, emit) {
-    emit(state.removeWidget(event.id));
+    // emit(state.removeWidget(event.id));
   }
 
   void _widgetClicked(ControllerWidgetClicked event, emit) {

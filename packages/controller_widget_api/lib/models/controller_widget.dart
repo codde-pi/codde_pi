@@ -1,17 +1,13 @@
-import 'dart:ui';
-
+import 'package:controller_widget_api/controller_widget_api.dart';
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
-
-import 'controller_background.dart';
-import 'controller_class.dart';
 
 part 'controller_widget.g.dart';
 
 @JsonSerializable()
 class ControllerWidget extends Equatable {
   final int id;
-  final Offset position; // not toJson
+  final ControllerPosition position; // not toJson
   final ControllerClass? class_;
   final String? name;
   final ControllerBackground? background;
@@ -19,12 +15,12 @@ class ControllerWidget extends Equatable {
 
   ControllerWidget(
       {required this.id,
-      Offset? position,
+      ControllerPosition? position,
       String? name,
       ControllerClass? class_,
       ControllerBackground? background,
       List<ControllerWidget>? widgets})
-      : position = position ?? Offset(0, 0),
+      : position = position ?? ControllerPosition(0, 0),
         name = name,
         class_ = class_,
         background = background,
@@ -35,7 +31,7 @@ class ControllerWidget extends Equatable {
 
   ControllerWidget copyWith(
       {int? id,
-      Offset? position,
+      ControllerPosition? position,
       String? name,
       ControllerClass? class_,
       ControllerBackground? background,
