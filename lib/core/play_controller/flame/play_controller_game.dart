@@ -1,10 +1,11 @@
 import 'dart:async';
 
+import 'package:codde_com/codde_com.dart';
 import 'package:codde_pi/core/widgets/api/widget_parser.dart';
 import 'package:controller_widget_api/controller_widget_api.dart';
 import 'package:enum_to_string/enum_to_string.dart';
 import 'package:flame/game.dart';
-import 'package:flame_socketio/flame_socketio.dart';
+import 'package:flame_coddecom/flame_coddecom.dart';
 import 'package:flame_tiled/flame_tiled.dart';
 import 'package:socket_io_client/socket_io_client.dart';
 
@@ -30,18 +31,21 @@ class PlayControllerGame extends FlameGame {
 
     final view = PlayControllerView(
         path,
-        'http://0.0.0.0:8080',
-        OptionBuilder().setTransports(['websocket']) // for Flutter or Dart VM
-            .setExtraHeaders({'foo': 'bar'}) // optional
-            .build());
+        CoddeProtocol.socketio,
+        ProtocolBuilder().useSocketIO(
+            'http://0.0.0.0:8080',
+            OptionBuilder()
+                .setTransports(['websocket']) // for Flutter or Dart VM
+                .setExtraHeaders({'foo': 'bar'}) // optional
+                .build()));
 
     add(view);
   }
 }
 
-class PlayControllerView extends FlameSocketIOClient {
+class PlayControllerView extends FlameCoddeCom {
   String path;
-  PlayControllerView(this.path, super.url, [super.options]);
+  PlayControllerView(this.path, super.protocol, super.builder);
   ControllerWidgetProvider provider =
       ControllerWidgetProvider(ControllerWidgetMode.player);
 

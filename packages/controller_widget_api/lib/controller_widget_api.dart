@@ -1,3 +1,5 @@
+library controller_widget_api;
+
 export 'api/controller_widget_api.dart';
 export 'models/controller_background.dart';
 export 'models/controller_class.dart';

@@ -39,6 +39,10 @@ dependencies:
     path: packages/controller_widget_api
   flame_socketio:
     path: packages/flame_socketio
+  codde_com:
+    path: packages/codde_com
+  flame_coddecom:
+    path: packages/flame_coddecom
 
 
   # The following adds the Cupertino Icons font to your application.
