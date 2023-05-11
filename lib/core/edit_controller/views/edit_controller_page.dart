@@ -6,38 +6,51 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class EditControllerPage extends StatelessWidget {
-  final widgetRepo = ControllerWidgetRepository(ControllerWidgetApi());
-  final path = 'map.tmx'; // TODO: load project
+  final String path;
+  EditControllerPage({
+    super.key,
+    required this.path,
+  });
+  late final widgetRepo = ControllerWidgetRepository(
+      ControllerWidgetApi(map: ControllerMap(path: path)));
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => EditControllerBloc(path: path, repo: widgetRepo)
-        ..add(ControllerWidgetSubscriptionRequested()),
-      child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          actions: [IconButton(onPressed: () {}, icon: const Icon(Icons.save))],
-          title: Text('Controller Name'), // TODO: path name
-        ),
-        body: const EditControllerView(),
-      ),
-    );
+        create: (context) => EditControllerBloc(repo: widgetRepo)
+          ..add(ControllerMapSubscribed())
+          ..add(ControllerWidgetSubscribed()),
+        lazy: false,
+        child: EditControllerView(path: path));
   }
 }
 
 class EditControllerView extends StatelessWidget {
-  const EditControllerView({super.key});
+  final String path;
+  const EditControllerView({super.key, required this.path});
 
   @override
   Widget build(BuildContext context) {
     final bloc = context.read<EditControllerBloc>();
-    return BlocBuilder<EditControllerBloc, EditControllerState>(
-      bloc: bloc,
-      buildWhen: (previous, current) =>
-          previous.widgets.length != current.widgets.length,
-      builder: (context, state) => GameWidget(
-        game: EditControllerFlame(bloc),
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        actions: [
+          IconButton(
+              onPressed: () {
+                context.read<EditControllerBloc>().add(ControllerMapSaved());
+              },
+              icon: const Icon(Icons.save))
+        ],
+        title: Text(path.split('/').last),
+      ),
+      body: BlocBuilder<EditControllerBloc, EditControllerState>(
+        bloc: bloc,
+        buildWhen: (previous, current) =>
+            previous.widgets.length != current.widgets.length,
+        builder: (context, state) => GameWidget(
+          game: EditControllerFlame(bloc),
+        ),
       ),
     );
   }

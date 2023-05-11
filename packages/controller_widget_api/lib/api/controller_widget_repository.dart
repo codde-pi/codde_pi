@@ -5,8 +5,16 @@ class ControllerWidgetRepository {
 
   final ControllerWidgetApi controllerWidgetApi;
 
-  Stream<List<ControllerWidget>> getWidgets() {
-    return controllerWidgetApi.getWidgets();
+  Stream<Map<int, ControllerWidget>> streamWidgets() {
+    return controllerWidgetApi.streamWidgets();
+  }
+
+  Stream<ControllerMap> streamMap() {
+    return controllerWidgetApi.streamMap();
+  }
+
+  Map<int, ControllerWidget> getWidgetsOnce() {
+    return controllerWidgetApi.getWidgetsOnce();
   }
 
   Future<Object>? deleteMap(ControllerMap map) {
@@ -25,11 +33,19 @@ class ControllerWidgetRepository {
     return controllerWidgetApi.parseLayers(layers);
   }
 
-  Future<File> saveMap(ControllerMap map) {
-    return controllerWidgetApi.saveMap(map);
+  Future<File> saveMap() {
+    return controllerWidgetApi.saveMap();
+  }
+
+  Future<File> createMap() {
+    return controllerWidgetApi.createMap();
   }
 
   ControllerWidget modifyWidget(ControllerWidget widget) {
     return controllerWidgetApi.modifyWidget(widget);
+  }
+
+  ControllerWidget? removeWidget(int id) {
+    return controllerWidgetApi.removeWidget(id);
   }
 }

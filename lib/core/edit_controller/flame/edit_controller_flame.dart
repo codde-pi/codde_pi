@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:codde_pi/core/edit_controller/bloc/edit_controller_bloc.dart';
 import 'package:codde_pi/core/widgets/api/widget_parser.dart';
 import 'package:flame/components.dart';
@@ -46,9 +48,9 @@ class EditControllerFlameView extends PositionComponent {
     final reader = WidgetReader();
     add(reader);
 
+    final content = await File(reader.bloc.state.map!.path).readAsString();
     late TiledComponent mapComponent;
-    mapComponent =
-        await TiledComponent.load(reader.bloc.state.map.path, Vector2.all(16));
+    mapComponent = await load(content, Vector2.all(16));
     add(mapComponent);
 
     if (reader.bloc.state.widgets.isEmpty) {
@@ -57,33 +59,24 @@ class EditControllerFlameView extends PositionComponent {
     } else {
       reader.bloc.state.widgets.forEach((key, value) {
         add(provider.generateWidget(
-            id: value.id, class_: value.class_, position: value.position));
+            id: value.id, class_: value.class_, x: value.x, y: value.y));
       });
     }
   }
 
-/*   @override
-  bool listenWhen(
-      EditControllerState previousState, EditControllerState newState) {
-    // return true/false to determine whether or not
-    // to call listener with state
-    return newState.widgets != previousState.widgets;
+  static Future<TiledComponent> load(
+    String fileContent,
+    Vector2 destTileSize, {
+    int? priority,
+    bool? ignoreFlip,
+  }) async {
+    return TiledComponent(
+      await RenderableTiledMap.fromString(
+        fileContent,
+        destTileSize,
+        ignoreFlip: ignoreFlip,
+      ),
+      priority: priority,
+    );
   }
-
-  @override
-  void onNewState(EditControllerState state) {
-    super.onNewState(state);
-    // do stuff here based on state
-    state.widgets.forEach((key, value) {
-      // add(provider.generateWidget(
-      //     id: key, class_: value.class_, position: value.position));
-      if (value.class_ == ControllerClass.simple_button) {
-        add(WidgetEditor(
-            size: Vector2.all(100),
-            id: key,
-            painter:
-                SimpleButtonPainter() /* createInstanceOf(mode, class_) */));
-      }
-    });
-  } */
 }

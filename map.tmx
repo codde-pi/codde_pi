@@ -20,13 +20,14 @@
   </data>
  </layer>
  <!-- <imagelayer /> -->
- <objectgroup id="4" class="simple_button" x="230" y="100" />
- <objectgroup id="3" name="AnimatedCoins" class="joystick">
+ <objectgroup id="4" x="522" y="287" class="simple_button" name=""/>
+<objectgroup id="3" x="0" y="0" class="joystick" name="DummyCoins"/>
+<!--  <objectgroup id="3" name="AnimatedCoins" class="joystick">
   <object id="5" x="336" y="190">
    <ellipse/>
   </object>
   <object id="6" x="544" y="91">
    <ellipse/>
 </object>
- </objectgroup>
+ </objectgroup> -->
 </map>

@@ -1,6 +1,5 @@
 import 'package:codde_pi/core/edit_controller/bloc/edit_controller_bloc.dart';
 import 'package:codde_pi/core/widgets/api/widget_parser.dart';
-import 'package:controller_widget_api/models/controller_position.dart';
 import 'package:flame/components.dart';
 import 'package:flame/experimental.dart';
 import 'package:flame_bloc/flame_bloc.dart';
@@ -50,8 +49,7 @@ class WidgetEditor extends CustomPainterComponent
   @override
   void onDragEnd(DragEndEvent event) {
     _isDragged = false;
-    bloc.add(ControllerWidgetMoved(
-        id, ControllerPosition(position.x.toInt(), position.y.toInt())));
+    bloc.add(ControllerWidgetMoved(id, position.x.toInt(), position.y.toInt()));
   }
 
   /*  @override
@@ -71,9 +69,7 @@ class WidgetEditor extends CustomPainterComponent
   @override
   void onNewState(EditControllerState state) {
     super.onNewState(state);
-    // do stuff here based on state
     final widget = state.widgets[id];
-    position =
-        Vector2(widget!.position.x.toDouble(), widget.position.x.toDouble());
+    position = Vector2(widget!.x.toDouble(), widget.y.toDouble());
   }
 }

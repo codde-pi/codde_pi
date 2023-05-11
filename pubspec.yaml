@@ -50,13 +50,14 @@ dependencies:
   cupertino_icons: ^1.0.2
 
   # types
-  path: ^1.6.4
+  path: ^1.8.2
   path_provider: ^2.0.11
   file_manager: ^1.0.1
   json_serializable: ^6.5.4
   equatable: ^2.0.5
   enum_to_string: ^2.0.1
-  reflectable: ^4.0.5
+  file_picker: ^5.3.0
+  glob: ^2.1.1
 
   # components
   touchable: ^1.0.2
@@ -107,12 +108,7 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  assets:
-      - assets/tiles/map.tmx
-      - assets/images/level_ice_tileset.png
-      - assets/images/level_standard_tileset.png
-      - assets/images/repeatable_background.png
-      - assets/images/coins.png
+  # assets:
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

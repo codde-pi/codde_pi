@@ -9,10 +9,10 @@ part 'edit_controller_state.dart';
 class EditControllerBloc
     extends Bloc<EditControllerEvent, EditControllerState> {
   EditControllerBloc({
-    required path,
     required this.repo,
-  }) : super(EditControllerState(path: path)) {
-    on<ControllerWidgetSubscriptionRequested>(_onSubscriptionRequested);
+  }) : super(const EditControllerState()) {
+    on<ControllerWidgetSubscribed>(_onWidgetSubscribed);
+    on<ControllerMapSubscribed>(_onMapSubscribed);
     on<ControllerWidgetAdded>(_widgetAdded);
     on<ControllerLayerParsed>(_layerParsed);
     on<ControllerWidgetRemoved>(_widgetRemoved);
@@ -21,26 +21,43 @@ class EditControllerBloc
     on<ControllerWidgetCanceled>(_widgetCanceled);
     on<ControllerWidgetSelectedCanceled>(_widgetSelectedCanceled);
     on<ControllerWidgetMoved>(_widgetMoved);
+    on<ControllerMapSaved>(_mapSaved);
   }
 
   final ControllerWidgetRepository repo;
 
-  Future<void> _onSubscriptionRequested(
-    ControllerWidgetSubscriptionRequested event,
+  Future<void> _onWidgetSubscribed(
+    ControllerWidgetSubscribed event,
     Emitter<EditControllerState> emit,
   ) async {
     emit(state.copyWith(status: ControllerStatus.loading));
 
-    await emit.forEach<List<ControllerWidget>>(
-      repo.getWidgets(),
+    await emit.forEach<Map<int, ControllerWidget>>(
+      repo.streamWidgets(),
       onData: (event) {
-        Map<int, ControllerWidget> map = {};
-        event.forEach((element) {
-          map[element.id] = element;
-        });
         return state.copyWith(
           status: ControllerStatus.success,
-          widgets: map,
+          widgets: event,
+        );
+      },
+      onError: (_, __) => state.copyWith(
+        status: ControllerStatus.failure,
+      ),
+    );
+  }
+
+  Future<void> _onMapSubscribed(
+    ControllerMapSubscribed event,
+    Emitter<EditControllerState> emit,
+  ) async {
+    emit(state.copyWith(status: ControllerStatus.loading));
+
+    await emit.forEach<ControllerMap>(
+      repo.streamMap(),
+      onData: (event) {
+        return state.copyWith(
+          status: ControllerStatus.success,
+          map: event,
         );
       },
       onError: (_, __) => state.copyWith(
@@ -50,9 +67,8 @@ class EditControllerBloc
   }
 
   void _widgetAdded(ControllerWidgetAdded event, emit) {
-    // emit(state.addWidget(event.widget));
     repo.addWidget(event.widget);
-    print('added');
+    emit(state.edit());
   }
 
   void _layerParsed(ControllerLayerParsed event, emit) {
@@ -61,11 +77,14 @@ class EditControllerBloc
 
   void _widgetMoved(ControllerWidgetMoved event, emit) {
     repo.modifyWidget(
-        state.widgets[event.id]!.copyWith(position: event.position));
+        state.widgets[event.id]!.copyWith(x: event.x, y: event.y));
+    emit(state.edit());
   }
 
   void _widgetRemoved(ControllerWidgetRemoved event, emit) {
-    // emit(state.removeWidget(event.id));
+    final removedWidget = repo.removeWidget(event.id);
+    emit(state.copyWith(lastDeletedWidget: removedWidget));
+    emit(state.edit());
   }
 
   void _widgetClicked(ControllerWidgetClicked event, emit) {
@@ -85,5 +104,10 @@ class EditControllerBloc
     emit(state.copyWith(
         movable: event.id == state.movable ? 0 : state.movable,
         showDetails: event.id == state.showDetails ? 0 : state.showDetails));
+  }
+
+  void _mapSaved(ControllerMapSaved event, emit) {
+    repo.saveMap();
+    emit(state.save());
   }
 }

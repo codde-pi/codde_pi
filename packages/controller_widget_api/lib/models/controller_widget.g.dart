@@ -9,10 +9,8 @@ part of 'controller_widget.dart';
 ControllerWidget _$ControllerWidgetFromJson(Map<String, dynamic> json) =>
     ControllerWidget(
       id: json['id'] as int,
-      position: json['position'] == null
-          ? null
-          : ControllerPosition.fromJson(
-              json['position'] as Map<String, dynamic>),
+      x: json['x'] as int?,
+      y: json['y'] as int?,
       name: json['name'] as String?,
       class_: $enumDecodeNullable(_$ControllerClassEnumMap, json['class_']),
       background: json['background'] == null
@@ -27,7 +25,8 @@ ControllerWidget _$ControllerWidgetFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$ControllerWidgetToJson(ControllerWidget instance) =>
     <String, dynamic>{
       'id': instance.id,
-      'position': instance.position,
+      'x': instance.x,
+      'y': instance.y,
       'class_': _$ControllerClassEnumMap[instance.class_],
       'name': instance.name,
       'background': instance.background,

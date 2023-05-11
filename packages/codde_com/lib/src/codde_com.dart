@@ -40,6 +40,6 @@ class CoddeCom implements ComCommon {
   }
 }
 
-enum CoddeProtocol { socket, socketio, usb, bluetooth }
+enum CoddeProtocol { socket, socketio, usb, bluetooth, http }
 
 class UnsupportedCoddeProtocol implements Exception {}

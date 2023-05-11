@@ -1,43 +1,43 @@
 import 'package:controller_widget_api/controller_widget_api.dart';
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:uuid/uuid.dart';
 
 part 'controller_layer.g.dart';
 
+/// TODO: unused dataclass
+
 @JsonSerializable()
 class ControllerLayer extends Equatable {
-  final String id;
-  final ControllerSize size; // not toJson
-  final double y;
-  final double x;
+  final int id;
+  final ControllerSize size;
+  // final double? y;
+  // final double? x;
   final List<int> data;
+  final String? name;
 
   ControllerLayer(
-      {String? id, ControllerSize? size, List<int>? data, double? x, double? y})
-      : id = id ?? Uuid().v4(),
-        size = size ?? ControllerSize(1920, 1080),
+      {required this.id, required this.size, required this.data, this.name});
+  /*  : id = id ?? Uuid().v4(),
+        size = size ?? ControllerSize(0, 40),
         x = x ?? 0,
         y = y ?? 0,
-        data = data ?? [];
+        data = data ?? []; */
 
   @override
-  List<Object?> get props => [id, size, data, x, y];
+  List<Object?> get props => [id, size, data, name];
 
   ControllerLayer copyWith(
-      {String? id,
+      {int? id,
       ControllerSize? size,
       List<ControllerBackground>? backgrounds,
       List<ControllerLayer>? widgets,
       List<int>? data,
-      double? x,
-      double? y}) {
+      String? name}) {
     return ControllerLayer(
         id: id ?? this.id,
         size: size ?? this.size,
-        x: x ?? this.x,
-        y: y ?? this.y,
-        data: data ?? this.data);
+        data: data ?? this.data,
+        name: name ?? this.name);
   }
 
   /// Deserializes the given [Map] into a [ControllerLayer].

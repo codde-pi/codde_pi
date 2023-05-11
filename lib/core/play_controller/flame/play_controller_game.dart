@@ -63,7 +63,7 @@ class PlayControllerView extends FlameCoddeCom {
           id: value.id!,
           class_: EnumToString.fromString(
               ControllerClass.values, value.class_ ?? ''),
-          position: ControllerPosition(value.x, value.y))());
+          x: value.x, y: value.y)());
     }
   }
 

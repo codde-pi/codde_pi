@@ -3,7 +3,6 @@ import 'package:codde_pi/core/widgets/models/unknown_button/unknown_button.dart'
 import 'package:codde_pi/core/widgets/templates/widget_editor.dart';
 import 'package:controller_widget_api/controller_widget_api.dart';
 import 'package:flame/game.dart';
-import 'package:reflectable/reflectable.dart';
 
 /* class Reflector extends Reflectable {
   const Reflector() : super(newInstanceCapability);
@@ -52,7 +51,8 @@ class ControllerWidgetProvider {
   dynamic generateWidget(
       {required int id,
       required ControllerClass? class_,
-      required ControllerPosition position}) {
+      required int x,
+      required int y}) {
     var classed;
     if (class_ == null || !factories.containsKey(class_)) {
       classed = ControllerClass.unknown;
@@ -64,18 +64,15 @@ class ControllerWidgetProvider {
         return WidgetEditor(
             size: Vector2.all(100),
             id: id,
-            position: Vector2(position.x.toDouble(), position.y.toDouble()),
+            position: Vector2(x.toDouble(), y.toDouble()),
             painter:
                 factories[classed]!() /* createInstanceOf(mode, class_) */);
       default: // player
         /* return createInstanceOf(classed, [], {
           #id: id,
-          #position: Vector2(position.x.toDouble(), position.y.toDouble())
+          #position: Vector2(x.toDouble(), y.toDouble())
         }); */
-        return createPlayerOf(
-            classed,
-            id,
-            Vector2(position.x.toDouble(), position.y.toDouble()),
+        return createPlayerOf(classed, id, Vector2(x.toDouble(), y.toDouble()),
             factories[classed]!());
     }
   }

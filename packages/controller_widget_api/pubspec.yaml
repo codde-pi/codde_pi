@@ -12,6 +12,9 @@ dependencies:
   flutter:
     sdk: flutter
 
+  codde_com:
+    path: ../codde_com
+
   json_serializable: ^6.5.4
   equatable: ^2.0.5
   uuid: ^3.0.7
@@ -19,6 +22,9 @@ dependencies:
   xml: ^6.2.2
   enum_to_string: ^2.0.1
   flame_tiled: ^1.10.0
+  glob: ^2.1.1
 
 dev_dependencies:
+  flutter_test:
+      sdk: flutter
   build_runner: ^2.3.2
