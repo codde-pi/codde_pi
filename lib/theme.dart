@@ -48,7 +48,6 @@ ThemeData cddTheme = ThemeData(
   dialogBackgroundColor: dialog,
   colorScheme: _dopyColorScheme,
   primaryColor: widget,
-  accentColor: accent,
   // unused
   backgroundColor: background,
   // background
@@ -56,13 +55,11 @@ ThemeData cddTheme = ThemeData(
   disabledColor: disabled,
   errorColor: error,
   hoverColor: white,
-  textTheme: TextTheme(
-    bodyText1: TextStyle(color: light_grey),
-    headline1: TextStyle(color: accent, fontFamily: 'Aldrich'),
-    headline2: TextStyle(color: accent, fontFamily: 'Aldrich'),
-    headline3: TextStyle(color: accent, fontFamily: 'Aldrich'),
-    headline4: TextStyle(color: accent, fontFamily: 'Aldrich'),
-    headline5: TextStyle(fontFamily: 'Aldrich'),
+  textTheme: const TextTheme(
+    bodyMedium: TextStyle(color: white),
+    headlineMedium: TextStyle(color: accent, fontFamily: 'Aldrich'),
+    headlineLarge:
+        TextStyle(color: accent, fontFamily: 'Aldrich', fontSize: 24.0),
   ),
   floatingActionButtonTheme:
       FloatingActionButtonThemeData(backgroundColor: accent),
@@ -94,7 +91,10 @@ ThemeData cddTheme = ThemeData(
     ),
   ),
   listTileTheme: ListTileThemeData(
-      contentPadding: EdgeInsets.all(8.0), style: ListTileStyle.list),
+      tileColor: widget,
+      textColor: grey,
+      contentPadding: EdgeInsets.all(8.0),
+      style: ListTileStyle.list),
   navigationRailTheme: NavigationRailThemeData(
       elevation: 0.0,
       backgroundColor: background,

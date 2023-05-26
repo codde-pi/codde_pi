@@ -1,69 +1,40 @@
-import 'dart:isolate';
-
-import 'package:codde_pi/core/edit_controller/views/edit_controller_page.dart';
-import 'package:codde_pi/services/db/objects.dart';
+import 'package:codde_pi/app/pages/home.dart';
+import 'package:codde_pi/services/db/device.dart';
+import 'package:codde_pi/services/db/device_model.dart';
+import 'package:codde_pi/services/db/host.dart';
+import 'package:codde_pi/services/db/project.dart';
 import 'package:codde_pi/theme.dart';
 import 'package:flutter/material.dart';
-import 'package:hive_flutter/adapters.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+
+// TODO: replace with this box name
+const projectsBox = 'userProjects';
 
 void main() async {
-  await Hive.initFlutter('/home/matt/Projects/codde_pi/');
+  await Hive.initFlutter(); // TODO: find right location
   Hive
-    ..registerAdapter(ProjectAdapter())
-    ..registerAdapter(DeviceAdapter())
     ..registerAdapter(DeviceModelAdapter())
-    ..registerAdapter(DeviceDiagramAdapter())
-    ..registerAdapter(RepoAdapter())
-    ..registerAdapter(SSHDeviceAdapter());
-  await Hive.openBox('projects');
+    ..registerAdapter(DeviceProtocolAdapter())
+    ..registerAdapter(DeviceAdapter());
+  await Hive.openBox<Device>('devices');
+  Hive.registerAdapter(HostAdapter());
+  await Hive.openBox<Host>('hosts');
+  Hive.registerAdapter(ProjectAdapter());
+  await Hive.openBox<Project>(projectsBox);
   runApp(const MyApp());
-  await Isolate.run(save);
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'C.O.D.D.E. Pi',
+      title: 'C.O.D.D.E. Pi®',
       theme: cddTheme,
       darkTheme: cddTheme,
-      home: EditControllerPage(path: 'map.tmx'), //PlayControllerPage(),
+      home: Home(),
+      themeMode: ThemeMode.system,
     );
   }
 }
-
-Future<void> save() async {
-  var count = 0.0;
-  bool flag = true;
-
-  var futureThatStopsIt = Future.delayed(const Duration(seconds: 5), () {
-    flag = false;
-  });
-
-  var futureWithTheLoop = () async {
-    while (flag) {
-      count++;
-      print("going on: $count");
-      await Future.delayed(const Duration(seconds: 1));
-    }
-  }();
-
-  await Future.wait([futureThatStopsIt, futureWithTheLoop]);
-  print('total $count');
-}
-
-/*void main() async {
-  ThemeData themeData = ThemeData(
-    fontFamily: 'FiraCode',
-    primaryColor: foreground,
-    backgroundColor: background,
-    scaffoldBackgroundColor: background,
-  );
-  return runApp(MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: themeData,
-      home: const Scaffold(body: Editor(path: './tests/socket.py'))));
-}*/
