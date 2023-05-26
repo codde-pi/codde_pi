@@ -16,6 +16,8 @@ class ControllerMap extends Equatable {
   final int? height;
   final ControllerProperties? properties;
 
+  static const TILE_SIZE = 16.0;
+
   ControllerMap(
       {required this.path,
       String? uid,

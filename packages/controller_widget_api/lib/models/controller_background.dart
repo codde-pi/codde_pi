@@ -1,6 +1,5 @@
 import 'dart:ui';
 
-import 'package:controller_widget_api/controller_widget_api.dart';
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -8,7 +7,7 @@ part 'controller_background.g.dart';
 
 @JsonSerializable()
 class ControllerBackground extends Equatable {
-  final ControllerSize size; // not toJson
+  // final ControllerSize size; // not toJson
   final String name;
   // final Image image;
   final String source; // image path
@@ -16,22 +15,19 @@ class ControllerBackground extends Equatable {
 
   ControllerBackground(
       {required this.name,
-      required this.size,
       // required this.image,
       required this.source});
 
-  ControllerBackground copyWith(
-      {ControllerSize? size, String? name, Image? image, String? source}) {
+  ControllerBackground copyWith({String? name, Image? image, String? source}) {
     return ControllerBackground(
         name: name ?? this.name,
-        size: size ?? this.size,
         // image: image ?? this.image,
         source: source ?? this.source);
   }
 
   @override
   // TODO: implement props
-  List<Object?> get props => [name, size, /* image, */ source];
+  List<Object?> get props => [name, /* image, */ source];
 
   /// Deserializes the given [Map] into a [ControllerBackground].
   static ControllerBackground fromJson(Map<String, dynamic> json) =>

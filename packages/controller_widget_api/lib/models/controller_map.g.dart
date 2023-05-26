@@ -17,7 +17,10 @@ ControllerMap _$ControllerMapFromJson(Map<String, dynamic> json) =>
           .toList(),
       nextLayerId: json['nextLayerId'] as int?,
       nextObjectId: json['nextObjectId'] as int?,
-      properties: json['controller_props'],
+      properties: json['properties'] == null
+          ? null
+          : ControllerProperties.fromJson(
+              json['properties'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$ControllerMapToJson(ControllerMap instance) =>
@@ -29,5 +32,5 @@ Map<String, dynamic> _$ControllerMapToJson(ControllerMap instance) =>
       'nextObjectId': instance.nextObjectId,
       'width': instance.width,
       'height': instance.height,
-      'controller_props': instance.properties,
+      'properties': instance.properties,
     };

@@ -9,14 +9,12 @@ part 'controller_layer.g.dart';
 @JsonSerializable()
 class ControllerLayer extends Equatable {
   final int id;
-  final ControllerSize size;
   // final double? y;
   // final double? x;
   final List<int> data;
   final String? name;
 
-  ControllerLayer(
-      {required this.id, required this.size, required this.data, this.name});
+  ControllerLayer({required this.id, required this.data, this.name});
   /*  : id = id ?? Uuid().v4(),
         size = size ?? ControllerSize(0, 40),
         x = x ?? 0,
@@ -24,20 +22,16 @@ class ControllerLayer extends Equatable {
         data = data ?? []; */
 
   @override
-  List<Object?> get props => [id, size, data, name];
+  List<Object?> get props => [id, data, name];
 
   ControllerLayer copyWith(
       {int? id,
-      ControllerSize? size,
       List<ControllerBackground>? backgrounds,
       List<ControllerLayer>? widgets,
       List<int>? data,
       String? name}) {
     return ControllerLayer(
-        id: id ?? this.id,
-        size: size ?? this.size,
-        data: data ?? this.data,
-        name: name ?? this.name);
+        id: id ?? this.id, data: data ?? this.data, name: name ?? this.name);
   }
 
   /// Deserializes the given [Map] into a [ControllerLayer].

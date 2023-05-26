@@ -137,8 +137,8 @@ class ControllerWidgetApi {
       builder.attribute("renderorder", "right-down");
       builder.attribute("width", map.width);
       builder.attribute("height", map.height);
-      builder.attribute("tilewidth", TILE_SIZE);
-      builder.attribute("tileheight", TILE_SIZE);
+      builder.attribute("tilewidth", ControllerMap.TILE_SIZE);
+      builder.attribute("tileheight", ControllerMap.TILE_SIZE);
       builder.attribute("infinite", "0");
       // builder.attribute("backgroundcolor", "#212121");
       builder.attribute("nextlayerid", map.nextLayerId);
@@ -162,8 +162,8 @@ class ControllerWidgetApi {
           builder.element("tileset", nest: () {
             builder.attribute("firstgid", "1"); // tile index on which to start
             builder.attribute('name', bg.name);
-            builder.attribute("tilewidth", TILE_SIZE);
-            builder.attribute("tileheight", TILE_SIZE);
+            builder.attribute("tilewidth", ControllerMap.TILE_SIZE);
+            builder.attribute("tileheight", ControllerMap.TILE_SIZE);
             builder.attribute('tilecount', bg.size.width * bg.size.height);
             builder.attribute('columns', bg.size.height);
             builder.element('image', nest: () {
