@@ -5,6 +5,7 @@ import 'package:codde_pi/services/db/host.dart';
 import 'package:codde_pi/services/db/project.dart';
 import 'package:codde_pi/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get_navigation/get_navigation.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 // TODO: replace with this box name
@@ -29,7 +30,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       title: 'C.O.D.D.E. Pi®',
       theme: cddTheme,
       darkTheme: cddTheme,

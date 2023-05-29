@@ -20,7 +20,7 @@ class TargetDeviceStepState extends State<TargetDeviceStep> {
   Device? selectedHost;
 
   void createDevice(Device device) {
-    Hive.box<Device>('projects').add(device);
+    Hive.box<Device>('devices').add(device);
     openForm(false);
   }
 
@@ -38,7 +38,7 @@ class TargetDeviceStepState extends State<TargetDeviceStep> {
 
   @override
   Widget build(BuildContext context) {
-    final deviceList = Hive.box<Device>('projects').values.toList();
+    final deviceList = Hive.box<Device>('devices').values.toList();
     final userChoices = context
         .select<ProjectLauncherCubit, Project>((cubit) => cubit.state.data!);
     if (userChoices.host != null) {
@@ -63,7 +63,7 @@ class TargetDeviceStepState extends State<TargetDeviceStep> {
               trailing: Text(selectedHost!.protocol
                   .name), // TODO: change protocol by clicking on it. A floating menu will appear
               onTap: () {
-                final key = Hive.box<Device>(projectsBox).add(selectedHost!);
+                final key = Hive.box<Device>('devices').add(selectedHost!);
                 context
                     .read<ProjectLauncherCubit>()
                     .feedData({"controlledDevice": selectedHost});

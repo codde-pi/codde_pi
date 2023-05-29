@@ -85,6 +85,12 @@ dependencies:
   flame: ^1.7.2
   flame_tiled: ^1.10.0
   flame_bloc: ^1.8.4
+  get: ^4.6.5
+
+  # tools
+  network_info_plus: ^4.0.1
+  arp_scanner: ^1.2.7
+  lan_scanner: ^3.5.0
 
 
 dev_dependencies:
