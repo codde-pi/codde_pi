@@ -2,6 +2,7 @@ import 'package:codde_pi/components/utils/ip_device_finder.dart';
 import 'package:codde_pi/services/db/device.dart';
 import 'package:codde_pi/services/db/device_model.dart';
 import 'package:flutter/material.dart';
+import 'package:get/route_manager.dart';
 
 class ControlledDeviceForm extends StatelessWidget {
   final nameController = TextEditingController();
