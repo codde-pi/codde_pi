@@ -1,4 +1,7 @@
+import 'package:codde_pi/app/pages/codde/codde.dart';
+import 'package:codde_pi/app/pages/codde/state/codde_binding.dart';
 import 'package:codde_pi/app/pages/home.dart';
+import 'package:codde_pi/app/pages/home_binding.dart';
 import 'package:codde_pi/services/db/device.dart';
 import 'package:codde_pi/services/db/device_model.dart';
 import 'package:codde_pi/services/db/host.dart';
@@ -34,8 +37,12 @@ class MyApp extends StatelessWidget {
       title: 'C.O.D.D.E. Pi®',
       theme: cddTheme,
       darkTheme: cddTheme,
-      home: Home(),
       themeMode: ThemeMode.system,
+      initialRoute: '/',
+      getPages: [
+        GetPage(name: '/', page: () => Home(), binding: HomeBinding()),
+        GetPage(name: '/codde', page: () => Codde(), binding: CoddeBinding())
+      ],
     );
   }
 }

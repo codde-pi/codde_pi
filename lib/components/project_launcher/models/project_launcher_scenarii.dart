@@ -1,4 +1,5 @@
 import 'package:codde_pi/components/project_launcher/steps/choose_project_type_step.dart';
+import 'package:codde_pi/components/project_launcher/steps/generate_code_step.dart';
 import 'package:codde_pi/components/project_launcher/steps/introduce_project_step.dart';
 import 'package:codde_pi/components/project_launcher/steps/open_path_step.dart';
 import 'package:codde_pi/components/project_launcher/steps/project_location_step.dart';
@@ -15,5 +16,6 @@ class ProjectLauncherScenarii {
     ChooseProjectTypeStep(),
     ProjectLocationStep(),
     TargetDeviceStep(),
+    GenerateCodeStep()
   ];
 }

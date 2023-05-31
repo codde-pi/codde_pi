@@ -9,7 +9,7 @@ class ProjectInstanceTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      onTap: select(context, project),
+      onTap: () => select(context, project),
       leading: project.controlledDevice != null
           ? Icon(Icons.settings_remote)
           : Icon(Icons.electrical_services_sharp),

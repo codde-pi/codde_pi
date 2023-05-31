@@ -1,6 +1,5 @@
 import 'package:codde_pi/components/forms/controlled_device_form.dart';
 import 'package:codde_pi/components/project_launcher/cubit/project_launcher_cubit.dart';
-import 'package:codde_pi/main.dart';
 import 'package:codde_pi/services/db/device.dart';
 import 'package:codde_pi/services/db/project.dart';
 import 'package:codde_pi/theme.dart';
@@ -28,12 +27,6 @@ class TargetDeviceStepState extends State<TargetDeviceStep> {
     setState(() {
       openNewDeviceForm = value;
     });
-  }
-
-  void createProject(Project data) {
-    // TODO: replace `Map<String, dynamic>` data by `Project` data
-    Hive.box<Project>(projectsBox).add(data);
-    context.read<ProjectLauncherCubit>().launchProject();
   }
 
   @override
@@ -64,10 +57,10 @@ class TargetDeviceStepState extends State<TargetDeviceStep> {
                   .name), // TODO: change protocol by clicking on it. A floating menu will appear
               onTap: () {
                 final key = Hive.box<Device>('devices').add(selectedHost!);
-                context
-                    .read<ProjectLauncherCubit>()
-                    .feedData({"controlledDevice": selectedHost});
-                createProject(userChoices);
+                context.read<ProjectLauncherCubit>().feedData(
+                    {"controlledDevice": selectedHost},
+                    nextPage: true);
+                // createProject(userChoices);
               }),
         ...[
           for (var device in deviceList)
@@ -79,14 +72,16 @@ class TargetDeviceStepState extends State<TargetDeviceStep> {
               onTap: () {
                 context
                     .read<ProjectLauncherCubit>()
-                    .feedData({"controlledDevice": device});
-                createProject(userChoices);
+                    .feedData({"controlledDevice": device}, nextPage: true);
+                // createProject(userChoices);
               },
             )
         ],
         OutlinedButton(
-            onPressed: () => createProject(userChoices),
-            child: const Text("later"))
+            onPressed: () => context
+                .read<ProjectLauncherCubit>()
+                .nextPage(), // createProject(userChoices),
+            child: const Text("LATERs"))
       ],
     );
   }
