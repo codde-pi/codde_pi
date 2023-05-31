@@ -3,14 +3,17 @@ import 'package:codde_pi/components/dynamic_bar/models/dynamic_fab.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 
+@Deprecated("Replaced by GetX state management")
 class DynamicBarState extends Equatable {
-  final List<DynamicBarDestination> pager;
+  final List<DynamicBarDestination> destinations;
   final DynamicFab? fab;
+  final int currentPage;
 
-  const DynamicBarState({required this.pager, this.fab});
+  const DynamicBarState(
+      {required this.destinations, this.fab, this.currentPage = 0});
 
   List<DynamicBarDestination> get paged {
-    List<DynamicBarDestination> list = List.of(pager)
+    List<DynamicBarDestination> list = List.of(destinations)
       ..sort((a, b) => a.index.compareTo(b.index));
     return list;
   }
@@ -26,10 +29,15 @@ class DynamicBarState extends Equatable {
   }
 
   DynamicBarState copyWith(
-      {List<DynamicBarDestination>? pager, DynamicFab? fab}) {
-    return DynamicBarState(pager: pager ?? this.pager, fab: fab ?? this.fab);
+      {List<DynamicBarDestination>? destinations,
+      DynamicFab? fab,
+      int? currentPage}) {
+    return DynamicBarState(
+        destinations: destinations ?? this.destinations,
+        fab: fab ?? this.fab,
+        currentPage: currentPage ?? this.currentPage);
   }
 
   @override
-  List<Object?> get props => [pager, fab];
+  List<Object?> get props => [destinations, fab];
 }
