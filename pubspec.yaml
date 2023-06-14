@@ -62,12 +62,14 @@ dependencies:
   json_annotation: ^4.8.1
 
   # components
-  touchable: ^1.0.2
   flutter_svg: ^2.0.5
   google_fonts: ^4.0.3
   flutter_treeview: ^1.0.7+1
   file_picker: ^5.3.0
   simple_markdown_editor: ^0.2.0
+  flame: ^1.7.2
+  flame_svg: ^1.7.4
+  flame_tiled: ^1.10.0
 
   # from fileX
   mime: ^1.0.3
@@ -82,8 +84,6 @@ dependencies:
   hive_flutter:  ^1.1.0
   bloc: ^8.1.1
   flutter_bloc: ^8.1.2
-  flame: ^1.7.2
-  flame_tiled: ^1.10.0
   flame_bloc: ^1.8.4
   mobx: ^2.2.0
   flutter_mobx: ^2.0.6+5
@@ -123,6 +123,8 @@ flutter:
   assets:
     - assets/samples/socketio/
     - assets/samples/executable.py
+    - assets/widgets/simple_button/classic/
+    - assets/widgets/unknown/classic/
 
 
 

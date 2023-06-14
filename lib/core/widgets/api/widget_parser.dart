@@ -1,8 +1,11 @@
 import 'package:codde_pi/core/widgets/models/simple_button/simple_button.dart';
-import 'package:codde_pi/core/widgets/models/unknown_button/unknown_button.dart';
+import 'package:codde_pi/core/widgets/models/unknown/unknown_button.dart';
 import 'package:codde_pi/core/widgets/templates/widget_editor.dart';
 import 'package:controller_widget_api/controller_widget_api.dart';
-import 'package:flame/game.dart';
+import 'package:enum_to_string/enum_to_string.dart';
+import 'package:flame/components.dart';
+import 'package:flame_svg/flame_svg.dart';
+import 'package:path/path.dart';
 
 /* class Reflector extends Reflectable {
   const Reflector() : super(newInstanceCapability);
@@ -28,20 +31,31 @@ var factories = <ControllerClass, dynamic Function()>{
   ControllerClass.unknown: () => new UnknownButtonPainter(),
 };
 
-Object createPlayerOf(dynamic class_, id, position, painter) {
-  final Map<ControllerClass, Function> factories = <ControllerClass, Function>{
-    ControllerClass.unknown: () =>
-        UnknownButtonPlayer(id: id, position: position, painter: painter),
-    ControllerClass.simple_button: () {
-      print('hello');
-      return SimpleButtonPlayer(
-          id: id,
-          position: position,
-          painter: painter,
-          size: Vector2.all(100.0));
-    },
+Future<Component> createPlayerOf(dynamic class_, id, position) async {
+  final widgetSvg = await getWidgetSvg(class_);
+  final Map<ControllerClass, Component> factories =
+      <ControllerClass, Component>{
+    ControllerClass.unknown:
+        UnknownButtonPlayer(id: id, position: position, svg: widgetSvg),
+    ControllerClass.simple_button: SimpleButtonPlayer(
+        id: id, position: position, svg: widgetSvg, size: Vector2.all(100.0))
   };
   return factories[class_]!;
+}
+
+String getWidgetAsset(ControllerClass class_,
+    {ControllerStyle style = ControllerStyle.classic, bool pressed = false}) {
+  final widget = EnumToString.convertToString(class_);
+  final controller_style = EnumToString.convertToString(style);
+  final filename =
+      "${widget}_$controller_style${(pressed ? '_pressed' : '')}.svg";
+  return join("widgets", widget, controller_style, filename);
+}
+
+Future<Svg> getWidgetSvg(ControllerClass class_,
+    {ControllerStyle style = ControllerStyle.classic, bool pressed = false}) {
+  final path = getWidgetAsset(class_, style: style, pressed: pressed);
+  return Svg.load(path);
 }
 
 class ControllerWidgetProvider {
@@ -61,6 +75,7 @@ class ControllerWidgetProvider {
     }
     switch (mode) {
       case ControllerWidgetMode.editor:
+        // TODO: turn to spriteComponent
         return WidgetEditor(
             size: Vector2.all(100),
             id: id,
@@ -72,8 +87,7 @@ class ControllerWidgetProvider {
           #id: id,
           #position: Vector2(x.toDouble(), y.toDouble())
         }); */
-        return createPlayerOf(classed, id, Vector2(x.toDouble(), y.toDouble()),
-            factories[classed]!());
+        return createPlayerOf(classed, id, Vector2(x.toDouble(), y.toDouble()));
     }
   }
 }

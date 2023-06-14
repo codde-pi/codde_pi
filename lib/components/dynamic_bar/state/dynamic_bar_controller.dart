@@ -1,12 +1,8 @@
 import 'package:codde_pi/components/dynamic_bar/models/dynamic_bar_destination.dart';
 import 'package:codde_pi/components/dynamic_bar/models/dynamic_fab.dart';
 import 'package:flutter/widgets.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:get/get.dart';
 
-// part 'dynamic_bar_controller.freezed.dart';
-
-@freezed
 class DynamicBarController extends GetxController {
   List<DynamicBarDestination> destinations;
   DynamicFab? fab;

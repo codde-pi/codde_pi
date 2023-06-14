@@ -2,7 +2,7 @@ part of 'simple_button.dart';
 
 class SimpleButtonPlayer extends WidgetPlayer with TapCallbacks, HasCoddeCom {
   SimpleButtonPlayer(
-      {required super.id, super.position, super.painter, super.size});
+      {required super.id, super.position, super.svg, super.size});
 
   @override
   void onTapUp(TapUpEvent event) {
