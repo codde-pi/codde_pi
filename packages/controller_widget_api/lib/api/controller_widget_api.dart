@@ -85,7 +85,8 @@ class ControllerWidgetApi {
 
   List<ControllerWidget> addAll(List<ControllerWidget> widgets) {
     // file list stream event
-    final files = Map.of(controllerWidgetStreamController.value);
+    Map<int, ControllerWidget> files =
+        Map.from(controllerWidgetStreamController.value);
     widgets.forEach((element) {
       files[element.id] = element;
     });

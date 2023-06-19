@@ -93,6 +93,7 @@ dependencies:
   network_info_plus: ^4.0.1
   arp_scanner: ^1.2.7
   lan_scanner: ^3.5.0
+  after_layout: ^1.2.0
 
 
 dev_dependencies:

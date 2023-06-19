@@ -1,3 +1,4 @@
+import 'package:codde_pi/components/dynamic_bar/state/dynamic_bar_controller.dart';
 import 'package:codde_pi/core/codde_controller/state/codde_controller_controller.dart';
 import 'package:codde_pi/core/play_controller/flame/play_controller_game.dart';
 import 'package:flame/game.dart';
@@ -11,9 +12,11 @@ class PlayControllerPage extends StatelessWidget {
   final GlobalKey<PopupMenuButtonState<int>> _popUpMenuKey = GlobalKey();
   @override
   Widget build(BuildContext context) {
-    /* Get.find<DynamicBarController>().setFab(Icons.play_arrow_outlined, () {
-      /* TODO */
-    }); */
+    setFab(
+        iconData: Icons.play_arrow_outlined,
+        action: () {
+          /* TODO */ print('RUN');
+        });
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.transparent,

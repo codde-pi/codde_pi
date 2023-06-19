@@ -14,7 +14,7 @@ class ControllerMap extends Equatable {
   final int? nextObjectId;
   final int? width;
   final int? height;
-  final ControllerProperties? properties;
+  final ControllerProperties? properties; // TODO: remove from map ?
 
   static const TILE_SIZE = 16.0;
 

@@ -59,7 +59,10 @@ class EditControllerFlameView extends PositionComponent {
     } else {
       reader.bloc.state.widgets.forEach((key, value) {
         add(provider.generateWidget(
-            id: value.id, class_: value.class_, x: value.x, y: value.y));
+            id: value.id,
+            class_: value.class_,
+            x: value.x,
+            y: value.y) as Component);
       });
     }
   }

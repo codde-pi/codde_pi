@@ -23,7 +23,7 @@ class FlameCoddeCom extends Component {
   @override
   FutureOr<void> onLoad() {
     super.onLoad();
-    com.connect();
+    com.connect(); // TODO: let user connect itself
   }
 
   /* /// Callback when connection has been established with specified server socket

@@ -1,0 +1,3 @@
+enum ControllerStyle {
+  classic,
+}

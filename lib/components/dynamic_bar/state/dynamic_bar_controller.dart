@@ -32,7 +32,7 @@ class DynamicBarController extends GetxController {
     update();
   }
 
-  void setFab(IconData iconData, Function action) {
+  void setFab({required IconData iconData, required Function action}) {
     fab = DynamicFab(iconData: iconData, action: action);
     update();
   }
@@ -41,4 +41,11 @@ class DynamicBarController extends GetxController {
     this.destinations = destinations;
     update();
   }
+}
+
+void setFab({required IconData iconData, required Function action}) {
+  WidgetsBinding.instance.addPostFrameCallback(
+    (_) => Get.find<DynamicBarController>()
+        .setFab(iconData: iconData, action: action),
+  );
 }

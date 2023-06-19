@@ -23,6 +23,9 @@ dependencies:
   enum_to_string: ^2.0.1
   flame_tiled: ^1.10.0
   glob: ^2.1.1
+  freezed: ^2.3.4
+  freezed_annotation: ^2.2.0
+  json_annotation: ^4.8.1
 
 dev_dependencies:
   flutter_test:

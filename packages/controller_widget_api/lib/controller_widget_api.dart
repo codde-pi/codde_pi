@@ -7,4 +7,7 @@ export 'models/controller_layer.dart';
 export 'models/controller_map.dart';
 export 'models/controller_properties.dart';
 export 'models/controller_status.dart';
+export 'models/controller_style.dart';
 export 'models/controller_widget.dart';
+export 'models/controller_widget_def.dart';
+export 'models/controller_widget_id.dart';

@@ -61,12 +61,12 @@ class PlayControllerView extends FlameCoddeCom {
 
     List<Layer> layers = mapComponent.tileMap.map.layers;
     for (var value in layers) {
-      add(provider.generateWidget(
+      add(await provider.generateWidget(
           id: value.id!,
           class_: EnumToString.fromString(
               ControllerClass.values, value.class_ ?? ''),
           x: value.x,
-          y: value.y)());
+          y: value.y));
     }
   }
 
