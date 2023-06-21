@@ -15,6 +15,7 @@ class SSHHostForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisSize: MainAxisSize.max,
       children: [
         TextField(
           decoration: InputDecoration(hintText: "name"),
@@ -23,15 +24,17 @@ class SSHHostForm extends StatelessWidget {
         Row(
           children: [
             Expanded(
-              flex: 2,
+              flex: 5,
               child: TextField(
                 decoration: InputDecoration(hintText: "host"),
                 controller: hostController,
               ),
             ),
-            TextField(
-              decoration: InputDecoration(hintText: "port"),
-              controller: portController,
+            Expanded(
+              child: TextField(
+                decoration: InputDecoration(hintText: "port"),
+                controller: portController,
+              ),
             ),
           ],
         ),

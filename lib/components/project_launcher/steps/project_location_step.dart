@@ -119,7 +119,9 @@ class ProjectLocationStepState extends State<ProjectLocationStep> {
           ElevatedButton(
               onPressed: () => openForm(true), child: const Text('New Host')),
         if (locationType == ProjectLocationType.ssh && openNewDeviceForm)
-          SSHHostForm(validate: createDevice, cancel: () => openForm(false)),
+          SSHHostForm(
+              validate: createDevice,
+              cancel: () => openForm(false)), // TODO: plug to SFTPCredentials
         if (locationType == ProjectLocationType.ssh && repoList != null) ...[
           for (var repo in repoList!)
             ValueListenableBuilder(
