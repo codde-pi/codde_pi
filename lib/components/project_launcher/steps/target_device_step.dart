@@ -81,7 +81,7 @@ class TargetDeviceStepState extends State<TargetDeviceStep> {
             onPressed: () => context
                 .read<ProjectLauncherCubit>()
                 .nextPage(), // createProject(userChoices),
-            child: const Text("LATERs"))
+            child: const Text("LATER"))
       ],
     );
   }

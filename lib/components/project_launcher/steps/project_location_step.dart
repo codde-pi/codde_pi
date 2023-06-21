@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:codde_pi/components/forms/ssh_host_form.dart';
 import 'package:codde_pi/components/project_launcher/cubit/project_launcher_cubit.dart';
 import 'package:codde_pi/services/db/device.dart';
@@ -6,6 +8,8 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
+import 'package:path/path.dart' as pth;
+import 'package:path_provider/path_provider.dart';
 
 enum ProjectLocationType { internal, system, ssh }
 
@@ -69,10 +73,19 @@ class ProjectLocationStepState extends State<ProjectLocationStep> {
         (selectedHost.value != null || locationType != ProjectLocationType.ssh);
   }
 
-  void nextPage() {
-    context.read<ProjectLauncherCubit>().feedData(
-        {"host": selectedHost.value, "path": pathController.text},
-        nextPage: true);
+  void nextPage() async {
+    String path;
+    if (locationType != ProjectLocationType.internal) {
+      path = pathController.text;
+    } else {
+      path =
+          await getApplicationDocumentsDirectory().then((value) => value.path);
+    }
+    path = pth.join(path, context.read<ProjectLauncherCubit>().state.data.name);
+    await Directory(path).create();
+    context
+        .read<ProjectLauncherCubit>()
+        .feedData({"host": selectedHost.value, "path": path}, nextPage: true);
   }
 
   @override
