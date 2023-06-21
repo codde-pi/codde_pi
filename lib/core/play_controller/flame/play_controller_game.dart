@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:codde_com/codde_com.dart';
 import 'package:codde_pi/core/widgets/api/widget_parser.dart';
@@ -53,8 +54,9 @@ class PlayControllerView extends FlameCoddeCom {
   FutureOr<void> onLoad() async {
     super.onLoad();
 
+    final content = await File(path).readAsString();
     late TiledComponent mapComponent;
-    mapComponent = await TiledComponent.load(path, Vector2.all(16));
+    mapComponent = await load(content, Vector2.all(16));
     add(mapComponent);
 
     List<Layer> layers = mapComponent.tileMap.map.layers;
@@ -63,7 +65,8 @@ class PlayControllerView extends FlameCoddeCom {
           id: value.id!,
           class_: EnumToString.fromString(
               ControllerClass.values, value.class_ ?? ''),
-          x: value.x, y: value.y)());
+          x: value.x,
+          y: value.y)());
     }
   }
 
@@ -75,5 +78,21 @@ class PlayControllerView extends FlameCoddeCom {
   @override
   void onDisconnect(Function(dynamic p1) disconnect) {
     print('Sorry, disconnected :/');
+  }
+
+  static Future<TiledComponent> load(
+    String fileContent,
+    Vector2 destTileSize, {
+    int? priority,
+    bool? ignoreFlip,
+  }) async {
+    return TiledComponent(
+      await RenderableTiledMap.fromString(
+        fileContent,
+        destTileSize,
+        ignoreFlip: ignoreFlip,
+      ),
+      priority: priority,
+    );
   }
 }

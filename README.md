@@ -1,6 +1,7 @@
-# codde_pi
+# C.O.D.D.E. Pi®
 
-A new Flutter project.
+C.O.D.D.E. Pi®  is an all in one mobile IDE for python robotic projects.
+This open core project aims to provide major app implementation under LGPL-3.0.
 
 ## Getting Started
 

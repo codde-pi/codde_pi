@@ -20,7 +20,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: '>=2.19.0 <4.0.0'
+  sdk: '>=3.0.0 <4.0.0'
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -56,31 +56,43 @@ dependencies:
   json_serializable: ^6.5.4
   equatable: ^2.0.5
   enum_to_string: ^2.0.1
-  file_picker: ^5.3.0
   glob: ^2.1.1
+  freezed: ^2.3.4
+  freezed_annotation: ^2.2.0
+  json_annotation: ^4.8.1
 
   # components
   touchable: ^1.0.2
   flutter_svg: ^2.0.5
   google_fonts: ^4.0.3
   flutter_treeview: ^1.0.7+1
+  file_picker: ^5.3.0
+  simple_markdown_editor: ^0.2.0
 
   # from fileX
   mime: ^1.0.3
   intl: ^0.17.0
   mime_type: ^1.0.0
   isolate_handler: ^1.0.2
-  shared_preferences: ^2.0.15
 
   # services
   provider: ^6.0.2
   socket_io_client: ^2.0.2
   hive: ^2.2.3
   hive_flutter:  ^1.1.0
+  bloc: ^8.1.1
   flutter_bloc: ^8.1.2
   flame: ^1.7.2
   flame_tiled: ^1.10.0
   flame_bloc: ^1.8.4
+  mobx: ^2.2.0
+  flutter_mobx: ^2.0.6+5
+  mobx_codegen: ^2.3.0
+
+  # tools
+  network_info_plus: ^4.0.1
+  arp_scanner: ^1.2.7
+  lan_scanner: ^3.5.0
 
 
 dev_dependencies:
@@ -108,7 +120,10 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
+  assets:
+    - assets/samples/socketio/
+    - assets/samples/executable.py
+
 
 
   # An image asset can refer to one or more resolution-specific "variants", see
