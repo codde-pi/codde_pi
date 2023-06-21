@@ -4,7 +4,6 @@ import 'package:codde_pi/services/db/project.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get/route_manager.dart';
 import 'package:hive/hive.dart';
 
 class OpenPathStep extends StatelessWidget {
@@ -45,7 +44,7 @@ class OpenPathStep extends StatelessWidget {
 
           if (state.connectionState == ConnectionState.done &&
               state.data == null) {
-            Get.back();
+            Navigator.pop(context);
           }
           return Column(children: const [
             CircularProgressIndicator(),

@@ -1,13 +1,13 @@
 import 'package:codde_pi/components/project_launcher/cubit/project_launcher_cubit.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get/get.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:provider/provider.dart';
 
 enum ProjectType { codde_pi, controller, package, executable, empty }
 
 class ChooseProjectTypeStep extends StatelessWidget {
-  // final projectType = ValueNotifier(ProjectType.codde_pi);
-  Rx<ProjectType> projectType = ProjectType.codde_pi.obs;
+  final projectType = ValueNotifier(ProjectType.codde_pi);
+  // late ProjectLauncherStore provider;
 
   ChooseProjectTypeStep({super.key});
 
@@ -24,30 +24,34 @@ class ChooseProjectTypeStep extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Obx(
-      () => Column(
-        children: [
-          ListTile(
-            leading: Radio(
-                value: ProjectType.codde_pi,
-                groupValue: projectType.value,
-                onChanged: (value) {
-                  select(value);
-                }),
-            title: const Text("C.O.D.D.E. Pi project"),
-            trailing: const Icon(Icons.question_mark),
-          ),
-          ListTile(
-            leading: Radio(
-                value: ProjectType.controller,
-                groupValue: projectType.value,
-                onChanged: (value) {
-                  select(value);
-                }),
-            title: const Text("Remote controller"),
-            trailing: const Icon(Icons.question_mark),
-          ),
-          /*TODO:  ListTile(
+    // provider = Provider.of<ProjectLauncherStore>(context);
+
+    return Observer(
+      builder: (_) => ValueListenableBuilder(
+        valueListenable: projectType,
+        builder: (context, value, child) => Column(
+          children: [
+            ListTile(
+              leading: Radio(
+                  value: ProjectType.codde_pi,
+                  groupValue: projectType.value,
+                  onChanged: (value) {
+                    select(value);
+                  }),
+              title: const Text("C.O.D.D.E. Pi project"),
+              trailing: const Icon(Icons.question_mark),
+            ),
+            ListTile(
+              leading: Radio(
+                  value: ProjectType.controller,
+                  groupValue: projectType.value,
+                  onChanged: (value) {
+                    select(value);
+                  }),
+              title: const Text("Remote controller"),
+              trailing: const Icon(Icons.question_mark),
+            ),
+            /*TODO:  ListTile(
           leading: Radio(
               value: ProjectType.package,
               groupValue: projectType.value,
@@ -55,25 +59,26 @@ class ChooseProjectTypeStep extends StatelessWidget {
           title: const Text("Python package"),
           trailing: const Icon(Icons.question_mark),
         ), */
-          ListTile(
-            leading: Radio(
-                value: ProjectType.executable,
-                groupValue: projectType.value,
-                onChanged: (value) => select(value)),
-            title: const Text("Python executable file"),
-            trailing: const Icon(Icons.question_mark),
-          ),
-          ListTile(
-            leading: Radio(
-                value: ProjectType.empty,
-                groupValue: projectType.value,
-                onChanged: (value) => select(value)),
-            title: const Text("Create your project from scratch"),
-            trailing: const Icon(Icons.question_mark),
-          ),
-          ElevatedButton(
-              onPressed: () => next(context), child: const Text('OK'))
-        ],
+            ListTile(
+              leading: Radio(
+                  value: ProjectType.executable,
+                  groupValue: projectType.value,
+                  onChanged: (value) => select(value)),
+              title: const Text("Python executable file"),
+              trailing: const Icon(Icons.question_mark),
+            ),
+            ListTile(
+              leading: Radio(
+                  value: ProjectType.empty,
+                  groupValue: projectType.value,
+                  onChanged: (value) => select(value)),
+              title: const Text("Create your project from scratch"),
+              trailing: const Icon(Icons.question_mark),
+            ),
+            ElevatedButton(
+                onPressed: () => next(context), child: const Text('OK'))
+          ],
+        ),
       ),
     );
   }

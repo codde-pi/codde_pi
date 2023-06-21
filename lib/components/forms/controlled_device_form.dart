@@ -2,7 +2,6 @@ import 'package:codde_pi/components/utils/ip_device_finder.dart';
 import 'package:codde_pi/services/db/device.dart';
 import 'package:codde_pi/services/db/device_model.dart';
 import 'package:flutter/material.dart';
-import 'package:get/route_manager.dart';
 
 class ControlledDeviceForm extends StatelessWidget {
   final nameController = TextEditingController();
@@ -13,8 +12,12 @@ class ControlledDeviceForm extends StatelessWidget {
   final Function cancel;
   final Function validate;
 
-  void getAddress() async {
-    addressController.text = await Get.dialog(const IpDeviceFinder()) ?? '';
+  void getAddress(BuildContext context) async {
+    addressController.text = await showGeneralDialog<String>(
+            context: context,
+            pageBuilder: (context, animation, secondaryAnimation) =>
+                const IpDeviceFinder()) ??
+        '';
   }
 
   ControlledDeviceForm(
@@ -77,7 +80,7 @@ class ControlledDeviceForm extends StatelessWidget {
               ),
             ),
             OutlinedButton(
-                onPressed: () => getAddress(),
+                onPressed: () => getAddress(context),
                 child: const Text('FIND MY DEVICE'))
           ],
         ),

@@ -1,8 +1,9 @@
 import 'package:codde_pi/components/project_launcher/cubit/project_launcher_cubit.dart';
 import 'package:codde_pi/components/project_launcher/cubit/project_launcher_state.dart';
+import 'package:codde_pi/components/project_launcher/store/project_launcher_store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get/route_manager.dart';
+import 'package:provider/provider.dart';
 
 class ProjectLauncher extends StatelessWidget {
   final List<Widget> steps;
@@ -13,7 +14,9 @@ class ProjectLauncher extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
         create: (_) => ProjectLauncherCubit(),
-        child: ProjectLauncherView(steps: steps));
+        child: Provider(
+            create: (_) => ProjectLauncherStore(),
+            child: ProjectLauncherView(steps: steps)));
   }
 }
 
@@ -30,7 +33,8 @@ class ProjectLauncherView extends StatelessWidget {
     return BlocListener<ProjectLauncherCubit, ProjectLauncherState>(
       listenWhen: (previous, current) => current.projectInstance != null,
       listener: (context, state) async {
-        Get.offNamed('/codde', arguments: state.projectInstance);
+        Navigator.pushNamed(context, '/codde',
+            arguments: state.projectInstance);
       },
       child: BlocConsumer<ProjectLauncherCubit, ProjectLauncherState>(
         listenWhen: (previous, current) =>

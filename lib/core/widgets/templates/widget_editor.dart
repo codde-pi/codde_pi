@@ -1,7 +1,7 @@
 import 'package:codde_pi/core/edit_controller/bloc/edit_controller_bloc.dart';
 import 'package:codde_pi/core/widgets/api/widget_parser.dart';
 import 'package:flame/components.dart';
-import 'package:flame/experimental.dart';
+import 'package:flame/events.dart';
 import 'package:flame_bloc/flame_bloc.dart';
 import 'package:flutter/widgets.dart';
 

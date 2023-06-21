@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:arp_scanner/arp_scanner.dart';
 import 'package:flutter/material.dart';
-import 'package:get/route_manager.dart';
 import 'package:lan_scanner/lan_scanner.dart';
 
 /* class IpScanner extends StatelessWidget {
@@ -60,7 +59,7 @@ class _IpDeviceFinderState extends State<IpDeviceFinder> {
 
   void quit() async {
     if (Platform.isAndroid) await ArpScanner.cancel();
-    Get.back();
+    Navigator.pop(context);
   }
 
   @override
@@ -100,7 +99,8 @@ class _IpDeviceFinderState extends State<IpDeviceFinder> {
                   subtitle: Text(Platform.isAndroid
                       ? deviceList.value[index].mac
                       : 'unknown mac'),
-                  onTap: () => Get.back(result: deviceList.value[index].ip),
+                  onTap: () =>
+                      Navigator.pop(context, deviceList.value[index].ip),
                 )),
           );
         },
