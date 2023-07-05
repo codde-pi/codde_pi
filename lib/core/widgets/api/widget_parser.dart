@@ -27,18 +27,26 @@ Object createInstanceOf(dynamic class_, List positionalArguments,
 } */
 
 var factories = <ControllerClass, dynamic Function()>{
-  ControllerClass.simple_button: () => new SimpleButtonPainter(),
-  ControllerClass.unknown: () => new UnknownButtonPainter(),
+  ControllerClass.simple_button: () => SimpleButtonPainter(),
+  ControllerClass.unknown: () => UnknownButtonPainter(),
 };
 
 Future<Component> createPlayerOf(dynamic class_, id, position) async {
   final widgetSvg = await getWidgetSvg(class_);
+  final widgetPressedSvg = await getWidgetSvg(class_, pressed: true);
   final Map<ControllerClass, Component> factories =
       <ControllerClass, Component>{
-    ControllerClass.unknown:
-        UnknownButtonPlayer(id: id, position: position, svg: widgetSvg),
+    ControllerClass.unknown: UnknownButtonPlayer(
+        id: id,
+        position: position,
+        svg: widgetSvg,
+        pressedSvg: widgetPressedSvg),
     ControllerClass.simple_button: SimpleButtonPlayer(
-        id: id, position: position, svg: widgetSvg, size: Vector2.all(100.0))
+        id: id,
+        position: position,
+        svg: widgetSvg,
+        size: Vector2.all(100.0),
+        pressedSvg: widgetPressedSvg)
   };
   return factories[class_]!;
 }
@@ -46,10 +54,10 @@ Future<Component> createPlayerOf(dynamic class_, id, position) async {
 String getWidgetAsset(ControllerClass class_,
     {ControllerStyle style = ControllerStyle.classic, bool pressed = false}) {
   final widget = EnumToString.convertToString(class_);
-  final controller_style = EnumToString.convertToString(style);
+  final controllerStyle = EnumToString.convertToString(style);
   final filename =
-      "${widget}_$controller_style${(pressed ? '_pressed' : '')}.svg";
-  return join("widgets", widget, controller_style, filename);
+      "${widget}_$controllerStyle${(pressed ? '_pressed' : '')}.svg";
+  return join("widgets", widget, controllerStyle, filename);
 }
 
 Future<Svg> getWidgetSvg(ControllerClass class_,
@@ -67,7 +75,7 @@ class ControllerWidgetProvider {
       required ControllerClass? class_,
       required int x,
       required int y}) {
-    var classed;
+    ControllerClass classed;
     if (class_ == null || !factories.containsKey(class_)) {
       classed = ControllerClass.unknown;
     } else {

@@ -3,14 +3,14 @@ import 'package:codde_pi/components/project_launcher/models/project_launcher_sce
 import 'package:codde_pi/components/project_launcher/project_launcher.dart';
 import 'package:codde_pi/theme.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:get_it/get_it.dart';
 
 class GlobalProjects extends StatelessWidget {
   const GlobalProjects({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final bar = Provider.of<DynamicBarState>(context);
+    final DynamicBarState bar = GetIt.I.get<DynamicBarState>();
     bar.setFab(
       iconData: Icons.add,
       action: () => Navigator.push(

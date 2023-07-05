@@ -1,13 +1,15 @@
-import 'package:codde_pi/components/dynamic_bar/state/dynamic_bar_controller.dart';
-import 'package:codde_pi/core/codde_controller/state/codde_controller_controller.dart';
+import 'package:codde_pi/components/dynamic_bar/state/dynamic_bar_state.dart';
+import 'package:codde_pi/core/codde_controller/store/codde_controller_store.dart';
 import 'package:codde_pi/core/edit_controller/bloc/edit_controller_bloc.dart';
 import 'package:codde_pi/core/edit_controller/flame/edit_controller_flame.dart';
 import 'package:codde_pi/core/edit_controller/views/add_widget_dialog.dart';
+import 'package:codde_pi/core/edit_controller/views/widget_details_sheet.dart';
 import 'package:controller_widget_api/controller_widget_api.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get/get.dart';
+import 'package:get_it/get_it.dart';
+import 'package:provider/provider.dart';
 
 class EditControllerPage extends StatelessWidget {
   final String path;
@@ -34,10 +36,13 @@ class EditControllerView extends StatelessWidget {
   EditControllerView({super.key, required this.path});
   final GlobalKey<PopupMenuButtonState<int>> _popUpMenuKey = GlobalKey();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
+  final bar = GetIt.I.get<DynamicBarState>();
 
   void addWidget(BuildContext context) async {
-    ControllerWidgetId? res =
-        await Get.dialog(AddWidgetDialog(), barrierDismissible: true);
+    ControllerWidgetId? res = await showDialog(
+        context: context,
+        builder: (_) => AddWidgetDialog(),
+        barrierDismissible: true);
     if (res != null) {
       final bloc = context.read<EditControllerBloc>();
       final id = bloc.state.map!.nextObjectId!;
@@ -68,55 +73,14 @@ class EditControllerView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    setFab(iconData: Icons.add, action: () => addWidget(context));
+    bar.setFab(iconData: Icons.add, action: () => addWidget(context));
+    final coddeStore = Provider.of<CoddeControllerStore>(context);
     final bloc = context.read<EditControllerBloc>();
     return BlocListener<EditControllerBloc, EditControllerState>(
       listener: (context, state) => showModalBottomSheet<void>(
-        isDismissible: true,
-        context: context,
-        builder: (BuildContext context) => Table(
-          children: [
-            TableRow(children: [Text('Name'), Text(getWidget(state).name!)]),
-            TableRow(children: [
-              Expanded(flex: 2, child: Text('Position')),
-              TextField(
-                controller: posX,
-                onSubmitted: (value) => udpatePos(context, x: value),
-                onTapOutside: (value) => udpatePos(context, x: posX.text),
-              ),
-              TextField(
-                controller: posY,
-                onSubmitted: (value) => udpatePos(context, y: value),
-                onTapOutside: (value) => udpatePos(context, y: posY.text),
-              )
-            ]),
-            TableRow(children: [
-              const Text('Data'),
-              Text(controllerWidgetDef.values
-                  .singleWhere(
-                      (element) => element.name == getWidget(state).name)
-                  .commitFrequency
-                  .name)
-            ]),
-            TableRow(
-                children: const ControllerApiAttribute(valueType: 'null')
-                    .toJson()
-                    .keys
-                    .map<Text>((e) => Text(e))
-                    .toList()),
-            ...controllerWidgetDef.values
-                .singleWhere((element) => element.name == getWidget(state).name)
-                .api
-                .map((e) => TableRow(
-                    children: e
-                        .toJson()
-                        .values
-                        .map<Text>((value) => Text(value))
-                        .toList()))
-                .toList()
-          ],
-        ),
-      ),
+          isDismissible: true,
+          context: context,
+          builder: (BuildContext context) => WidgetDetailsSheet()),
       listenWhen: (previous, current) => current.showDetails != null,
       child: Scaffold(
         key: _scaffoldKey,
@@ -130,7 +94,7 @@ class EditControllerView extends StatelessWidget {
             IconButton(
                 onPressed: () {
                   context.read<EditControllerBloc>().add(ControllerMapSaved());
-                  Get.find<CoddeControllerController>().playMode();
+                  coddeStore.playMode();
                 },
                 icon: const Icon(Icons.save)),
             PopupMenuButton(

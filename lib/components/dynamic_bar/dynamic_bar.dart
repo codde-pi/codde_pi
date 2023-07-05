@@ -2,7 +2,7 @@ import 'package:codde_pi/components/dynamic_bar/models/dynamic_bar_destination.d
 import 'package:codde_pi/components/dynamic_bar/state/dynamic_bar_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:provider/provider.dart';
+import 'package:get_it/get_it.dart';
 
 class DynamicBar extends StatelessWidget {
   final bool nested;
@@ -15,7 +15,7 @@ class DynamicBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bar = Provider.of<DynamicBarState>(context);
+    final bar = GetIt.I.get<DynamicBarState>();
     // TODO: optional destinations and startPage
     return Scaffold(
       body: Observer(

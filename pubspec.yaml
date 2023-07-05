@@ -3,7 +3,7 @@ description: A new Flutter project.
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
@@ -20,7 +20,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: '>=3.0.0 <4.0.0'
+  sdk: ">=3.0.0 <4.0.0"
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -35,6 +35,8 @@ dependencies:
   # local
   codde_editor:
     path: packages/codde_editor
+  codde_backend:
+    path: packages/codde_backend
   controller_widget_api:
     path: packages/controller_widget_api
   flame_socketio:
@@ -43,7 +45,6 @@ dependencies:
     path: packages/codde_com
   flame_coddecom:
     path: packages/flame_coddecom
-
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -81,20 +82,20 @@ dependencies:
   provider: ^6.0.2
   socket_io_client: ^2.0.2
   hive: ^2.2.3
-  hive_flutter:  ^1.1.0
+  hive_flutter: ^1.1.0
   bloc: ^8.1.1
   flutter_bloc: ^8.1.2
   flame_bloc: ^1.8.4
   mobx: ^2.2.0
   flutter_mobx: ^2.0.6+5
   mobx_codegen: ^2.3.0
+  get_it: ^7.6.0
 
   # tools
   network_info_plus: ^4.0.1
   arp_scanner: ^1.2.7
   lan_scanner: ^3.5.0
   after_layout: ^1.2.0
-
 
 dev_dependencies:
   flutter_test:
@@ -114,7 +115,6 @@ dev_dependencies:
 
 # The following section is specific to Flutter packages.
 flutter:
-
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
@@ -126,8 +126,6 @@ flutter:
     - assets/samples/executable.py
     - assets/widgets/simple_button/classic/
     - assets/widgets/unknown/classic/
-
-
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
