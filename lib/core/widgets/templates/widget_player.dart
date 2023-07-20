@@ -1,3 +1,5 @@
+import 'package:controller_widget_api/controller_widget_api.dart';
+import 'package:enum_to_string/enum_to_string.dart';
 import 'package:flame/events.dart';
 import 'package:flame/extensions.dart';
 import 'package:flame_coddecom/flame_coddecom.dart';
@@ -7,9 +9,11 @@ class WidgetPlayer extends SvgComponent with TapCallbacks, HasCoddeCom {
   int id;
   Svg pressedSvg;
   bool _pressed = false;
+  ControllerClass class_;
 
   WidgetPlayer(
       {required this.id,
+      required this.class_,
       super.svg,
       super.position,
       super.size,
@@ -27,6 +31,7 @@ class WidgetPlayer extends SvgComponent with TapCallbacks, HasCoddeCom {
       anchor: Anchor.center,
     );
   } */
+  String get name => "$class_#$id";
 
   @override
   void onTapDown(TapDownEvent event) {

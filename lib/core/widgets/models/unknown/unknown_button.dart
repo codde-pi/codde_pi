@@ -6,6 +6,7 @@ part 'unkown_button_painter.dart';
 class UnknownButtonPlayer extends WidgetPlayer {
   UnknownButtonPlayer(
       {required super.id,
+      required super.class_,
       super.position,
       super.svg,
       required super.pressedSvg});

@@ -37,11 +37,13 @@ Future<Component> createPlayerOf(dynamic class_, id, position) async {
   final Map<ControllerClass, Component> factories =
       <ControllerClass, Component>{
     ControllerClass.unknown: UnknownButtonPlayer(
+        class_: class_,
         id: id,
         position: position,
         svg: widgetSvg,
         pressedSvg: widgetPressedSvg),
     ControllerClass.simple_button: SimpleButtonPlayer(
+        class_: class_,
         id: id,
         position: position,
         svg: widgetSvg,
@@ -85,6 +87,7 @@ class ControllerWidgetProvider {
       case ControllerWidgetMode.editor:
         // TODO: turn to spriteComponent
         return WidgetEditor(
+            class_: classed,
             size: Vector2.all(100),
             id: id,
             position: Vector2(x.toDouble(), y.toDouble()),

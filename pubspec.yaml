@@ -71,6 +71,9 @@ dependencies:
   flame: ^1.7.2
   flame_svg: ^1.7.4
   flame_tiled: ^1.10.0
+  xterm: ^3.6.1-pre
+  dartssh2: ^2.8.2
+  webview_flutter: ^4.2.2
 
   # from fileX
   mime: ^1.0.3

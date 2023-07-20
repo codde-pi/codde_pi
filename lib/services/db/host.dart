@@ -18,7 +18,15 @@ class Host extends HiveObject {
   @HiveField(3, defaultValue: 22)
   int? port;
 
-  Host({required this.name, required this.ip, required this.pswd, this.port});
+  @HiveField(4)
+  String user;
+
+  Host(
+      {required this.name,
+      required this.ip,
+      required this.user,
+      required this.pswd,
+      this.port});
 
   Device toDevice() {
     return Device(

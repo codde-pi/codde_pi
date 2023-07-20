@@ -1,5 +1,6 @@
 import 'package:codde_pi/core/edit_controller/bloc/edit_controller_bloc.dart';
 import 'package:codde_pi/core/widgets/api/widget_parser.dart';
+import 'package:controller_widget_api/controller_widget_api.dart';
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame_bloc/flame_bloc.dart';
@@ -14,6 +15,7 @@ class WidgetEditor extends CustomPainterComponent
         FlameBlocReader<EditControllerBloc, EditControllerState> {
   WidgetEditor({
     required this.id,
+    required this.class_,
     super.painter,
     super.position,
     super.size,
@@ -27,6 +29,8 @@ class WidgetEditor extends CustomPainterComponent
   bool _isDragged = false;
   ControllerWidgetProvider widgetProvider =
       ControllerWidgetProvider(ControllerWidgetMode.editor);
+  ControllerClass class_;
+  String get name => "$class_#$id";
 
   @override
   void onTapUp(TapUpEvent event) {

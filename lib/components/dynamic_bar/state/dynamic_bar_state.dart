@@ -1,7 +1,7 @@
 // contact.dart
 import 'package:codde_pi/components/dynamic_bar/models/dynamic_bar_destination.dart';
 import 'package:codde_pi/components/dynamic_bar/models/dynamic_fab.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
 
 part 'dynamic_bar_state.g.dart';
@@ -12,6 +12,8 @@ abstract class _DynamicBarState with Store {
   @observable
   ObservableList<DynamicBarDestination> destinations;
   @observable
+  ObservableList<DynamicBarDestination>? previousDestinations;
+  @observable
   DynamicFab? fab;
   @observable
   int currentPage;
@@ -19,7 +21,8 @@ abstract class _DynamicBarState with Store {
   _DynamicBarState(
       {required List<DynamicBarDestination> destinations,
       this.fab,
-      this.currentPage = 0})
+      this.currentPage = 0,
+      this.previousDestinations})
       : this.destinations = ObservableList.of(destinations);
 
   @computed
@@ -43,12 +46,27 @@ abstract class _DynamicBarState with Store {
   }
 
   @action
-  void setFab({required IconData iconData, required Function action}) {
-    fab = DynamicFab(iconData: iconData, action: action);
+  void setFab(
+      {required IconData iconData,
+      required Function action,
+      IconButton? extended}) {
+    fab = DynamicFab(
+      iconData: iconData,
+      action: action,
+      extended: extended,
+    );
+  }
+
+  @action
+  disableFab() {
+    fab = null;
   }
 
   @action
   void defineDestinations(List<DynamicBarDestination> destinations) {
+    this.previousDestinations = this.destinations;
     this.destinations = ObservableList.of(destinations);
   }
 }
+
+class DestinationException {}

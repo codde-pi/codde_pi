@@ -11,7 +11,7 @@ class ControllerWidget extends Equatable {
   final int x;
   final int y;
   final ControllerClass? class_;
-  final String? name;
+  final String? nickname;
   final ControllerBackground? background;
   final List<ControllerWidget> widgets;
 
@@ -19,25 +19,26 @@ class ControllerWidget extends Equatable {
       {required this.id,
       int? x,
       int? y,
-      String? name,
+      String? nickname,
       ControllerClass? class_,
       ControllerBackground? background,
       List<ControllerWidget>? widgets})
       : x = x ?? 0,
         y = y ?? 0,
-        name = name,
+        nickname = nickname,
         class_ = class_,
         background = background,
         widgets = widgets ?? <ControllerWidget>[];
 
   @override
-  List<Object?> get props => [id, x, y, name, class_, background, widgets];
+  List<Object?> get props => [id, x, y, nickname, class_, background, widgets];
+  String get name => "$class_#$id";
 
   ControllerWidget copyWith(
       {int? id,
       int? x,
       int? y,
-      String? name,
+      String? nickname,
       ControllerClass? class_,
       ControllerBackground? background,
       List<ControllerWidget>? widgets}) {
@@ -47,7 +48,7 @@ class ControllerWidget extends Equatable {
         y: y ?? this.y,
         background: background ?? this.background,
         widgets: widgets ?? this.widgets,
-        name: name ?? this.name,
+        nickname: nickname ?? this.nickname,
         class_: class_ ?? this.class_);
   }
 

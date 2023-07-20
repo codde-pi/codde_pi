@@ -3,6 +3,7 @@ part of 'simple_button.dart';
 class SimpleButtonPlayer extends WidgetPlayer {
   SimpleButtonPlayer(
       {required super.id,
+      required super.class_,
       super.position,
       super.svg,
       super.size,

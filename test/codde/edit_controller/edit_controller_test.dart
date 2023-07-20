@@ -27,7 +27,7 @@ void main() {
             1: ControllerWidget(
                 id: 1,
                 class_: ControllerClass.simple_button,
-                name: 'Cool simple button',
+                nickname: 'Cool simple button',
                 x: 10,
                 y: 10)
           }));

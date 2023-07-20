@@ -16,37 +16,30 @@ const light_grey = Color(0xFFABABAB);
 const blue = Color(0xFF3137FD);
 const success = Colors.green;
 //todo: couleur verte (success) appartenant au thème
+const primary = Color(0xFF212121);
+const secondary = Color(0xFFFBF4F4);
+const onOthers = Color(0xFF575550);
 
-/* ColorScheme _colorScheme = ColorScheme(
-  brightness: accent,
-  primary: dialog,
-  onPrimary: disabled,
-  secondary: secondary,
-  onSecondary: onSecondary,
-  error: error,
-  onError: onError,
-  background: background,
-  onBackground: onBackground,
-  surface: surface,
-  onSurface: onSurface
-); */
-// TODO: switching colorScheme if argument is Dark else Light
+const widgetSpace = 48.0;
+const widgetGutter = 24.0;
+
+ColorScheme _colorScheme = const ColorScheme(
+    brightness: Brightness.dark,
+    primary: accent,
+    onPrimary: primary,
+    secondary: secondary,
+    onSecondary: onOthers,
+    error: error,
+    onError: onOthers,
+    background: primary,
+    onBackground: grey,
+    surface: primary,
+    tertiary: blue,
+    onSurface: grey);
 ThemeData cddTheme = ThemeData(
-    secondaryHeaderColor: accent,
     useMaterial3: true,
-    // dividerColor: light_grey,
-    // highlightColor: accent,
-    // indicatorColor: accent,
-    // cardColor: widget,
-    // dialogBackgroundColor: dialog,
-    // colorScheme: _colorScheme,
-    // primaryColor: widget,
-    // fontFamilyFallback: const ['Aldrich'],
-    // // background
-    // scaffoldBackgroundColor: background,
-    // disabledColor: disabled,
-    // hoverColor: white,
-    fontFamily: GoogleFonts.aldrich().fontFamily,
+    colorScheme: _colorScheme,
+    fontFamily: GoogleFonts.shareTechMono().fontFamily,
     listTileTheme: const ListTileThemeData(
         contentPadding: EdgeInsets.all(8.0), style: ListTileStyle.list),
     dividerTheme: const DividerThemeData(thickness: 2.0));
