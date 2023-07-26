@@ -61,6 +61,7 @@ dependencies:
   freezed: ^2.3.4
   freezed_annotation: ^2.2.0
   json_annotation: ^4.8.1
+  xml: ^6.2.2
 
   # components
   flutter_svg: ^2.0.5
@@ -74,6 +75,7 @@ dependencies:
   xterm: ^3.6.1-pre
   dartssh2: ^2.8.2
   webview_flutter: ^4.2.2
+  patterns_canvas: ^0.4.0
 
   # from fileX
   mime: ^1.0.3
@@ -129,6 +131,7 @@ flutter:
     - assets/samples/executable.py
     - assets/widgets/simple_button/classic/
     - assets/widgets/unknown/classic/
+    - assets/images/hatch_background_export.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

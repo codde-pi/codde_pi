@@ -1,6 +1,6 @@
 import 'package:codde_pi/app/pages/codde/codde.dart';
 import 'package:codde_pi/app/pages/home.dart';
-import 'package:codde_pi/core/codde_controller/codde_controller.dart';
+import 'package:codde_pi/components/codde_controller/codde_controller.dart';
 import 'package:codde_pi/services/db/device.dart';
 import 'package:codde_pi/services/db/device_model.dart';
 import 'package:codde_pi/services/db/host.dart';
@@ -32,6 +32,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'C.O.D.D.E. Pi®',
       theme: cddTheme,
       darkTheme: cddTheme,

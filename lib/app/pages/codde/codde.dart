@@ -1,9 +1,9 @@
 import 'package:codde_backend/codde_backend.dart';
 import 'package:codde_pi/app/pages/codde/state/codde_state.dart';
+import 'package:codde_pi/components/codde_controller/codde_controller.dart';
 import 'package:codde_pi/components/dynamic_bar/dynamic_bar.dart';
 import 'package:codde_pi/components/dynamic_bar/models/dynamic_bar_pager.dart';
 import 'package:codde_pi/components/dynamic_bar/state/dynamic_bar_state.dart';
-import 'package:codde_pi/core/codde_controller/store/codde_controller_store.dart';
 import 'package:codde_pi/services/db/project.dart';
 import 'package:dartssh2/dartssh2.dart';
 import 'package:flutter/material.dart';

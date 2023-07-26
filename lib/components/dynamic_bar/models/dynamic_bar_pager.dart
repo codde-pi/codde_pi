@@ -5,9 +5,9 @@ import 'package:codde_pi/app/pages/community.dart';
 import 'package:codde_pi/app/pages/project/project.dart';
 import 'package:codde_pi/app/pages/settings/settings.dart';
 import 'package:codde_pi/app/pages/tools.dart';
+import 'package:codde_pi/components/codde_controller/codde_controller.dart';
 import 'package:codde_pi/components/codde_terminal/codde_terminal.dart';
 import 'package:codde_pi/components/dynamic_bar/models/dynamic_bar_destination.dart';
-import 'package:codde_pi/core/codde_controller/codde_controller.dart';
 import 'package:flutter/material.dart';
 
 class DynamicBarPager {

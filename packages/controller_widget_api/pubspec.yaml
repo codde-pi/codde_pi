@@ -1,3 +1,4 @@
+---
 name: controller_widget_api
 description: Control-Oriented, Design and Development Environnement for python robotic projects.
 version: 0.0.1+1
@@ -29,5 +30,5 @@ dependencies:
 
 dev_dependencies:
   flutter_test:
-      sdk: flutter
+    sdk: flutter
   build_runner: ^2.3.2

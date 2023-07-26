@@ -1,3 +1,1 @@
-enum ControllerStyle {
-  classic,
-}
+enum ControllerStyle { material, architect, geometric }

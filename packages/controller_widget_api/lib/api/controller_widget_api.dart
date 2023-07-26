@@ -205,8 +205,6 @@ class ControllerWidgetApi {
     final widgets = Map.of(controllerWidgetStreamController.value);
     final file = new File(map.path);
     final document = XmlDocument.parse(file.readAsStringSync());
-    final builder = XmlBuilder();
-    builder.xml(file.readAsStringSync());
     // widgets
     List<int> existingWgts = [];
     document.rootElement
