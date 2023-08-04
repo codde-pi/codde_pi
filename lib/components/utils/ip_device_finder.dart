@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:arp_scanner/arp_scanner.dart';
+import 'package:codde_pi/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:lan_scanner/lan_scanner.dart';
 
@@ -22,7 +23,7 @@ import 'package:lan_scanner/lan_scanner.dart';
 class IpDeviceLister extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold();
+    return const Scaffold();
   }
 }
 
@@ -39,7 +40,7 @@ class IpDeviceFinder extends StatefulWidget {
 
 class _IpDeviceFinderState extends State<IpDeviceFinder> {
   /* String _result = ''; */
-  final deviceList = ValueNotifier<List>([]);
+  final deviceList = ValueNotifier<List?>(null);
 
   /* @override
   void initState() {
@@ -76,34 +77,42 @@ class _IpDeviceFinderState extends State<IpDeviceFinder> {
         leading:
             // action button
             IconButton(
-          icon: const Icon(Icons.cancel),
+          icon: const Icon(Icons.close),
           onPressed: () => quit(),
         ),
         title: const Text('Find IP device on network...'),
       ),
-      body: StreamBuilder(
-        stream: Platform.isAndroid
-            ? ArpScanner.onScanning
-            : LanScanner().icmpScan('192.168.0'),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            deviceList.value = deviceList.value..add(snapshot.data!);
-          }
-          if (deviceList.value.isEmpty) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          return ListView.builder(
-            itemCount: deviceList.value.length,
-            itemBuilder: ((context, index) => ListTile(
-                  title: Text(deviceList.value[index].ip ?? 'ip'),
-                  subtitle: Text(Platform.isAndroid
-                      ? deviceList.value[index].mac
-                      : 'unknown mac'),
-                  onTap: () =>
-                      Navigator.pop(context, deviceList.value[index].ip),
-                )),
-          );
-        },
+      body: Padding(
+        padding: const EdgeInsets.all(widgetGutter),
+        child: StreamBuilder(
+          stream: Platform.isAndroid
+              ? ArpScanner.onScanning
+              : LanScanner().icmpScan('192.168.0'),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              deviceList.value = deviceList.value != null
+                  ? (deviceList.value!..add(snapshot.data!))
+                  : [snapshot.data!];
+            }
+            if (deviceList.value == null) {
+              return Center(child: Text('Launch Scan to select your device'));
+            }
+            if (deviceList.value!.isEmpty) {
+              return const Center(child: LinearProgressIndicator());
+            }
+            return ListView.builder(
+              itemCount: deviceList.value!.length,
+              itemBuilder: ((context, index) => ListTile(
+                    title: Text(deviceList.value![index].ip ?? 'ip'),
+                    subtitle: Text(Platform.isAndroid
+                        ? "MAC:${deviceList.value![index].mac} Vendor:${deviceList.value![index].vendor}"
+                        : 'unknown mac'),
+                    onTap: () =>
+                        Navigator.pop(context, deviceList.value![index].ip),
+                  )),
+            );
+          },
+        ),
       ),
     );
   }

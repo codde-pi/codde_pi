@@ -25,6 +25,22 @@ mixin _$CoddeControllerStore on _CoddeControllerStore, Store {
     });
   }
 
+  late final _$executableAtom =
+      Atom(name: '_CoddeControllerStore.executable', context: context);
+
+  @override
+  String? get executable {
+    _$executableAtom.reportRead();
+    return super.executable;
+  }
+
+  @override
+  set executable(String? value) {
+    _$executableAtom.reportWrite(value, super.executable, () {
+      super.executable = value;
+    });
+  }
+
   late final _$_CoddeControllerStoreActionController =
       ActionController(name: '_CoddeControllerStore', context: context);
 
@@ -62,9 +78,21 @@ mixin _$CoddeControllerStore on _CoddeControllerStore, Store {
   }
 
   @override
+  void setExecutable({required String deviceUid, required String command}) {
+    final _$actionInfo = _$_CoddeControllerStoreActionController.startAction(
+        name: '_CoddeControllerStore.setExecutable');
+    try {
+      return super.setExecutable(deviceUid: deviceUid, command: command);
+    } finally {
+      _$_CoddeControllerStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
-mode: ${mode}
+mode: ${mode},
+executable: ${executable}
     ''';
   }
 }

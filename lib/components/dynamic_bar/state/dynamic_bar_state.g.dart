@@ -136,11 +136,23 @@ mixin _$DynamicBarState on _DynamicBarState, Store {
   }
 
   @override
-  void defineDestinations(List<DynamicBarDestination> destinations) {
+  void updateFab({int page = 0}) {
+    final _$actionInfo = _$_DynamicBarStateActionController.startAction(
+        name: '_DynamicBarState.updateFab');
+    try {
+      return super.updateFab(page: page);
+    } finally {
+      _$_DynamicBarStateActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void defineDestinations(
+      BuildContext context, List<DynamicBarDestination> destinations) {
     final _$actionInfo = _$_DynamicBarStateActionController.startAction(
         name: '_DynamicBarState.defineDestinations');
     try {
-      return super.defineDestinations(destinations);
+      return super.defineDestinations(context, destinations);
     } finally {
       _$_DynamicBarStateActionController.endAction(_$actionInfo);
     }

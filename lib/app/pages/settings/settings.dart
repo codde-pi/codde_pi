@@ -1,18 +1,18 @@
 import 'package:codde_pi/app/pages/settings/license.dart';
+import 'package:codde_pi/components/dynamic_bar/models/dynamic_bar_widget.dart';
 import 'package:codde_pi/components/dynamic_bar/state/dynamic_bar_state.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
-class Settings extends StatelessWidget {
+class Settings extends DynamicBarWidget {
   Settings({super.key});
+  @override
+  setFab(context) {
+    bar.disableFab();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final DynamicBarState bar = GetIt.I.get<DynamicBarState>();
-    if (bar.destinations[bar.currentPage].widget.runtimeType ==
-        this.runtimeType) {
-      bar.setFab(iconData: Icons.login, action: () {});
-    }
     return Scaffold(
       appBar: AppBar(),
       body: SingleChildScrollView(

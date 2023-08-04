@@ -11,6 +11,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 
 // TODO: replace with this box name
 const projectsBox = 'userProjects';
+final navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   await Hive.initFlutter(); // TODO: find right location
@@ -32,6 +33,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorKey: navigatorKey,
       debugShowCheckedModeBanner: false,
       title: 'C.O.D.D.E. Pi®',
       theme: cddTheme,

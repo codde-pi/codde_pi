@@ -1,12 +1,34 @@
 // contact.dart
 import 'package:codde_pi/components/dynamic_bar/models/dynamic_bar_destination.dart';
+import 'package:codde_pi/components/dynamic_bar/models/dynamic_bar_pager.dart';
+import 'package:codde_pi/components/dynamic_bar/models/dynamic_bar_widget.dart';
 import 'package:codde_pi/components/dynamic_bar/models/dynamic_fab.dart';
+import 'package:codde_pi/components/dynamic_bar/models/dynamic_fab_selector.dart';
+import 'package:codde_pi/main.dart';
 import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
 
 part 'dynamic_bar_state.g.dart';
 
 class DynamicBarState = _DynamicBarState with _$DynamicBarState;
+/* class DynamicBarState extends _DynamicBarState with _$DynamicBarState {
+  DynamicBarState(
+      {required List<DynamicBarDestination> destinations,
+      super.fab,
+      super.currentPage = 0,
+      super.previousDestinations})
+      : super(destinations: ObservableList.of(destinations));
+
+  factory DynamicBarState.initFab(
+      {required BuildContext context,
+      required List<DynamicBarDestination> destinations,
+      int currentPage = 0}) {
+    final instance =
+        DynamicBarState(destinations: destinations, currentPage: currentPage);
+    (destinations[currentPage].widget as DynamicFabSelector).setFab(context);
+    return instance;
+  }
+} */
 
 abstract class _DynamicBarState with Store {
   @observable
@@ -25,6 +47,15 @@ abstract class _DynamicBarState with Store {
       this.previousDestinations})
       : this.destinations = ObservableList.of(destinations);
 
+  /* factory _DynamicBarState.initFab(
+      {required BuildContext context,
+      required List<DynamicBarDestination> destinations,
+      int currentPage = 0}) {
+    final DynamicBarState instance =
+        DynamicBarState(destinations: destinations, currentPage: currentPage);
+    (destinations[currentPage].widget as DynamicBarWidget).setFab(context);
+    return instance;
+  } */
   @computed
   ObservableList<DynamicBarDestination> get paged {
     return ObservableList.of(destinations)
@@ -43,6 +74,7 @@ abstract class _DynamicBarState with Store {
   @action
   void setPage(DynamicBarDestination page) {
     currentPage = page.index;
+    updateFab(page: currentPage);
   }
 
   @action
@@ -63,9 +95,17 @@ abstract class _DynamicBarState with Store {
   }
 
   @action
-  void defineDestinations(List<DynamicBarDestination> destinations) {
+  void updateFab({int page = 0}) {
+    (destinations[page].widget as DynamicBarWidget)
+        .setFab(navigatorKey.currentContext!);
+  }
+
+  @action
+  void defineDestinations(
+      BuildContext context, List<DynamicBarDestination> destinations) {
     this.previousDestinations = this.destinations;
     this.destinations = ObservableList.of(destinations);
+    updateFab();
   }
 }
 

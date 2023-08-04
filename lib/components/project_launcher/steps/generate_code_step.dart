@@ -1,18 +1,45 @@
 import 'dart:io';
 
+import 'package:codde_backend/codde_backend.dart';
 import 'package:codde_pi/components/project_launcher/cubit/project_launcher_cubit.dart';
 import 'package:codde_pi/components/project_launcher/steps/choose_project_type_step.dart';
+import 'package:codde_pi/components/project_launcher/steps/project_location_step.dart';
 import 'package:codde_pi/main.dart';
 import 'package:codde_pi/services/db/project.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:hive/hive.dart';
 import 'package:path/path.dart';
 
 class GenerateCodeStep extends StatelessWidget {
   final progress = ValueNotifier(0.0);
-  Future<bool> generateCode(ProjectType projectType, Project project) async {
+  late CoddeBackend backend;
+
+  Future<bool> generateCode(ProjectType projectType,
+      ProjectLocationType location, Project project) async {
+    late BackendLocation backendLocation;
+    if (location != ProjectLocationType.ssh) {
+      backendLocation = BackendLocation.local;
+    } else {
+      /* final sshClient = SSHClient(
+          await SSHSocket.connect(project.host!.ip, project.host!.port!),
+          username: project.host!.user,
+          onPasswordRequest: () => project.host!.pswd);
+      final sftp = await sshClient.sftp();
+      sftp.mkdir(project.path); */
+      backendLocation = BackendLocation.server;
+    }
+    backend = CoddeBackend(backendLocation,
+        credentials: SFTPCredentials(
+            host: project.host!.addr,
+            port: project.host!.port!,
+            pswd: project.host!.pswd,
+            user: project.host!.user));
+    await backend.open();
+    await backend.mkdir(project.path);
+
     switch (projectType) {
       case ProjectType.codde_pi || ProjectType.controller:
         String com = 'socketio';
@@ -55,25 +82,26 @@ class GenerateCodeStep extends StatelessWidget {
         name: 'README.md',
         content: project.description ?? '');
     progress.value = 100.0;
-    return file.exists();
+    // TODO: return file.exists();
+    return true;
   }
 
-  Future<File> generateFile(
+  Future<FileEntity> generateFile(
       {required String path,
       required String name,
       required String content}) async {
-    File f = File(join(path, name));
-    return f.writeAsString(content);
+    return backend.save(join(path, name), content);
   }
 
   @override
   Widget build(BuildContext context) {
     final codeToGenerate = context.read<ProjectLauncherCubit>();
     return FutureBuilder(
-        future: generateCode(
-            codeToGenerate.state.projectType, codeToGenerate.state.data),
+        future: generateCode(codeToGenerate.state.projectType,
+            codeToGenerate.state.projectLocation, codeToGenerate.state.data),
         builder: (context, AsyncSnapshot<bool> snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
+            GetIt.I.registerLazySingleton(() => backend);
             Hive.box<Project>(projectsBox).add(codeToGenerate.state.data);
             context.read<ProjectLauncherCubit>().launchProject();
           }

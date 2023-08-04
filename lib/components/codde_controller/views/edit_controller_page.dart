@@ -1,6 +1,7 @@
-import 'package:codde_pi/codde_widgets/codde_widgets.dart';
 import 'package:codde_pi/components/add_widget/add_widget_dialog.dart';
 import 'package:codde_pi/components/codde_controller/codde_controller.dart';
+import 'package:codde_pi/components/dialogs/controller_properties_dialog.dart';
+import 'package:codde_pi/components/dynamic_bar/models/dynamic_fab_selector.dart';
 import 'package:codde_pi/components/dynamic_bar/state/dynamic_bar_state.dart';
 import 'package:codde_pi/components/sheets/widget_details_sheet.dart';
 import 'package:controller_widget_api/controller_widget_api.dart';
@@ -19,20 +20,30 @@ class EditControllerPage extends StatelessWidget {
   late final widgetRepo = ControllerWidgetRepository(
       ControllerWidgetApi(map: ControllerMap(path: path)));
 
+  late Widget _view;
+  /* Widget getView() {
+    _view = EditControllerView(path: path);
+    return _view;
+  } */
+
   @override
   Widget build(BuildContext context) {
+    _view = EditControllerView(path: path);
     return BlocProvider(
         create: (context) => EditControllerBloc(repo: widgetRepo)
           ..add(ControllerMapSubscribed())
           ..add(ControllerWidgetSubscribed()),
-        child: EditControllerView(path: path));
+        child: _view);
+  }
+
+  setFab(BuildContext context) {
+    // (_view as DynamicFabSelector).setFab(context);
   }
 }
 
-class EditControllerView extends StatelessWidget {
+class EditControllerView extends StatelessWidget with DynamicFabSelector {
   final String path;
   EditControllerView({super.key, required this.path});
-  final bar = GetIt.I.get<DynamicBarState>();
   final store = EditControllerStore();
 
   Future<void> addWidget(BuildContext context) async {
@@ -54,7 +65,7 @@ class EditControllerView extends StatelessWidget {
           x: 0,
           y: 0)));
     } */
-    final _controller =
+    final controller =
         Scaffold.of(context).showBottomSheet(AddWidgetSheet().builder);
     /* _controller.closed
         .whenComplete(() => bloc.add(const ControllerWidgetCanceled())); */
@@ -62,22 +73,15 @@ class EditControllerView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bar.setFab(
-      iconData: Icons.add,
-      action: () async => addWidget(context),
-      extended: IconButton(
-          onPressed: () {/* TODO: set play mode but warning dialog before */},
-          icon: const Icon(Icons.delete)),
-    );
     final coddeStore = Provider.of<CoddeControllerStore>(context);
     final bloc = context.read<EditControllerBloc>();
     return BlocListener<EditControllerBloc, EditControllerState>(
       listener: (context, state) async {
-        final _controller =
+        final controller =
             Scaffold.of(context).showBottomSheet(WidgetDetailsSheet(
           bloc: bloc,
         ).builder);
-        _controller.closed
+        controller.closed
             .whenComplete(() => bloc.add(const ControllerWidgetCanceled()));
       },
       listenWhen: (previous, current) =>
@@ -102,25 +106,34 @@ class EditControllerView extends StatelessWidget {
                   color: Theme.of(context).colorScheme.primary,
                 )),
             IconButton(
-                onPressed: () => store.openEndDrawer(), icon: Icon(Icons.menu)),
-            /* PopupMenuButton(
+                onPressed: () => store.openEndDrawer(),
+                icon: const Icon(Icons.menu)),
+            PopupMenuButton(
               key: store.popUpMenuKey,
               itemBuilder: (_) => <PopupMenuItem>[
                 PopupMenuItem(
                   value: 0,
-                  child: const Text('Open outline'),
-                  onTap: () => _scaffoldKey.currentState!.openEndDrawer(),
+                  child: const Text('Run with command...'),
+                  onTap: () async {
+                    final ControllerProperties? props = await showDialog(
+                        context: context,
+                        builder: (context) => ControllerPropertiesDialog(),
+                        barrierDismissible: false);
+                    if (props != null) {
+                      bloc.add(ControllerPropertiesChanged(props));
+                    }
+                  },
                 ),
               ],
               child: IconButton(
                 icon: const Icon(Icons.more_vert),
                 onPressed: () => store.showButtonMenu(),
               ),
-            ) */
+            )
           ],
           title: Text(path.split('/').last),
         ),
-        endDrawer: EditControllerOutline(),
+        endDrawer: const EditControllerOutline(),
         body: BlocBuilder<EditControllerBloc, EditControllerState>(
           bloc: bloc,
           buildWhen: (previous, current) =>
@@ -130,6 +143,17 @@ class EditControllerView extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  @override
+  setFab(BuildContext context) {
+    bar.setFab(
+      iconData: Icons.add,
+      action: () async => addWidget(context),
+      extended: IconButton(
+          onPressed: () {/* TODO: set play mode but warning dialog before */},
+          icon: const Icon(Icons.delete)),
     );
   }
 }

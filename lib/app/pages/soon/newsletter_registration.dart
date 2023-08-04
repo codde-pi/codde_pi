@@ -14,8 +14,7 @@ class NewsletterRegistration extends StatelessWidget {
       ),
       actions: [
         OutlinedButton(
-          onPressed:
-              () {}, // function used to perform after pressing the button
+          onPressed: () => Navigator.pop(context),
           child: const Text('CANCEL'),
         ),
         ElevatedButton(

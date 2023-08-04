@@ -1,6 +1,6 @@
-import 'package:codde_com/codde_com.dart';
 import 'package:codde_pi/services/db/device_model.dart';
 import 'package:hive/hive.dart';
+import 'package:uuid/uuid.dart';
 
 part 'device.g.dart';
 
@@ -18,9 +18,14 @@ class Device extends HiveObject {
   @HiveField(3)
   String? address;
 
+  @HiveField(4)
+  String uid;
+
   Device(
-      {required this.name,
+      {String? uid,
+      required this.name,
       required this.protocol,
       required this.model,
-      required this.address});
+      required this.address})
+      : uid = uid ?? const Uuid().v4();
 }

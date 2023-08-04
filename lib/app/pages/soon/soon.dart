@@ -1,17 +1,23 @@
 import 'package:codde_pi/app/pages/soon/newsletter_registration.dart';
+import 'package:codde_pi/components/dynamic_bar/models/dynamic_bar_widget.dart';
+import 'package:codde_pi/components/dynamic_bar/models/dynamic_fab_selector.dart';
 import 'package:codde_pi/components/dynamic_bar/state/dynamic_bar_state.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
-class Soon extends StatelessWidget {
+class Soon extends DynamicBarWidget {
   final String title;
-  Soon({super.key, required this.title});
-  final bar = GetIt.I.get<DynamicBarState>();
+  const Soon({super.key, required this.title});
+  @override
+  setFab(context) {
+    bar.disableFab();
+  }
+
   @override
   Widget build(BuildContext context) {
-    if (bar.destinations[bar.currentPage].widget == this) {
+    /* if (bar.destinations[bar.currentPage].widget == this) {
       bar.disableFab();
-    }
+    } */
     return Center(
       child: Column(
         mainAxisSize: MainAxisSize.max,

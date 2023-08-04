@@ -17,6 +17,7 @@ class DeviceAdapter extends TypeAdapter<Device> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return Device(
+      uid: fields[4] as String?,
       name: fields[0] as String,
       protocol: fields[1] as DeviceProtocol,
       model: fields[2] as DeviceModel,
@@ -27,7 +28,7 @@ class DeviceAdapter extends TypeAdapter<Device> {
   @override
   void write(BinaryWriter writer, Device obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(5)
       ..writeByte(0)
       ..write(obj.name)
       ..writeByte(1)
@@ -35,7 +36,9 @@ class DeviceAdapter extends TypeAdapter<Device> {
       ..writeByte(2)
       ..write(obj.model)
       ..writeByte(3)
-      ..write(obj.address);
+      ..write(obj.address)
+      ..writeByte(4)
+      ..write(obj.uid);
   }
 
   @override

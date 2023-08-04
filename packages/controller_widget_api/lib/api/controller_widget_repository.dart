@@ -48,4 +48,8 @@ class ControllerWidgetRepository {
   ControllerWidget? removeWidget(int id) {
     return controllerWidgetApi.removeWidget(id);
   }
+
+  String? editProperties(ControllerProperties props) {
+    return controllerWidgetApi.editProperties(props);
+  }
 }

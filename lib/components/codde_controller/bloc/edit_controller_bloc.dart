@@ -1,3 +1,4 @@
+import 'package:codde_com/codde_com.dart';
 import 'package:controller_widget_api/controller_widget_api.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flame_tiled/flame_tiled.dart';
@@ -22,6 +23,7 @@ class EditControllerBloc
     on<ControllerWidgetSelectedCanceled>(_widgetSelectedCanceled);
     on<ControllerWidgetMoved>(_widgetMoved);
     on<ControllerMapSaved>(_mapSaved);
+    on<ControllerPropertiesChanged>(_editProperties);
   }
 
   final ControllerWidgetRepository repo;
@@ -109,5 +111,9 @@ class EditControllerBloc
   void _mapSaved(ControllerMapSaved event, emit) {
     repo.saveMap();
     emit(state.save());
+  }
+
+  void _editProperties(ControllerPropertiesChanged event, emit) {
+    repo.editProperties(event.properties);
   }
 }

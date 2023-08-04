@@ -10,18 +10,19 @@ class Home extends StatelessWidget {
   final List<DynamicBarDestination> destinations = [
     DynamicBarPager.globalProjects,
     DynamicBarPager.community,
-    DynamicBarPager.boards,
-    DynamicBarPager.tools,
+    // DynamicBarPager.boards,
+    // DynamicBarPager.tools,
     DynamicBarPager.settings,
   ];
 
   @override
   Widget build(BuildContext context) {
     if (!GetIt.I.isRegistered<DynamicBarState>()) {
-      GetIt.I.registerLazySingleton(
-          () => DynamicBarState(destinations: destinations));
+      final bar = GetIt.I
+          .registerSingleton(DynamicBarState(destinations: destinations));
+      bar.updateFab();
     } else {
-      GetIt.I.get<DynamicBarState>().defineDestinations(destinations);
+      GetIt.I.get<DynamicBarState>().defineDestinations(context, destinations);
     }
     return DynamicBar();
   }

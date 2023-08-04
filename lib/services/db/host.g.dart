@@ -18,27 +18,30 @@ class HostAdapter extends TypeAdapter<Host> {
     };
     return Host(
       name: fields[0] as String,
-      ip: fields[1] as String,
+      addr: fields[1] as String,
       user: fields[4] as String,
       pswd: fields[2] as String,
       port: fields[3] == null ? 22 : fields[3] as int?,
+      uid: fields[5] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, Host obj) {
     writer
-      ..writeByte(5)
+      ..writeByte(6)
       ..writeByte(0)
       ..write(obj.name)
       ..writeByte(1)
-      ..write(obj.ip)
+      ..write(obj.addr)
       ..writeByte(2)
       ..write(obj.pswd)
       ..writeByte(3)
       ..write(obj.port)
       ..writeByte(4)
-      ..write(obj.user);
+      ..write(obj.user)
+      ..writeByte(5)
+      ..write(obj.uid);
   }
 
   @override

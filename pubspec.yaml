@@ -101,6 +101,9 @@ dependencies:
   arp_scanner: ^1.2.7
   lan_scanner: ^3.5.0
   after_layout: ^1.2.0
+  uuid: ^3.0.7
+  dart_ping: ^7.0.2
+  flutter_pty: ^0.4.0
 
 dev_dependencies:
   flutter_test:

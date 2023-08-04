@@ -81,3 +81,11 @@ class ControllerWidgetMoved extends EditControllerEvent {
 }
 
 class ControllerMapSaved extends EditControllerEvent {}
+
+class ControllerPropertiesChanged extends EditControllerEvent {
+  ControllerPropertiesChanged(this.properties);
+  final ControllerProperties properties;
+
+  @override // TODO: implement props
+  List<Object> get props => [properties];
+}

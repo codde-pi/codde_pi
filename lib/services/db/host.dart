@@ -1,6 +1,8 @@
+import 'package:codde_backend/codde_backend.dart';
 import 'package:codde_pi/services/db/device.dart';
 import 'package:codde_pi/services/db/device_model.dart';
 import 'package:hive/hive.dart';
+import 'package:uuid/uuid.dart';
 
 part 'host.g.dart';
 
@@ -10,7 +12,7 @@ class Host extends HiveObject {
   String name;
 
   @HiveField(1)
-  String ip;
+  String addr;
 
   @HiveField(2)
   String pswd;
@@ -21,22 +23,32 @@ class Host extends HiveObject {
   @HiveField(4)
   String user;
 
+  @HiveField(5)
+  String uid;
+
   Host(
       {required this.name,
-      required this.ip,
+      required this.addr,
       required this.user,
       required this.pswd,
-      this.port});
+      this.port,
+      String? uid})
+      : uid = uid ?? const Uuid().v4();
 
   Device toDevice() {
     return Device(
+        uid: uid,
         name: name,
         model: DeviceModel.sbc,
-        address: ip,
+        address: addr,
         protocol: DeviceProtocol.socketio);
   }
 
   Map<String, dynamic> toJson() {
     return {};
+  }
+
+  SFTPCredentials toCredentials() {
+    return SFTPCredentials(host: addr, pswd: pswd, user: user);
   }
 }

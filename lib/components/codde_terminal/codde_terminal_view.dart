@@ -1,11 +1,13 @@
 import 'dart:convert';
 
+import 'package:codde_backend/codde_backend.dart';
 import 'package:codde_pi/components/codde_terminal/toolbar_event_handler.dart';
 import 'package:codde_pi/components/toolbar/toolbar_store.dart';
 import 'package:dartssh2/dartssh2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:flutter_pty/flutter_pty.dart';
 import 'package:get_it/get_it.dart';
 import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
@@ -22,25 +24,30 @@ class CoddeTerminalView extends StatefulWidget {
 
 class _CoddeTerminalView extends State<CoddeTerminalView> {
   late SSHSession? shell;
-  final sshBackend = GetIt.I.get<SSHClient>();
+  late final Pty pty;
+  final backend = GetIt.I.get<CoddeBackend>();
   String title = '';
   Terminal terminal =
       Terminal(maxLines: 100000, onBell: () => HapticFeedback.vibrate());
   // final keyboard = VirtualKeyboard(defaultInputHandler);
   @override
-  void initState() async {
+  void initState() {
     super.initState();
-    initTerminal();
+    if (backend.location == BackendLocation.server) {
+      initSshTerminal();
+    } else {
+      initPty();
+    }
   }
 
   void initShell() async {
-    shell = await sshBackend.shell(
+    shell = await backend.session.shell(
         pty: SSHPtyConfig(
             width: terminal.viewWidth, height: terminal.viewHeight));
   }
 
-  Future<void> initTerminal() async {
-    shell = await sshBackend.shell(
+  Future<void> initSshTerminal() async {
+    shell = await backend.session.shell(
         pty: SSHPtyConfig(
             width: terminal.viewWidth, height: terminal.viewHeight));
     terminal.buffer.clear();
@@ -67,6 +74,31 @@ class _CoddeTerminalView extends State<CoddeTerminalView> {
         .cast<List<int>>()
         .transform(const Utf8Decoder())
         .listen(terminal.write);
+  }
+
+  void initPty() {
+    pty = Pty.start(
+      'sh', // bash
+      columns: terminal.viewWidth,
+      rows: terminal.viewHeight,
+    );
+
+    pty.output
+        .cast<List<int>>()
+        .transform(Utf8Decoder())
+        .listen(terminal.write);
+
+    pty.exitCode.then((code) {
+      terminal.write('the process exited with exit code $code');
+    });
+
+    terminal.onOutput = (data) {
+      pty.write(const Utf8Encoder().convert(data));
+    };
+
+    terminal.onResize = (w, h, pw, ph) {
+      pty.resize(h, w);
+    };
   }
 
   @override

@@ -19,6 +19,7 @@ mixin _$ProjectLauncherState {
   int get currentPage => throw _privateConstructorUsedError;
   Project get data => throw _privateConstructorUsedError;
   Project? get projectInstance => throw _privateConstructorUsedError;
+  ProjectLocationType get projectLocation => throw _privateConstructorUsedError;
   ProjectType get projectType => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
@@ -36,6 +37,7 @@ abstract class $ProjectLauncherStateCopyWith<$Res> {
       {int currentPage,
       Project data,
       Project? projectInstance,
+      ProjectLocationType projectLocation,
       ProjectType projectType});
 }
 
@@ -56,6 +58,7 @@ class _$ProjectLauncherStateCopyWithImpl<$Res,
     Object? currentPage = null,
     Object? data = null,
     Object? projectInstance = freezed,
+    Object? projectLocation = null,
     Object? projectType = null,
   }) {
     return _then(_value.copyWith(
@@ -71,6 +74,10 @@ class _$ProjectLauncherStateCopyWithImpl<$Res,
           ? _value.projectInstance
           : projectInstance // ignore: cast_nullable_to_non_nullable
               as Project?,
+      projectLocation: null == projectLocation
+          ? _value.projectLocation
+          : projectLocation // ignore: cast_nullable_to_non_nullable
+              as ProjectLocationType,
       projectType: null == projectType
           ? _value.projectType
           : projectType // ignore: cast_nullable_to_non_nullable
@@ -91,6 +98,7 @@ abstract class _$$_ProjectLauncherStateCopyWith<$Res>
       {int currentPage,
       Project data,
       Project? projectInstance,
+      ProjectLocationType projectLocation,
       ProjectType projectType});
 }
 
@@ -108,6 +116,7 @@ class __$$_ProjectLauncherStateCopyWithImpl<$Res>
     Object? currentPage = null,
     Object? data = null,
     Object? projectInstance = freezed,
+    Object? projectLocation = null,
     Object? projectType = null,
   }) {
     return _then(_$_ProjectLauncherState(
@@ -123,6 +132,10 @@ class __$$_ProjectLauncherStateCopyWithImpl<$Res>
           ? _value.projectInstance
           : projectInstance // ignore: cast_nullable_to_non_nullable
               as Project?,
+      projectLocation: null == projectLocation
+          ? _value.projectLocation
+          : projectLocation // ignore: cast_nullable_to_non_nullable
+              as ProjectLocationType,
       projectType: null == projectType
           ? _value.projectType
           : projectType // ignore: cast_nullable_to_non_nullable
@@ -138,6 +151,7 @@ class _$_ProjectLauncherState implements _ProjectLauncherState {
       {this.currentPage = 0,
       required this.data,
       this.projectInstance,
+      this.projectLocation = ProjectLocationType.internal,
       this.projectType = ProjectType.codde_pi});
 
   @override
@@ -149,11 +163,14 @@ class _$_ProjectLauncherState implements _ProjectLauncherState {
   final Project? projectInstance;
   @override
   @JsonKey()
+  final ProjectLocationType projectLocation;
+  @override
+  @JsonKey()
   final ProjectType projectType;
 
   @override
   String toString() {
-    return 'ProjectLauncherState(currentPage: $currentPage, data: $data, projectInstance: $projectInstance, projectType: $projectType)';
+    return 'ProjectLauncherState(currentPage: $currentPage, data: $data, projectInstance: $projectInstance, projectLocation: $projectLocation, projectType: $projectType)';
   }
 
   @override
@@ -166,13 +183,15 @@ class _$_ProjectLauncherState implements _ProjectLauncherState {
             (identical(other.data, data) || other.data == data) &&
             (identical(other.projectInstance, projectInstance) ||
                 other.projectInstance == projectInstance) &&
+            (identical(other.projectLocation, projectLocation) ||
+                other.projectLocation == projectLocation) &&
             (identical(other.projectType, projectType) ||
                 other.projectType == projectType));
   }
 
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, currentPage, data, projectInstance, projectType);
+  int get hashCode => Object.hash(runtimeType, currentPage, data,
+      projectInstance, projectLocation, projectType);
 
   @JsonKey(ignore: true)
   @override
@@ -187,6 +206,7 @@ abstract class _ProjectLauncherState implements ProjectLauncherState {
       {final int currentPage,
       required final Project data,
       final Project? projectInstance,
+      final ProjectLocationType projectLocation,
       final ProjectType projectType}) = _$_ProjectLauncherState;
 
   @override
@@ -195,6 +215,8 @@ abstract class _ProjectLauncherState implements ProjectLauncherState {
   Project get data;
   @override
   Project? get projectInstance;
+  @override
+  ProjectLocationType get projectLocation;
   @override
   ProjectType get projectType;
   @override

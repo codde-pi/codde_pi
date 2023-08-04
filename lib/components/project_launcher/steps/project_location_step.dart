@@ -4,6 +4,7 @@ import 'package:codde_pi/components/forms/ssh_host_form.dart';
 import 'package:codde_pi/components/project_launcher/cubit/project_launcher_cubit.dart';
 import 'package:codde_pi/services/db/device.dart';
 import 'package:codde_pi/services/db/host.dart';
+import 'package:dart_ping/dart_ping.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -25,10 +26,11 @@ class ProjectLocationStepState extends State<ProjectLocationStep> {
   final pathController = TextEditingController();
   final listController = ScrollController();
   final ValueNotifier<Host?> selectedHost = ValueNotifier(null);
+  final ValueNotifier<bool?> hostConnected = ValueNotifier(null);
   bool openNewDeviceForm = false;
 
   void createDevice(Host host) {
-    Hive.box<Host>('projects').add(host);
+    Hive.box<Host>('hosts').add(host);
     openForm(false);
   }
 
@@ -53,7 +55,15 @@ class ProjectLocationStepState extends State<ProjectLocationStep> {
   }
 
   void selectHost(Host host) {
+    print('selected !');
     selectedHost.value = host;
+  }
+
+  void checkConnection() async {
+    hostConnected.value = await Ping(selectedHost.value!.addr)
+        .stream
+        .first
+        .then((value) => value.response != null);
   }
 
   void openPath() async {
@@ -70,7 +80,8 @@ class ProjectLocationStepState extends State<ProjectLocationStep> {
   bool get creatable {
     return (pathController.text.isNotEmpty ||
             locationType == ProjectLocationType.internal) &&
-        (selectedHost.value != null || locationType != ProjectLocationType.ssh);
+        ((selectedHost.value != null && hostConnected == true) ||
+            locationType != ProjectLocationType.ssh);
   }
 
   void nextPage() async {
@@ -81,8 +92,8 @@ class ProjectLocationStepState extends State<ProjectLocationStep> {
       path =
           await getApplicationDocumentsDirectory().then((value) => value.path);
     }
+    context.read<ProjectLauncherCubit>().setLocation(locationType);
     path = pth.join(path, context.read<ProjectLauncherCubit>().state.data.name);
-    await Directory(path).create();
     context
         .read<ProjectLauncherCubit>()
         .feedData({"host": selectedHost.value, "path": path}, nextPage: true);
@@ -146,6 +157,12 @@ class ProjectLocationStepState extends State<ProjectLocationStep> {
               ),
             )
         ],
+        if (locationType == ProjectLocationType.ssh)
+          Align(
+              child: OutlinedButton(
+                  onPressed: () async =>
+                      selectedHost.value != null ? checkConnection() : null,
+                  child: const Text('CHECK CONNECTION'))),
         if (locationType != ProjectLocationType.internal)
           Row(
             children: [
@@ -160,12 +177,10 @@ class ProjectLocationStepState extends State<ProjectLocationStep> {
             ],
           ),
         ValueListenableBuilder(
-          valueListenable: selectedHost,
-          builder: (context, index, widget) => creatable
-              ? ElevatedButton(
-                  onPressed: () => nextPage(), child: const Text('continue'))
-              : Container(),
-        )
+            valueListenable: selectedHost,
+            builder: (context, index, widget) => ElevatedButton(
+                onPressed: creatable ? () => nextPage() : null,
+                child: const Text('continue')))
       ],
     );
   }

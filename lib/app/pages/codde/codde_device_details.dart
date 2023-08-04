@@ -9,8 +9,10 @@ class CoddeDeviceDetails extends StatelessWidget {
     final coddeStore = Provider.of<CoddeState>(context);
     return coddeStore.project.controlledDevice == null
         ? Center(
-            child: FloatingActionButton(
-                onPressed: () {}, child: const Text('New device')))
+            child: FloatingActionButton.extended(
+                onPressed: null,
+                label: const Text('New device'),
+                icon: const Icon(Icons.add)))
         : DeviceDetails(device: coddeStore.project.controlledDevice!);
   }
 }

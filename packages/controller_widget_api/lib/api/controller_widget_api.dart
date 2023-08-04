@@ -34,6 +34,14 @@ class ControllerWidgetApi {
     return File(map.path).delete();
   }
 
+  String? editProperties(ControllerProperties props) {
+    final map = mapStreamController.value;
+    map.properties = map.properties
+        .copyWith(executable: props.executable, protocol: props.protocol);
+    mapStreamController.add(map);
+    return mapStreamController.value.properties.executable;
+  }
+
   ControllerWidget? removeWidget(int id) {
     final Map<int, ControllerWidget> widgets =
         Map.of(controllerWidgetStreamController.value);

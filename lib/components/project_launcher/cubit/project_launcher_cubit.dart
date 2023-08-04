@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:bloc/bloc.dart';
 import 'package:codde_pi/components/project_launcher/cubit/project_launcher_state.dart';
 import 'package:codde_pi/components/project_launcher/steps/choose_project_type_step.dart';
+import 'package:codde_pi/components/project_launcher/steps/project_location_step.dart';
 import 'package:codde_pi/services/db/project.dart';
 
 class ProjectLauncherCubit extends Cubit<ProjectLauncherState> {
@@ -39,5 +40,9 @@ class ProjectLauncherCubit extends Cubit<ProjectLauncherState> {
 
   void previousPage({int offset = 1}) {
     emit(state.copyWith(currentPage: max(0, state.currentPage - offset)));
+  }
+
+  void setLocation(ProjectLocationType location) {
+    emit(state.copyWith(projectLocation: location));
   }
 }
