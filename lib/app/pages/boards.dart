@@ -1,3 +1,16 @@
+import 'package:codde_pi/app/pages/soon/soon.dart';
+import 'package:flutter/material.dart';
+
+class Boards extends StatelessWidget {
+  const Boards({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Soon(title: "Boards"),
+    );
+  }
+}
 /*
 import 'dart:convert';
 

@@ -35,7 +35,8 @@ class ControllerWidgetApi {
   }
 
   ControllerWidget? removeWidget(int id) {
-    final widgets = Map.of(controllerWidgetStreamController.value);
+    final Map<int, ControllerWidget> widgets =
+        Map.of(controllerWidgetStreamController.value);
 
     ControllerWidget? removedWidget = widgets.remove(id);
     controllerWidgetStreamController.add(widgets);
@@ -43,7 +44,8 @@ class ControllerWidgetApi {
   }
 
   ControllerWidget modifyWidget(ControllerWidget newVersion) {
-    final wgts = Map.of(controllerWidgetStreamController.value);
+    final Map<int, ControllerWidget> wgts =
+        Map.of(controllerWidgetStreamController.value);
     wgts[newVersion.id] = newVersion;
     controllerWidgetStreamController.add(wgts);
 
@@ -59,7 +61,7 @@ class ControllerWidgetApi {
             background: null,
             class_: EnumToString.fromString(
                 ControllerClass.values, layer.class_ ?? ''),
-            name: layer.name,
+            nickname: layer.name,
             x: layer.x,
             y: layer.y);
       }
@@ -85,7 +87,8 @@ class ControllerWidgetApi {
 
   List<ControllerWidget> addAll(List<ControllerWidget> widgets) {
     // file list stream event
-    final files = Map.of(controllerWidgetStreamController.value);
+    Map<int, ControllerWidget> files =
+        Map.from(controllerWidgetStreamController.value);
     widgets.forEach((element) {
       files[element.id] = element;
     });
@@ -115,7 +118,7 @@ class ControllerWidgetApi {
 
   void widgetAttrs(ControllerWidget widget, XmlBuilder builder) {
     builder.attribute('id', widget.id);
-    builder.attribute('name', widget.name);
+    builder.attribute('name', widget.nickname);
     builder.attribute('class', widget.class_);
     builder.attribute('x', widget.x);
     builder.attribute('y', widget.y);
@@ -202,8 +205,6 @@ class ControllerWidgetApi {
     final widgets = Map.of(controllerWidgetStreamController.value);
     final file = new File(map.path);
     final document = XmlDocument.parse(file.readAsStringSync());
-    final builder = XmlBuilder();
-    builder.xml(file.readAsStringSync());
     // widgets
     List<int> existingWgts = [];
     document.rootElement

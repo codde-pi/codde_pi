@@ -11,7 +11,7 @@ ControllerWidget _$ControllerWidgetFromJson(Map<String, dynamic> json) =>
       id: json['id'] as int,
       x: json['x'] as int?,
       y: json['y'] as int?,
-      name: json['name'] as String?,
+      nickname: json['nickname'] as String?,
       class_: $enumDecodeNullable(_$ControllerClassEnumMap, json['class_']),
       background: json['background'] == null
           ? null
@@ -28,7 +28,7 @@ Map<String, dynamic> _$ControllerWidgetToJson(ControllerWidget instance) =>
       'x': instance.x,
       'y': instance.y,
       'class_': _$ControllerClassEnumMap[instance.class_],
-      'name': instance.name,
+      'nickname': instance.nickname,
       'background': instance.background,
       'widgets': instance.widgets,
     };

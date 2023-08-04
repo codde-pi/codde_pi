@@ -16,99 +16,33 @@ const light_grey = Color(0xFFABABAB);
 const blue = Color(0xFF3137FD);
 const success = Colors.green;
 //todo: couleur verte (success) appartenant au thème
+const primary = Color(0xFF212121);
+const secondary = Color(0xFFFBF4F4);
+const onOthers = Color(0xFF575550);
 
-ColorScheme _dopyColorScheme = ColorScheme(
-  primary: accent,
-  primaryVariant: accent,
-  // shrineBrown900
-  secondary: accent,
-  // shrineBrown900
-  secondaryVariant: white,
-  // shrineBrown900
-  surface: surface,
-  background: background,
-  error: error,
-  onPrimary: surface,
-  onSecondary: background,
-  onSurface: widget,
-  onBackground: widget,
-  // idem, shrineBrown900
-  onError: Colors.white,
-  brightness: Brightness.dark,
-);
+const widgetSpace = 48.0;
+const widgetGutter = 24.0;
 
-IconThemeData iconAccent = IconThemeData();
-
+ColorScheme _colorScheme = const ColorScheme(
+    brightness: Brightness.dark,
+    primary: accent,
+    onPrimary: primary,
+    secondary: secondary,
+    onSecondary: onOthers,
+    error: error,
+    onError: onOthers,
+    background: primary,
+    onBackground: grey,
+    surface: primary,
+    tertiary: blue,
+    onSurface: grey);
 ThemeData cddTheme = ThemeData(
     useMaterial3: true,
-    dividerColor: light_grey,
-    highlightColor: accent,
-    indicatorColor: accent,
-    cardColor: widget,
-    dialogBackgroundColor: dialog,
-    colorScheme: _dopyColorScheme,
-    primaryColor: widget,
-    // unused
-    backgroundColor: background,
-    // background
-    scaffoldBackgroundColor: background,
-    disabledColor: disabled,
-    errorColor: error,
-    hoverColor: white,
-    textTheme: const TextTheme(
-      bodyMedium: TextStyle(color: white),
-      headlineMedium: TextStyle(color: accent, fontFamily: 'Aldrich'),
-      headlineLarge:
-          TextStyle(color: accent, fontFamily: 'Aldrich', fontSize: 24.0),
-    ),
-    floatingActionButtonTheme:
-        FloatingActionButtonThemeData(backgroundColor: accent),
-    cardTheme: CardTheme(
-        color: widget,
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(8.0)))),
-    buttonTheme: ButtonThemeData(
-        buttonColor: accent, textTheme: ButtonTextTheme.primary),
-    fontFamily: GoogleFonts.aldrich().fontFamily,
-    snackBarTheme: SnackBarThemeData(
-        backgroundColor: accent,
-        contentTextStyle:
-            TextStyle(color: Colors.black, fontFamily: 'Aldrich')),
-    unselectedWidgetColor: light_grey,
-    iconTheme: IconThemeData(color: light_grey, opacity: 1, size: 24.0),
-    checkboxTheme:
-        CheckboxThemeData(fillColor: CheckboxColor(), checkColor: CheckColor()),
-    dialogTheme: DialogTheme(backgroundColor: dialog),
-    appBarTheme: AppBarTheme(
-      backgroundColor: background,
-      elevation: 0.0,
-      actionsIconTheme:
-          IconThemeData(color: light_grey, opacity: 1, size: 24.0),
-      iconTheme: IconThemeData(color: light_grey, opacity: 1, size: 24.0),
-      toolbarTextStyle: TextStyle(color: light_grey, fontFamily: 'Aldrich'),
-      titleTextStyle: TextStyle(
-        color: light_grey,
-        fontFamily: 'Aldrich',
-        fontSize: 20.0,
-      ),
-    ),
-    listTileTheme: ListTileThemeData(
-        tileColor: widget,
-        textColor: grey,
-        contentPadding: EdgeInsets.all(8.0),
-        style: ListTileStyle.list),
-    navigationRailTheme: NavigationRailThemeData(
-        elevation: 0.0,
-        backgroundColor: background,
-        groupAlignment: -1.0,
-        selectedIconTheme: IconThemeData(color: accent, opacity: 1, size: 24.0),
-        unselectedIconTheme:
-            IconThemeData(color: light_grey, opacity: 1, size: 24.0),
-        selectedLabelTextStyle: TextStyle(color: accent, fontFamily: 'Aldrich'),
-        unselectedLabelTextStyle:
-            TextStyle(color: light_grey, fontFamily: 'Aldrich')),
-    radioTheme: RadioThemeData(fillColor: CheckboxColor()),
-    dividerTheme: DividerThemeData(color: grey, thickness: 2.0));
+    colorScheme: _colorScheme,
+    fontFamily: GoogleFonts.shareTechMono().fontFamily,
+    listTileTheme: const ListTileThemeData(
+        contentPadding: EdgeInsets.all(8.0), style: ListTileStyle.list),
+    dividerTheme: const DividerThemeData(thickness: 2.0));
 
 class CheckboxColor extends MaterialStateColor {
   const CheckboxColor() : super(_defaultColor);

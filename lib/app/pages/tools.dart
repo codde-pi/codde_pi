@@ -1,4 +1,16 @@
-/*
+import 'package:codde_pi/app/pages/soon/soon.dart';
+import 'package:flutter/material.dart';
+
+class Tools extends StatelessWidget {
+  const Tools({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Soon(title: "Tools"),
+    );
+  }
+}/*
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dart_ping/dart_ping.dart';

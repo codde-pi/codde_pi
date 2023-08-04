@@ -47,6 +47,23 @@ mixin _$DynamicBarState on _DynamicBarState, Store {
     });
   }
 
+  late final _$previousDestinationsAtom =
+      Atom(name: '_DynamicBarState.previousDestinations', context: context);
+
+  @override
+  ObservableList<DynamicBarDestination>? get previousDestinations {
+    _$previousDestinationsAtom.reportRead();
+    return super.previousDestinations;
+  }
+
+  @override
+  set previousDestinations(ObservableList<DynamicBarDestination>? value) {
+    _$previousDestinationsAtom.reportWrite(value, super.previousDestinations,
+        () {
+      super.previousDestinations = value;
+    });
+  }
+
   late final _$fabAtom = Atom(name: '_DynamicBarState.fab', context: context);
 
   @override
@@ -93,11 +110,26 @@ mixin _$DynamicBarState on _DynamicBarState, Store {
   }
 
   @override
-  void setFab({required IconData iconData, required Function action}) {
+  void setFab(
+      {required IconData iconData,
+      required Function action,
+      IconButton? extended}) {
     final _$actionInfo = _$_DynamicBarStateActionController.startAction(
         name: '_DynamicBarState.setFab');
     try {
-      return super.setFab(iconData: iconData, action: action);
+      return super
+          .setFab(iconData: iconData, action: action, extended: extended);
+    } finally {
+      _$_DynamicBarStateActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  dynamic disableFab() {
+    final _$actionInfo = _$_DynamicBarStateActionController.startAction(
+        name: '_DynamicBarState.disableFab');
+    try {
+      return super.disableFab();
     } finally {
       _$_DynamicBarStateActionController.endAction(_$actionInfo);
     }
@@ -118,6 +150,7 @@ mixin _$DynamicBarState on _DynamicBarState, Store {
   String toString() {
     return '''
 destinations: ${destinations},
+previousDestinations: ${previousDestinations},
 fab: ${fab},
 currentPage: ${currentPage},
 paged: ${paged},

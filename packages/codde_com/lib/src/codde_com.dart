@@ -3,19 +3,18 @@ import 'package:codde_com/src/api/com_common.dart';
 import 'package:codde_com/src/api/com_socket.dart';
 
 class CoddeCom implements ComCommon {
-  CoddeCom(this.protocol, this.builder) {
-    switch (protocol) {
+  CoddeCom({required this.builder}) {
+    trans = ProtocolTranscriber(builder.protocol);
+    switch (builder.protocol) {
       case CoddeProtocol.socketio:
-        com = ComSocket.fromMap(builder);
-        trans = ProtocolTranscriber(protocol);
+        com = ComSocket.fromMap(builder.build());
         break;
       default:
         throw UnsupportedCoddeProtocol();
     }
   }
 
-  CoddeProtocol protocol;
-  Map builder;
+  ProtocolBuilder builder;
   late dynamic com;
   late ProtocolTranscriber trans;
 

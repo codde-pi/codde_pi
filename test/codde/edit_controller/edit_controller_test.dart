@@ -1,5 +1,5 @@
 import 'package:codde_com/codde_com.dart';
-import 'package:codde_pi/core/edit_controller/views/edit_controller_page.dart';
+import 'package:codde_pi/components/codde_controller/views/edit_controller_page.dart';
 import 'package:controller_widget_api/controller_widget_api.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -27,7 +27,7 @@ void main() {
             1: ControllerWidget(
                 id: 1,
                 class_: ControllerClass.simple_button,
-                name: 'Cool simple button',
+                nickname: 'Cool simple button',
                 x: 10,
                 y: 10)
           }));

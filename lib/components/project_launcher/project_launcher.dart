@@ -33,7 +33,7 @@ class ProjectLauncherView extends StatelessWidget {
     return BlocListener<ProjectLauncherCubit, ProjectLauncherState>(
       listenWhen: (previous, current) => current.projectInstance != null,
       listener: (context, state) async {
-        Navigator.pushNamed(context, '/codde',
+        Navigator.pushReplacementNamed(context, '/codde',
             arguments: state.projectInstance);
       },
       child: BlocConsumer<ProjectLauncherCubit, ProjectLauncherState>(

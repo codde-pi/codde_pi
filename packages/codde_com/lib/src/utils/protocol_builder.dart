@@ -1,23 +1,30 @@
+import 'package:codde_com/codde_com.dart';
+
 class ProtocolBuilder {
   final Map<String, dynamic> _opts;
   ProtocolBuilder() : _opts = <String, dynamic>{};
 
-  Map useSocketIO(String uri, opts) {
-    _opts['uri'] = uri;
+  ProtocolBuilder useSocketIO(String uri, opts) {
+    _opts['protocol'] = CoddeProtocol.socketio;
+    _opts['uri'] = uri; // TODO: turn to Uri object
     _opts['opts'] = opts;
-    return _opts;
+    return this;
   }
 
-  Map useUSB(String device) {
+  ProtocolBuilder useUSB(String device) {
+    _opts['protocol'] = CoddeProtocol.usb;
     _opts["device"] = device;
-    return _opts;
+    return this;
   }
 
-  Map useSocket(String address, int port) {
+  ProtocolBuilder useSocket(String address, int port) {
+    _opts['protocol'] = CoddeProtocol.socket;
     _opts['address'] = address;
     _opts['port'] = port;
-    return _opts;
+    return this;
   }
 
   Map<String, dynamic> build() => _opts;
+
+  CoddeProtocol get protocol => _opts['protocol'];
 }

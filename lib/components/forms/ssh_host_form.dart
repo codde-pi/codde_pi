@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 class SSHHostForm extends StatelessWidget {
   final nameController = TextEditingController();
+  final userController = TextEditingController();
   final pswdController = TextEditingController();
   final portController = TextEditingController(text: "22");
   final hostController = TextEditingController();
@@ -18,43 +19,48 @@ class SSHHostForm extends StatelessWidget {
       mainAxisSize: MainAxisSize.max,
       children: [
         TextField(
-          decoration: InputDecoration(hintText: "name"),
+          decoration: const InputDecoration(hintText: "name"),
           controller: nameController,
+        ),
+        TextField(
+          decoration: const InputDecoration(hintText: "username"),
+          controller: userController,
         ),
         Row(
           children: [
             Expanded(
               flex: 5,
               child: TextField(
-                decoration: InputDecoration(hintText: "host"),
+                decoration: const InputDecoration(hintText: "host"),
                 controller: hostController,
               ),
             ),
             Expanded(
               child: TextField(
-                decoration: InputDecoration(hintText: "port"),
+                decoration: const InputDecoration(hintText: "port"),
                 controller: portController,
               ),
             ),
           ],
         ),
         TextField(
-          decoration: InputDecoration(hintText: "password"),
+          decoration: const InputDecoration(hintText: "password"),
           controller: pswdController,
         ),
         Row(
           children: [
-            TextButton(onPressed: () => cancel(), child: Text('cancel')),
+            TextButton(onPressed: () => cancel(), child: const Text('cancel')),
             ElevatedButton(
                 onPressed: () => validate(
                       Host(
                         name: nameController.text,
+                        user: userController.text,
                         ip: hostController.text,
                         pswd: pswdController.text,
                         port: int.parse(portController.text),
                       ),
                     ),
-                child: Text("validate"))
+                child: const Text("validate"))
           ],
         )
       ],
