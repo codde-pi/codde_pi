@@ -5,3 +5,8 @@ abstract class DynamicBarWidget extends StatelessWidget
     with DynamicFabSelector {
   const DynamicBarWidget({super.key});
 }
+
+abstract class DynamicBarStatefulWidget extends StatefulWidget
+    with DynamicFabSelector {
+  const DynamicBarStatefulWidget({super.key});
+}

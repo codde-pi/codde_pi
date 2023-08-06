@@ -99,6 +99,28 @@ mixin _$ProjectStore on _ProjectStore, Store {
   }
 
   @override
+  void allProjects() {
+    final _$actionInfo = _$_ProjectStoreActionController.startAction(
+        name: '_ProjectStore.allProjects');
+    try {
+      return super.allProjects();
+    } finally {
+      _$_ProjectStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void allHosts() {
+    final _$actionInfo = _$_ProjectStoreActionController.startAction(
+        name: '_ProjectStore.allHosts');
+    try {
+      return super.allHosts();
+    } finally {
+      _$_ProjectStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 recentProjects: ${recentProjects},

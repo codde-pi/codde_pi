@@ -47,24 +47,20 @@ abstract class _DynamicBarState with Store {
       this.previousDestinations})
       : this.destinations = ObservableList.of(destinations);
 
-  /* factory _DynamicBarState.initFab(
-      {required BuildContext context,
-      required List<DynamicBarDestination> destinations,
-      int currentPage = 0}) {
-    final DynamicBarState instance =
-        DynamicBarState(destinations: destinations, currentPage: currentPage);
-    (destinations[currentPage].widget as DynamicBarWidget).setFab(context);
-    return instance;
-  } */
   @computed
   ObservableList<DynamicBarDestination> get paged {
     return ObservableList.of(destinations)
       ..sort((a, b) => a.index.compareTo(b.index));
   }
 
-  @computed
-  ObservableList<Widget> get pages =>
-      ObservableList.of(paged.map<Widget>((e) => e.widget).toList());
+  // turn to ation since [pages] causes side effets
+  @action
+  ObservableList<Widget> pages() {
+    final list = ObservableList.of(
+        paged.map<Widget>((e) => e.builtWidget ?? e.widget()).toList());
+    updateFab();
+    return list;
+  }
 
   @computed
   ObservableList<IconData> get icons {
@@ -96,7 +92,9 @@ abstract class _DynamicBarState with Store {
 
   @action
   void updateFab({int page = 0}) {
-    (destinations[page].widget as DynamicBarWidget)
+    assert(destinations[page].builtWidget != null,
+        'Widget should be built just before');
+    (destinations[page].builtWidget as dynamic)
         .setFab(navigatorKey.currentContext!);
   }
 
@@ -105,7 +103,7 @@ abstract class _DynamicBarState with Store {
       BuildContext context, List<DynamicBarDestination> destinations) {
     this.previousDestinations = this.destinations;
     this.destinations = ObservableList.of(destinations);
-    updateFab();
+    // updateFab();
   }
 }
 

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:codde_backend/codde_backend.dart';
 import 'package:codde_com/codde_com.dart';
 import 'package:codde_pi/codde_widgets/codde_widgets.dart';
 import 'package:controller_widget_api/controller_widget_api.dart';
@@ -9,6 +10,7 @@ import 'package:flame/components.dart';
 import 'package:flame/game.dart';
 import 'package:flame_coddecom/flame_coddecom.dart';
 import 'package:flame_tiled/flame_tiled.dart';
+import 'package:get_it/get_it.dart';
 import 'package:socket_io_client/socket_io_client.dart';
 
 class PlayControllerGame extends FlameGame {
@@ -51,12 +53,16 @@ class PlayControllerView extends FlameCoddeCom with HasGameRef {
       ControllerWidgetProvider(ControllerWidgetMode.player);
   List layers = [];
   late TiledComponent mapComponent;
+  final backend = GetIt.I.get<CoddeBackend>();
 
   @override
   FutureOr<void> onLoad() async {
     super.onLoad();
 
-    final content = await File(path).readAsString();
+    String content = '';
+    await backend.read(path).then((value) => value.forEach((element) {
+          content += "$element\n";
+        }));
     mapComponent = await load(content, Vector2.all(16));
     add(mapComponent);
 

@@ -15,6 +15,8 @@ dependencies:
 
   codde_com:
     path: ../codde_com
+  codde_backend:
+    path: ../codde_backend
 
   json_serializable: ^6.5.4
   equatable: ^2.0.5
@@ -27,6 +29,7 @@ dependencies:
   freezed: ^2.3.4
   freezed_annotation: ^2.2.0
   json_annotation: ^4.8.1
+  get_it: ^7.6.0
 
 dev_dependencies:
   flutter_test:

@@ -1,8 +1,10 @@
 import 'dart:io';
 
+import 'package:codde_backend/codde_backend.dart';
 import 'package:controller_widget_api/controller_widget_api.dart';
 import 'package:enum_to_string/enum_to_string.dart';
 import 'package:flame_tiled/flame_tiled.dart';
+import 'package:get_it/get_it.dart';
 import 'package:rxdart/subjects.dart';
 import 'package:xml/xml.dart';
 
@@ -17,6 +19,7 @@ class ControllerWidgetApi {
 
   final mapStreamController;
   final controllerWidgetStreamController;
+  final backend = GetIt.I.get<CoddeBackend>();
 
   Stream<Map<int, ControllerWidget>> streamWidgets() {
     return controllerWidgetStreamController.asBroadcastStream();
@@ -132,7 +135,7 @@ class ControllerWidgetApi {
     builder.attribute('y', widget.y);
   }
 
-  Future<File> createMap() {
+  Future<FileEntity> createMap() {
     final map = mapStreamController.value;
     map.toJson().values.forEach((value) {
       assert(value != null);
@@ -168,7 +171,8 @@ class ControllerWidgetApi {
         });
       }
       // tileset
-      if (map.backgrounds != null && map.backgrounds!.isNotEmpty) {
+      // TODO: use tilesets ?
+      /* if (map.backgrounds != null && map.backgrounds!.isNotEmpty) {
         map.backgrounds!.forEach((bg) {
           builder.element("tileset", nest: () {
             builder.attribute("firstgid", "1"); // tile index on which to start
@@ -185,7 +189,7 @@ class ControllerWidgetApi {
             });
           });
         });
-      }
+      } */
       // main layer
       builder.element('layer', nest: () {
         builder.attribute('id', 1);
@@ -205,10 +209,10 @@ class ControllerWidgetApi {
       // });
     });
     final document = builder.buildDocument();
-    return File(map.path).writeAsString(document.toXmlString());
+    return backend.save(map.path, document.toXmlString());
   }
 
-  Future<File> saveMap() {
+  Future<FileEntity> saveMap() {
     final map = mapStreamController.value;
     final widgets = Map.of(controllerWidgetStreamController.value);
     final file = new File(map.path);
@@ -233,9 +237,9 @@ class ControllerWidgetApi {
     });
 
     // map
-    if (map.backgrounds != null) {
+    /* if (map.backgrounds != null) {
       // TODO: add new tileset to the map
-    }
+    } */
     // find existing LAYER
     if (map.width != null && map.height != null) {
       final dataLayer = document.rootElement
@@ -278,7 +282,7 @@ class ControllerWidgetApi {
           .setAttribute('nextobjectid', map.nextObjectId.toString());
     }
 
-    return File(map.path).writeAsString(document.toXmlString());
+    return backend.save(map.path, document.toXmlString());
   }
 }
 

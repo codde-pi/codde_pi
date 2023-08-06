@@ -5,7 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 const accent = Color(0xFFE6B905); // FFFEB705
 const background = Color(0xFF121212);
-const widget = Color(0xFF212121);
+const widgetColor = Color(0xFF212121);
 const error = Color(0xFFC5032B);
 const surface = Color(0xFF121212);
 const white = Color(0xFFE1E1E1);
@@ -35,6 +35,7 @@ ColorScheme _colorScheme = const ColorScheme(
     onBackground: grey,
     surface: primary,
     tertiary: blue,
+    onTertiary: background,
     onSurface: grey);
 ThemeData cddTheme = ThemeData(
     useMaterial3: true,

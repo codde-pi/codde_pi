@@ -1,7 +1,9 @@
+import 'package:codde_backend/codde_backend.dart';
 import 'package:codde_pi/components/dynamic_bar/models/dynamic_bar_destination.dart';
 import 'package:codde_pi/components/dynamic_bar/models/dynamic_fab_selector.dart';
 import 'package:codde_pi/components/dynamic_bar/state/dynamic_bar_state.dart';
 import 'package:codde_pi/theme.dart';
+import 'package:flame/extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -23,18 +25,29 @@ class DynamicBar extends StatelessWidget {
       this.nested = false,
       this.popNested});
 
+  bool get isRemoteProject {
+    if (GetIt.I.isRegistered<CoddeBackend>()) {
+      return GetIt.I.get<CoddeBackend>().location == BackendLocation.server;
+    }
+    return false;
+  }
+
   @override
   Widget build(BuildContext context) {
     // TODO: optional destinations and startPage
     return Scaffold(
       body: Observer(
         builder: (_) => IndexedStack(
-            index: bar.currentPage,
-            /* physics: const NeverScrollableScrollPhysics(), */
-            children: bar.pages),
+          index: bar.currentPage,
+          /* physics: const NeverScrollableScrollPhysics(), */
+          children: bar.pages(),
+        ),
       ),
       bottomNavigationBar: Observer(
-        builder: (_) => BottomAppBar(
+        builder: (context) => BottomAppBar(
+          color: isRemoteProject
+              ? Theme.of(context).colorScheme.tertiary.darken(0.5)
+              : null,
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [

@@ -7,7 +7,6 @@ import 'package:codde_pi/components/dynamic_bar/models/dynamic_fab_selector.dart
 import 'package:codde_pi/components/dynamic_bar/state/dynamic_bar_state.dart';
 import 'package:codde_pi/components/project_launcher/models/project_launcher_scenarii.dart';
 import 'package:codde_pi/components/project_launcher/project_launcher.dart';
-import 'package:codde_pi/main.dart';
 import 'package:codde_pi/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -22,7 +21,7 @@ class GlobalProjects extends DynamicBarWidget {
     bar.setFab(
       iconData: Icons.add,
       action: () => showDialog(
-        context: navigatorKey.currentContext!,
+        context: context,
         builder: (context) => CreateProjectDialog(),
       ),
     );
@@ -115,7 +114,8 @@ class GlobalProjects extends DynamicBarWidget {
                   alignment: Alignment.topLeft,
                   child: OutlinedButton(
                       onPressed: () {
-                        store.showAllProjects = true;
+                        store.allProjects();
+                        store.refreshProjects(context);
                       },
                       child: const Text('Show All')),
                 ),
@@ -158,7 +158,8 @@ class GlobalProjects extends DynamicBarWidget {
                     children: [
                       OutlinedButton(
                           onPressed: () {
-                            store.showAllHosts = true;
+                            store.allHosts();
+                            store.refreshHosts(context);
                           },
                           child: const Text('Show All')),
                       if (store.recentHosts.isNotEmpty)

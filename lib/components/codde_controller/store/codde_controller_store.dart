@@ -10,6 +10,8 @@ abstract class _CoddeControllerStore with Store {
   ControllerWidgetMode mode;
   @observable
   String? executable;
+  @observable
+  bool reload = false;
 
   _CoddeControllerStore({this.mode = ControllerWidgetMode.player});
 
@@ -34,5 +36,10 @@ abstract class _CoddeControllerStore with Store {
   void setExecutable({required String deviceUid, required String command}) {
     // TODO: do something with deviceUid
     executable = command;
+  }
+
+  @action
+  void askReload() {
+    reload = !reload;
   }
 }

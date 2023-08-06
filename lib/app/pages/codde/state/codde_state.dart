@@ -1,3 +1,4 @@
+import 'package:codde_pi/services/db/host.dart';
 import 'package:codde_pi/services/db/project.dart';
 import 'package:mobx/mobx.dart';
 
@@ -10,4 +11,8 @@ abstract class _CoddeState with Store {
   Project project;
 
   _CoddeState(this.project);
+  @action
+  void selectHost(Host host) {
+    project.host = host;
+  }
 }

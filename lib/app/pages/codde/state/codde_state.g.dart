@@ -25,6 +25,20 @@ mixin _$CoddeState on _CoddeState, Store {
     });
   }
 
+  late final _$_CoddeStateActionController =
+      ActionController(name: '_CoddeState', context: context);
+
+  @override
+  void selectHost(Host host) {
+    final _$actionInfo = _$_CoddeStateActionController.startAction(
+        name: '_CoddeState.selectHost');
+    try {
+      return super.selectHost(host);
+    } finally {
+      _$_CoddeStateActionController.endAction(_$actionInfo);
+    }
+  }
+
   @override
   String toString() {
     return '''

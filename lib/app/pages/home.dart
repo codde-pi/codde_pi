@@ -18,9 +18,7 @@ class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (!GetIt.I.isRegistered<DynamicBarState>()) {
-      final bar = GetIt.I
-          .registerSingleton(DynamicBarState(destinations: destinations));
-      bar.updateFab();
+      GetIt.I.registerSingleton(DynamicBarState(destinations: destinations));
     } else {
       GetIt.I.get<DynamicBarState>().defineDestinations(context, destinations);
     }

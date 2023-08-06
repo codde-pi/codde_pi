@@ -41,6 +41,22 @@ mixin _$CoddeControllerStore on _CoddeControllerStore, Store {
     });
   }
 
+  late final _$reloadAtom =
+      Atom(name: '_CoddeControllerStore.reload', context: context);
+
+  @override
+  bool get reload {
+    _$reloadAtom.reportRead();
+    return super.reload;
+  }
+
+  @override
+  set reload(bool value) {
+    _$reloadAtom.reportWrite(value, super.reload, () {
+      super.reload = value;
+    });
+  }
+
   late final _$_CoddeControllerStoreActionController =
       ActionController(name: '_CoddeControllerStore', context: context);
 
@@ -89,10 +105,22 @@ mixin _$CoddeControllerStore on _CoddeControllerStore, Store {
   }
 
   @override
+  void askReload() {
+    final _$actionInfo = _$_CoddeControllerStoreActionController.startAction(
+        name: '_CoddeControllerStore.askReload');
+    try {
+      return super.askReload();
+    } finally {
+      _$_CoddeControllerStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 mode: ${mode},
-executable: ${executable}
+executable: ${executable},
+reload: ${reload}
     ''';
   }
 }

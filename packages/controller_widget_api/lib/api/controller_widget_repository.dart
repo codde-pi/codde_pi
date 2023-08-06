@@ -33,11 +33,11 @@ class ControllerWidgetRepository {
     return controllerWidgetApi.parseLayers(layers);
   }
 
-  Future<File> saveMap() {
+  Future<FileEntity> saveMap() {
     return controllerWidgetApi.saveMap();
   }
 
-  Future<File> createMap() {
+  Future<FileEntity> createMap() {
     return controllerWidgetApi.createMap();
   }
 

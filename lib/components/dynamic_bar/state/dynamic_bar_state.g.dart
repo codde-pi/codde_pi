@@ -16,13 +16,6 @@ mixin _$DynamicBarState on _DynamicBarState, Store {
           Computed<ObservableList<DynamicBarDestination>>(() => super.paged,
               name: '_DynamicBarState.paged'))
       .value;
-  Computed<ObservableList<Widget>>? _$pagesComputed;
-
-  @override
-  ObservableList<Widget> get pages =>
-      (_$pagesComputed ??= Computed<ObservableList<Widget>>(() => super.pages,
-              name: '_DynamicBarState.pages'))
-          .value;
   Computed<ObservableList<IconData>>? _$iconsComputed;
 
   @override
@@ -99,6 +92,17 @@ mixin _$DynamicBarState on _DynamicBarState, Store {
       ActionController(name: '_DynamicBarState', context: context);
 
   @override
+  ObservableList<Widget> pages() {
+    final _$actionInfo = _$_DynamicBarStateActionController.startAction(
+        name: '_DynamicBarState.pages');
+    try {
+      return super.pages();
+    } finally {
+      _$_DynamicBarStateActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   void setPage(DynamicBarDestination page) {
     final _$actionInfo = _$_DynamicBarStateActionController.startAction(
         name: '_DynamicBarState.setPage');
@@ -166,7 +170,6 @@ previousDestinations: ${previousDestinations},
 fab: ${fab},
 currentPage: ${currentPage},
 paged: ${paged},
-pages: ${pages},
 icons: ${icons}
     ''';
   }
