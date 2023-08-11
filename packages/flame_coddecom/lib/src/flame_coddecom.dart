@@ -1,5 +1,6 @@
 import 'package:codde_com/codde_com.dart';
 import 'package:flame/components.dart';
+import 'package:flutter/widgets.dart';
 
 /// socket client [Component], establishing connection
 /// once initialized
@@ -18,21 +19,28 @@ class FlameCoddeCom extends Component {
                 ? MapEntry<dynamic, dynamic>(key, false)
                 : MapEntry<dynamic, dynamic>(key, value),), */
 
-  /* @override
-  FutureOr<void> onLoad() {
+  @override
+  @mustCallSuper
+  void onLoad() {
     super.onLoad();
-    com.connect(); // let user connect itself
-  } */
+    com.comState.addListener(() {
+      if (com.comState.value == CoddeComState.connected) {
+        onConnect();
+      } else if (com.comState.value == CoddeComState.disconnected) {
+        onDisconnect();
+      }
+    });
+  }
 
-  /* /// Callback when connection has been established with specified server socket
-  void onConnect(Function(dynamic) connect) {
-    com.onConnect(connect);
+  /// Callback when connection has been established with specified server socket
+  void onConnect() {
+    // Intentionally left empty
   }
 
   /// Callback when client disconnect to the specified server socket
-  void onDisconnect(Function(dynamic) disconnect) {
-    com.onDisconnect(disconnect);
-  } */
+  void onDisconnect() {
+    // Intentionally left empty
+  }
 
   @override
   void onRemove() {

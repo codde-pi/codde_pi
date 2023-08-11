@@ -27,51 +27,58 @@ export 'views/std_controller_view.dart';
 export 'flame/play_controller_game.dart';
 
 class CoddeController extends DynamicBarStatefulWidget {
-  _CoddeController? _state;
+  CoddeController({super.key});
 
   @override
-  State<StatefulWidget> createState() => _CoddeController();
-
-  @override
-  void setFab(BuildContext context) {
-    if (_state == null) {
-      bar.disableFab();
-    } else {
-      _state!.setFab(context);
-    }
-  }
+  DynamicBarStateWidget createDynamicState() => _CoddeController();
 }
 
-class _CoddeController extends State<CoddeController> {
+class _CoddeController extends DynamicBarStateWidget<CoddeController> {
   ValueNotifier<TreeViewController> treeController =
       ValueNotifier(TreeViewController());
 
   final backend = GetIt.I.get<CoddeBackend>();
-  late dynamic _page;
+  final ValueNotifier<dynamic> _page = ValueNotifier(null);
+  // final playControllerKey = GlobalKey<PlayControllerPageState>();
 
+  @override
   void setFab(BuildContext context) {
-    if (_page == null) {
-      widget.bar.disableFab();
+    if (_page.value == null) {
+      print('$runtimeType wait for fab ${_page.value}');
+      /* if (playControllerKey.currentState != null) {
+        print('current state !!!');
+        playControllerKey.currentState?.setFab(context);
+      } else { */
+      _page.addListener(() {
+        print('double listening ${_page.value != null}');
+        _page.value?.setFab(context);
+      });
+      // }
     } else {
-      _page!.setFab(context);
+      print('lets go FAB');
+      // _page.removeListener(() {});
+      _page.value?.setFab(context);
     }
   }
 
   Widget getPage({required CoddeControllerStore store, required String path}) {
-    _page = store.mode == ControllerWidgetMode.player
-        ? PlayControllerPage(path: path)
+    _page.value = store.mode == ControllerWidgetMode.player
+        ? PlayControllerPage(/* key: playControllerKey ,*/ path: path)
         : EditControllerPage(path: path);
-    return _page!;
+    return _page.value!;
   }
 
   @override
   Widget build(BuildContext context) {
-    final coddeProject = context
-        .watch<CoddeState>()
-        .project; // Provider.of<CoddeState>(context).project;
+    super.build(context);
     final store = Provider.of<CoddeControllerStore>(context);
+    final coddeProject = /* context
+        .watch<CoddeState>()
+        .project; // */
+        Provider.of<CoddeState>(context).project;
     print(widgetColor);
 
+    print('project path = ${coddeProject.path}');
     return SafeArea(
       child: Scaffold(
         drawer: ValueListenableBuilder(
@@ -93,22 +100,21 @@ class _CoddeController extends State<CoddeController> {
                       children: snapshot.data!
                           .where((element) =>
                               element.isDir || element.path.contains('.tmx'))
-                          .map((e) =>
-                              Node(key: e.path, label: e.path.split('/').last))
+                          .map((e) => Node(key: e.path, label: e.name))
                           .toList());
                   for (var child in snapshot.data!) {
-                    if (!child.isDir && child.path.contains('.tmx')) {
+                    if (!child.isDir && child.name.contains('.tmx')) {
                       return Observer(
                         builder: (_) {
                           final widget =
                               getPage(store: store, path: child.path);
-                          (_page as DynamicFabSelector).setFab(context);
+                          (_page.value as DynamicFabSelector).setFab(context);
                           return widget;
                         },
                       );
                     }
                   }
-                  // TODO/ duplicated !!! create widget
+                  // TODO: duplicated !!! create widget
                   return Center(
                       child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -121,8 +127,9 @@ class _CoddeController extends State<CoddeController> {
                               context: context,
                               builder: (context) => AddControllerMapDialog(
                                   path: coddeProject.path, context: context));
-                          if (file != null)
+                          if (file != null) {
                             setState(() {}); //store.askReload();
+                          }
                         },
                         label: Text('New Map'),
                         icon: Icon(Icons.add),
@@ -144,8 +151,9 @@ class _CoddeController extends State<CoddeController> {
                               context: context,
                               builder: (context) => AddControllerMapDialog(
                                   path: coddeProject.path, context: context));
-                          if (file != null)
+                          if (file != null) {
                             setState(() {}); //store.askReload();
+                          }
                         },
                         label: Text('New Map'),
                         icon: Icon(Icons.add),

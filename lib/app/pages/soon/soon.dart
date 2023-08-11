@@ -7,7 +7,7 @@ import 'package:get_it/get_it.dart';
 
 class Soon extends DynamicBarWidget {
   final String title;
-  const Soon({super.key, required this.title});
+  Soon({super.key, required this.title});
   @override
   setFab(context) {
     bar.disableFab();
@@ -15,6 +15,7 @@ class Soon extends DynamicBarWidget {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     /* if (bar.destinations[bar.currentPage].widget == this) {
       bar.disableFab();
     } */

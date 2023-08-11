@@ -1,4 +1,6 @@
+import 'package:codde_com/codde_com.dart';
 import 'package:codde_pi/theme.dart';
+import 'package:controller_widget_api/controller_widget_api.dart';
 import 'package:flutter/material.dart';
 
 class ControllerPropertiesDialog extends StatelessWidget {
@@ -7,9 +9,28 @@ class ControllerPropertiesDialog extends StatelessWidget {
   ControllerPropertiesDialog({super.key});
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      title: const Text('Controller properties'),
-      content: Column(
+    return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.close),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+        title: const Text('Controller properties'),
+        actions: [
+          ElevatedButton(
+            child: const Text('SAVE'),
+            onPressed: () {
+              // FIXME: need devicceId
+              /* Navigator.of(context).pop(ControllerProperties(
+                  executable: commandController.text)); */
+            },
+          ),
+        ],
+      ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           // TODO: Add Codde Protocol (dropdown button)
           Text(
@@ -22,7 +43,7 @@ class ControllerPropertiesDialog extends StatelessWidget {
               children: [
                 Icon(Icons.info),
                 SizedBox(width: widgetGutter),
-                Text('For Now, only Socketio protocol is available')
+                Text('For Now, only Socketio protocol is supported')
               ],
             ),
           ),
@@ -31,26 +52,15 @@ class ControllerPropertiesDialog extends StatelessWidget {
             "Remote command",
             style: Theme.of(context).textTheme.headlineSmall,
           ),
-          const Text('Assign remote command to run'),
+          const Text('Assign remote shell command'),
           TextField(
+            decoration: InputDecoration(
+                hintText: "command (\$CWD for root project path)",
+                border: OutlineInputBorder()),
             controller: commandController,
           )
         ],
       ),
-      actions: <Widget>[
-        TextButton(
-          child: const Text('CANCEL'),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-        ),
-        ElevatedButton(
-          child: const Text('SAVE'),
-          onPressed: () {
-            Navigator.of(context).pop(commandController.text);
-          },
-        ),
-      ],
     );
   }
 }

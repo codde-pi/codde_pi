@@ -50,6 +50,8 @@ class ControlledDeviceForm extends StatelessWidget {
             ),
           ],
         ),
+        // TODO: create TAB to select com protocol.
+        //  Fields (address e.g.) may vary according to com protocol
         Row(
           children: [
             Text("Communication protocol to use:"),
@@ -75,7 +77,8 @@ class ControlledDeviceForm extends StatelessWidget {
           children: [
             Expanded(
               child: TextField(
-                decoration: const InputDecoration(hintText: "address:port"),
+                decoration: const InputDecoration(
+                    hintText: "address:port", border: OutlineInputBorder()),
                 controller: addressController,
               ),
             ),

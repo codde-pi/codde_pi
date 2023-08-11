@@ -1,5 +1,4 @@
 import 'package:codde_pi/app/pages/boards.dart';
-import 'package:codde_pi/app/pages/codde/codde_device_details.dart';
 import 'package:codde_pi/app/pages/codde/codde_diagram.dart';
 import 'package:codde_pi/app/pages/codde/codde_editor.dart';
 import 'package:codde_pi/app/pages/codde/dashboard/dashboard.dart';
@@ -60,7 +59,7 @@ class DynamicBarPager {
   );
   static final community = DynamicBarDestination(
       name: "community",
-      widget: () => const Community(),
+      widget: () => Community(),
       index: 1,
       iconData: Icons.language);
   /* static final boards = DynamicBarDestination(

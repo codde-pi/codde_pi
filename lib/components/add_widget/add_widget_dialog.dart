@@ -30,6 +30,16 @@ class AddWidgetDialog extends StatelessWidget {
                 : IconButton(
                     onPressed: () => Navigator.pop(context),
                     icon: const Icon(Icons.close)),
+            actions: [
+              Observer(
+                builder: (context) => ElevatedButton(
+                  onPressed: state.widget != null
+                      ? () => Navigator.of(context).pop(state.widget)
+                      : null,
+                  child: const Text('VALIDATE'),
+                ),
+              )
+            ],
           ),
           body: Observer(
             builder: (_) => IndexedStack(

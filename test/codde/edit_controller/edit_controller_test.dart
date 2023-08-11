@@ -18,7 +18,6 @@ void main() {
               path: 'api_map_test.tmx',
               height: 60,
               width: 40,
-              backgrounds: [],
               nextLayerId: 1,
               nextObjectId: 2,
               properties:

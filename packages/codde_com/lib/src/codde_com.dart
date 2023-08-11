@@ -1,6 +1,7 @@
 import 'package:codde_com/codde_com.dart';
 import 'package:codde_com/src/api/com_common.dart';
 import 'package:codde_com/src/api/com_socket.dart';
+import 'package:flutter/widgets.dart';
 
 class CoddeCom implements ComCommon {
   CoddeCom({required this.builder}) {
@@ -12,15 +13,18 @@ class CoddeCom implements ComCommon {
       default:
         throw UnsupportedCoddeProtocol();
     }
+    comState = ValueNotifier(CoddeComState.disconnected);
   }
 
   ProtocolBuilder builder;
   late dynamic com;
   late ProtocolTranscriber trans;
+  late ValueNotifier comState;
 
   @override
   void connect() {
     com.connect();
+    updateState(CoddeComState.connected);
   }
 
   @override
@@ -36,9 +40,16 @@ class CoddeCom implements ComCommon {
   @override
   void disconnect() {
     com.disconnect();
+    updateState(CoddeComState.disconnected);
+  }
+
+  void updateState(CoddeComState value) {
+    comState.value = value;
   }
 }
 
 enum CoddeProtocol { socket, socketio, usb, bluetooth, http }
 
 class UnsupportedCoddeProtocol implements Exception {}
+
+enum CoddeComState { connected, disconnected }

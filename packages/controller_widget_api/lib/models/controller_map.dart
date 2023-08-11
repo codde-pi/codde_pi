@@ -1,4 +1,3 @@
-import 'package:codde_com/codde_com.dart';
 import 'package:controller_widget_api/controller_widget_api.dart';
 import 'package:flutter/widgets.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -9,7 +8,7 @@ part 'controller_map.freezed.dart';
 
 @freezed
 class ControllerMap with _$ControllerMap {
-  static const TILE_SIZE = 16.0;
+  static const TILE_SIZE = 32;
   const ControllerMap._();
 
   factory ControllerMap(
@@ -50,8 +49,7 @@ class ControllerMap with _$ControllerMap {
       path: path.contains('.tmx') ? path : "$path.tmx",
       width: _width.toInt(),
       height: _height.toInt(),
-      properties:
-          properties ?? ControllerProperties(protocol: CoddeProtocol.socketio),
+      properties: properties,
       nextLayerId: 1,
       nextObjectId: 1,
     );
@@ -62,4 +60,8 @@ class ControllerMap with _$ControllerMap {
   /// Deserializes the given [Map] into a [ControllerMap]
   factory ControllerMap.fromJson(Map<String, Object?> json) =>
       _$ControllerMapFromJson(json);
+
+  bool xmlRead() {
+    return nextLayerId != null && nextObjectId != null;
+  }
 }

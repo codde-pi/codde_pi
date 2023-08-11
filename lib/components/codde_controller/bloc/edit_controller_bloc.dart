@@ -24,6 +24,7 @@ class EditControllerBloc
     on<ControllerWidgetMoved>(_widgetMoved);
     on<ControllerMapSaved>(_mapSaved);
     on<ControllerPropertiesChanged>(_editProperties);
+    on<ControllerMapDefined>(_mapDefined);
   }
 
   final ControllerWidgetRepository repo;
@@ -115,5 +116,10 @@ class EditControllerBloc
 
   void _editProperties(ControllerPropertiesChanged event, emit) {
     repo.editProperties(event.properties);
+    repo.saveProperties();
+  }
+
+  void _mapDefined(ControllerMapDefined event, emit) {
+    repo.updateMap(event.map);
   }
 }

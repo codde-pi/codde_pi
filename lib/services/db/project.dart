@@ -13,7 +13,7 @@ class Project extends HiveObject {
   DateTime dateModified;
 
   @HiveField(2)
-  String name;
+  String name; // TODO:: remove
 
   @HiveField(3)
   Host? host;

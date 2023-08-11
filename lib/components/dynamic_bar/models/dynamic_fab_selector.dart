@@ -4,5 +4,18 @@ import 'package:get_it/get_it.dart';
 
 mixin DynamicFabSelector {
   DynamicBarState get bar => GetIt.I.get<DynamicBarState>();
-  setFab(BuildContext context);
+  final ValueNotifier<BuildContext?> built = ValueNotifier(null);
+
+  void setFab(BuildContext context);
+
+  void fabOnceBuilt(BuildContext context) {
+    if (built.value != null) {
+      setFab(context);
+      built.removeListener(() {});
+    } else {
+      built.addListener(() {
+        setFab(context);
+      });
+    }
+  }
 }

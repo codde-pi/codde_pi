@@ -9,8 +9,6 @@ abstract class _CoddeControllerStore with Store {
   @observable
   ControllerWidgetMode mode;
   @observable
-  String? executable;
-  @observable
   bool reload = false;
 
   _CoddeControllerStore({this.mode = ControllerWidgetMode.player});
@@ -30,12 +28,6 @@ abstract class _CoddeControllerStore with Store {
     mode == ControllerWidgetMode.editor
         ? ControllerWidgetMode.player
         : ControllerWidgetMode.editor;
-  }
-
-  @action
-  void setExecutable({required String deviceUid, required String command}) {
-    // TODO: do something with deviceUid
-    executable = command;
   }
 
   @action

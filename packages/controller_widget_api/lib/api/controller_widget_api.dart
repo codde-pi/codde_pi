@@ -17,7 +17,7 @@ class ControllerWidgetApi {
         controllerWidgetStreamController =
             BehaviorSubject<Map<int, ControllerWidget>>.seeded(widgets ?? {});
 
-  final mapStreamController;
+  final BehaviorSubject<ControllerMap> mapStreamController;
   final controllerWidgetStreamController;
   final backend = GetIt.I.get<CoddeBackend>();
 
@@ -37,12 +37,19 @@ class ControllerWidgetApi {
     return File(map.path).delete();
   }
 
-  String? editProperties(ControllerProperties props) {
-    final map = mapStreamController.value;
-    map.properties = map.properties
-        .copyWith(executable: props.executable, protocol: props.protocol);
+  void updateMap(ControllerMap map) {
     mapStreamController.add(map);
-    return mapStreamController.value.properties.executable;
+  }
+
+  String? editProperties(ControllerProperties props) {
+    ControllerMap map = mapStreamController.value;
+    map = map.copyWith(
+        properties: map.properties != null
+            ? map.properties!.copyWith(
+                executable: props.executable, deviceId: props.deviceId)
+            : props);
+    mapStreamController.add(map);
+    return mapStreamController.value.properties!.executable;
   }
 
   ControllerWidget? removeWidget(int id) {
@@ -87,7 +94,8 @@ class ControllerWidgetApi {
 
   ControllerWidget addWidget(ControllerWidget widget) {
     // file list stream event
-    final files = Map.of(controllerWidgetStreamController.value);
+    final Map<int, ControllerWidget> files =
+        Map.of(controllerWidgetStreamController.value);
     files[widget.id] = widget;
     controllerWidgetStreamController.add(files);
     var newMap =
@@ -144,13 +152,15 @@ class ControllerWidgetApi {
     builder.processing('xml', 'version="1.0"');
     builder.attribute('encoding', 'UTF-8');
     // map
+    final width = (map.width! / ControllerMap.TILE_SIZE).floor();
+    final height = (map.height! / ControllerMap.TILE_SIZE).floor();
     builder.element('map', nest: () {
       builder.attribute('version', '1.9');
       builder.attribute("tiledversion", "1.9.2");
       builder.attribute("orientation", "orthogonal");
       builder.attribute("renderorder", "right-down");
-      builder.attribute("width", map.width);
-      builder.attribute("height", map.height);
+      builder.attribute("width", width);
+      builder.attribute("height", height);
       builder.attribute("tilewidth", ControllerMap.TILE_SIZE);
       builder.attribute("tileheight", ControllerMap.TILE_SIZE);
       builder.attribute("infinite", "0");
@@ -194,12 +204,12 @@ class ControllerWidgetApi {
       builder.element('layer', nest: () {
         builder.attribute('id', 1);
         builder.attribute('name', 'datalayer');
-        builder.attribute("width", map.width);
-        builder.attribute("height", map.height);
+        builder.attribute("width", width);
+        builder.attribute("height", height);
         builder.element('data', nest: () {
           builder.attribute('encoding', 'csv');
-          builder.text(
-              List.generate(map.width! * map.height!, (index) => 0).join(','));
+          builder.text(List.generate((width * height).floor(), (int index) => 0)
+              .join(','));
         });
       });
       // widgets
@@ -209,14 +219,18 @@ class ControllerWidgetApi {
       // });
     });
     final document = builder.buildDocument();
-    return backend.save(map.path, document.toXmlString());
+    return backend.create(map.path, content: document.toXmlString());
   }
 
-  Future<FileEntity> saveMap() {
+  Future<FileEntity> saveMap() async {
     final map = mapStreamController.value;
     final widgets = Map.of(controllerWidgetStreamController.value);
-    final file = new File(map.path);
-    final document = XmlDocument.parse(file.readAsStringSync());
+    String file = '';
+    await backend.read(map.path).then((value) => value.forEach((element) {
+          file += element;
+          file += "\n";
+        }));
+    final document = XmlDocument.parse(file);
     // widgets
     List<int> existingWgts = [];
     document.rootElement
@@ -282,6 +296,23 @@ class ControllerWidgetApi {
           .setAttribute('nextobjectid', map.nextObjectId.toString());
     }
 
+    return backend.save(map.path, document.toXmlString());
+  }
+
+  Future<FileEntity> saveProperties() async {
+    ControllerMap map = mapStreamController.value;
+    assert(map.properties != null, "Some properties should be set");
+    String content = '';
+    await backend.read(map.path).then((value) => value.forEach((element) {
+          content += element;
+          content += "\n";
+        }));
+    final document = XmlDocument.parse(content);
+    final xmlPropertiesItems = document.rootElement.findElements('properties');
+    if (xmlPropertiesItems.isNotEmpty)
+      xmlPropertiesItems.first.replace(map.properties!.toXml());
+    else
+      document.rootElement.children.add(map.properties!.toXml());
     return backend.save(map.path, document.toXmlString());
   }
 }

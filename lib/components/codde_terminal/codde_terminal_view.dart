@@ -23,8 +23,6 @@ class CoddeTerminalView extends StatefulWidget {
 }
 
 class _CoddeTerminalView extends State<CoddeTerminalView> {
-  late SSHSession? shell;
-  late final Pty pty;
   final backend = GetIt.I.get<CoddeBackend>();
   String title = '';
   Terminal terminal =
@@ -33,23 +31,29 @@ class _CoddeTerminalView extends State<CoddeTerminalView> {
   @override
   void initState() {
     super.initState();
-    if (backend.location == BackendLocation.server) {
+    /* if (backend.location == BackendLocation.server) {
       initSshTerminal();
     } else {
       initPty();
-    }
+    } */
   }
 
-  void initShell() async {
-    shell = await backend.session.shell(
-        pty: SSHPtyConfig(
-            width: terminal.viewWidth, height: terminal.viewHeight));
+  @override
+  void dispose() {
+    if (backend.location == BackendLocation.server) {
+      (backend.shell as SSHSession).close();
+    } else {
+      (backend.shell as Pty).kill();
+    }
+    backend.shell == null;
+    super.dispose();
   }
 
   Future<void> initSshTerminal() async {
-    shell = await backend.session.shell(
+    backend.shell ??= await backend.session?.shell(
         pty: SSHPtyConfig(
             width: terminal.viewWidth, height: terminal.viewHeight));
+
     terminal.buffer.clear();
     terminal.buffer.setCursor(0, 0);
 
@@ -58,46 +62,46 @@ class _CoddeTerminalView extends State<CoddeTerminalView> {
     };
 
     terminal.onResize = (width, height, pixelWidth, pixelHeight) {
-      shell?.resizeTerminal(width, height, pixelWidth, pixelHeight);
+      backend.shell?.resizeTerminal(width, height, pixelWidth, pixelHeight);
     };
 
     terminal.onOutput = (data) {
-      shell?.write(utf8.encode(data) as Uint8List);
+      backend.shell?.write(utf8.encode(data) as Uint8List);
     };
 
-    shell!.stdout
+    backend.shell!.stdout
         .cast<List<int>>()
         .transform(const Utf8Decoder())
         .listen(terminal.write);
 
-    shell!.stderr
+    backend.shell!.stderr
         .cast<List<int>>()
         .transform(const Utf8Decoder())
         .listen(terminal.write);
   }
 
   void initPty() {
-    pty = Pty.start(
+    backend.shell ??= Pty.start(
       'sh', // bash
       columns: terminal.viewWidth,
       rows: terminal.viewHeight,
     );
 
-    pty.output
+    backend.shell.output
         .cast<List<int>>()
-        .transform(Utf8Decoder())
+        .transform(const Utf8Decoder())
         .listen(terminal.write);
 
-    pty.exitCode.then((code) {
+    backend.shell.exitCode.then((code) {
       terminal.write('the process exited with exit code $code');
     });
 
     terminal.onOutput = (data) {
-      pty.write(const Utf8Encoder().convert(data));
+      backend.shell.write(const Utf8Encoder().convert(data));
     };
 
     terminal.onResize = (w, h, pw, ph) {
-      pty.resize(h, w);
+      backend.shell.resize(h, w);
     };
   }
 

@@ -8,8 +8,20 @@ class AddControllerMapStore = _AddControllerMapStore
 abstract class _AddControllerMapStore with Store {
   @observable
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  @observable
+  String? fileExistsErr;
   @action
   bool validate() {
     return formKey.currentState!.validate();
+  }
+
+  @action
+  void raiseFileExistsError(String error) {
+    fileExistsErr = error;
+  }
+
+  @action
+  void hideFileExistsError() {
+    fileExistsErr = null;
   }
 }

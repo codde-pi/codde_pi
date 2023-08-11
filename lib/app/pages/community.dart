@@ -2,7 +2,7 @@ import 'package:codde_pi/app/pages/soon/soon.dart';
 import 'package:flutter/material.dart';
 
 class Community extends Soon {
-  const Community({super.key}) : super(title: "Community");
+  Community({super.key}) : super(title: "Community");
 
   @override
   Widget build(BuildContext context) {

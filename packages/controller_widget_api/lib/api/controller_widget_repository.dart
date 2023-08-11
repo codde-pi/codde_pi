@@ -21,6 +21,10 @@ class ControllerWidgetRepository {
     return controllerWidgetApi.deleteMap(map);
   }
 
+  void updateMap(ControllerMap map) {
+    return controllerWidgetApi.updateMap(map);
+  }
+
   ControllerWidget addWidget(ControllerWidget widget) {
     return controllerWidgetApi.addWidget(widget);
   }
@@ -51,5 +55,9 @@ class ControllerWidgetRepository {
 
   String? editProperties(ControllerProperties props) {
     return controllerWidgetApi.editProperties(props);
+  }
+
+  Future<FileEntity> saveProperties() {
+    return controllerWidgetApi.saveProperties();
   }
 }

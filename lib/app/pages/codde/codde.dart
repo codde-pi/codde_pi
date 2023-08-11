@@ -1,4 +1,5 @@
 import 'package:codde_backend/codde_backend.dart';
+import 'package:codde_editor/codde_editor.dart';
 import 'package:codde_pi/app/pages/codde/state/codde_state.dart';
 import 'package:codde_pi/components/codde_controller/codde_controller.dart';
 import 'package:codde_pi/components/dynamic_bar/dynamic_bar.dart';
@@ -83,6 +84,7 @@ class _Codde extends State<Codde> {
         if (snapshot.hasError) {
           return Center(
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Padding(
                   padding: const EdgeInsets.only(
@@ -111,6 +113,9 @@ class _Codde extends State<Codde> {
               ),
               Provider<CoddeState>(
                 create: (_) => CoddeState(project),
+              ),
+              Provider<CoddeEditorCubit>(
+                create: (_) => CoddeEditorCubit(path: project.path),
               ),
             ],
             builder: (context, widget) {

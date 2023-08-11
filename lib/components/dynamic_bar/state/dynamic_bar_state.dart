@@ -54,11 +54,10 @@ abstract class _DynamicBarState with Store {
   }
 
   // turn to ation since [pages] causes side effets
-  @action
-  ObservableList<Widget> pages() {
+  @computed
+  ObservableList<Widget> get pages {
     final list = ObservableList.of(
         paged.map<Widget>((e) => e.builtWidget ?? e.widget()).toList());
-    updateFab();
     return list;
   }
 

@@ -89,3 +89,11 @@ class ControllerPropertiesChanged extends EditControllerEvent {
   @override // TODO: implement props
   List<Object> get props => [properties];
 }
+
+class ControllerMapDefined extends EditControllerEvent {
+  ControllerMapDefined(this.map);
+
+  final ControllerMap map;
+  @override // TODO: implement props
+  List<Object> get props => [map];
+}

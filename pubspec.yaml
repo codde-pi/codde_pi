@@ -52,7 +52,6 @@ dependencies:
 
   # types
   path: ^1.8.2
-  path_provider: ^2.0.11
   file_manager: ^1.0.1
   json_serializable: ^6.5.4
   equatable: ^2.0.5
@@ -104,6 +103,7 @@ dependencies:
   uuid: ^3.0.7
   dart_ping: ^7.0.2
   flutter_pty: ^0.4.0
+  flutter_code_editor: ^0.3.0
 
 dev_dependencies:
   flutter_test:

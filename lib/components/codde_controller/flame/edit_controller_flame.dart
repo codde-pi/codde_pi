@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:codde_backend/codde_backend.dart';
 import 'package:codde_pi/codde_widgets/codde_widgets.dart';
 import 'package:codde_pi/components/codde_controller/codde_controller.dart';
 import 'package:codde_pi/components/codde_controller/utils/hatch_background.dart';
@@ -11,6 +12,7 @@ import 'package:flame_svg/flame_svg.dart';
 import 'package:flame_tiled/flame_tiled.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get_it/get_it.dart';
 
 class EditControllerFlame extends FlameGame {
   EditControllerFlame(this.edit_controller_bloc);
@@ -46,6 +48,7 @@ class EditControllerFlameView extends PositionComponent with HasGameRef {
       ControllerWidgetProvider(ControllerWidgetMode.editor);
   late TiledComponent mapComponent;
   final reader = WidgetReader();
+  final backend = GetIt.I.get<CoddeBackend>();
 
   @override
   Future<void> onLoad() async {
@@ -53,7 +56,13 @@ class EditControllerFlameView extends PositionComponent with HasGameRef {
 
     add(reader);
 
-    final content = await File(reader.bloc.state.map!.path).readAsString();
+    String content = '';
+    await backend
+        .read(reader.bloc.state.map!.path)
+        .then((value) => value.forEach((element) {
+              content += element;
+              content += "\n";
+            }));
     mapComponent = await load(content, Vector2.all(100));
     add(mapComponent);
   }
@@ -61,6 +70,11 @@ class EditControllerFlameView extends PositionComponent with HasGameRef {
   @override
   void onMount() {
     if (gameRef.buildContext != null) {
+      if (!reader.bloc.state.map!.xmlRead()) {
+        reader.bloc.add(ControllerMapDefined(reader.bloc.state.map!.copyWith(
+            nextLayerId: mapComponent.tileMap.map.nextLayerId,
+            nextObjectId: mapComponent.tileMap.map.nextObjectId)));
+      }
       if (reader.bloc.state.widgets.isEmpty) {
         List<Layer> layers = mapComponent.tileMap.map.layers;
         reader.bloc.add(ControllerLayerParsed(layers));
