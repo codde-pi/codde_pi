@@ -3,8 +3,8 @@ import 'package:controller_widget_api/controller_widget_api.dart';
 import 'package:flutter/material.dart';
 
 //Copy this CustomPainter code to the Bottom of the File
-class SimpleButtonPainter extends WidgetPainter {
-  SimpleButtonPainter({required super.colorscheme, super.pressed, super.style});
+class PressButtonPainter extends WidgetPainter {
+  PressButtonPainter({required super.colorscheme, super.pressed, super.style});
 
   @override
   void paint(Canvas canvas, Size size) {

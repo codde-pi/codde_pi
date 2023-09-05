@@ -37,7 +37,8 @@ migrate_working_dir/
 *.g.dart
 *.freezed.dart
 **/pubspec.lock
-**/GeneratedPluginRegistrant
+**/GeneratedPluginRegistrant*
+**/generated_*
 
 # Symbolication related
 app.*.symbols

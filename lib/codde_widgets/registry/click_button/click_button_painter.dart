@@ -3,14 +3,17 @@ import 'package:controller_widget_api/controller_widget_api.dart';
 import 'package:flutter/material.dart';
 
 //Copy this CustomPainter code to the Bottom of the File
-class SimpleButtonPainter extends WidgetPainter {
-  SimpleButtonPainter({required super.colorscheme, super.pressed, super.style});
+class ClickButtonPainter extends WidgetPainter {
+  ClickButtonPainter(
+      {required super.colorscheme,
+      super.pressed,
+      super.style = ControllerStyle.material});
 
   @override
   void paint(Canvas canvas, Size size) {
     Paint paint0Stroke = Paint()
       ..style = PaintingStyle.stroke
-      ..strokeWidth = size.width * 0.08416667;
+      ..strokeWidth = size.width * 0.3;
     paint0Stroke.color = colorscheme.onSurface;
     paint0Stroke.strokeCap = StrokeCap.round;
     paint0Stroke.strokeJoin = StrokeJoin.round;

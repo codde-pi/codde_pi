@@ -1,9 +1,9 @@
 import 'package:mobx/mobx.dart';
 part 'dashboard_store.g.dart';
 
-class DashboardStore = _DashboardStore with _$DashboardStore;
+class CoddeHostStore = _CoddeHostStore with _$CoddeHostStore;
 
-abstract class _DashboardStore with Store {
+abstract class _CoddeHostStore with Store {
   @observable
   bool needCoddeReload = false;
   @action

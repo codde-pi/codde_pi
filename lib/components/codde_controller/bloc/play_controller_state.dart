@@ -9,5 +9,5 @@ class PlayControllerState with _$PlayControllerState {
   const factory PlayControllerState({ControllerProperties? properties}) =
       _PlayControllerState;
 
-  String? get executable => properties?.executable;
+  String? get executable => properties?.getValue("executable");
 }

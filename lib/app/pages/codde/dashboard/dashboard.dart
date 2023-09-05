@@ -12,9 +12,9 @@ import 'package:provider/provider.dart';
 
 import 'store/dashboard_store.dart';
 
-class Dashboard extends DynamicBarWidget {
-  Dashboard({super.key});
-  final store = DashboardStore();
+class CoddeHost extends DynamicBarWidget {
+  CoddeHost({super.key});
+  final store = CoddeHostStore();
 
   @override
   Widget build(BuildContext context) {

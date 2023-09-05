@@ -15,6 +15,7 @@ class WidgetEditor extends WidgetComponent
   WidgetEditor({
     required super.id,
     required super.class_,
+    super.text,
     super.painter,
     super.position,
     super.size,

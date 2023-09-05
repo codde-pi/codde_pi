@@ -4,45 +4,48 @@ import 'package:flame_tiled/flame_tiled.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:xml/xml.dart';
 
-part 'controller_properties.freezed.dart';
-part 'controller_properties.g.dart';
+class ControllerPropertiesException {}
 
-@freezed
-class ControllerProperties with _$ControllerProperties {
-  const ControllerProperties._();
-  factory ControllerProperties({
-    required int deviceId,
-    String? executable,
-  }) = _ControllerProperties;
-  factory ControllerProperties.fromJson(Map<String, Object?> json) =>
-      _$ControllerPropertiesFromJson(json);
+class ControllerProperties extends CustomProperties {
+  ControllerProperties(super.byName);
 
   XmlNode toXml() {
-    return XmlElement(XmlName('properties'), [], [
-      XmlElement(XmlName('property'), [
-        XmlAttribute(XmlName("name"), "deviceId"),
-        XmlAttribute(XmlName("value"), deviceId.toString()),
-      ]),
-      if (executable != null)
-        XmlElement(XmlName('property'), [
-          XmlAttribute(XmlName("name"), "executable"),
-          XmlAttribute(XmlName("value"), executable!),
-        ]),
-    ]);
+    Iterable<XmlElement> properties =
+        map((prop) => XmlElement(XmlName('property'), [
+              XmlAttribute(XmlName("name"), prop.name),
+              XmlAttribute(XmlName("value"), prop.value.toString()),
+              XmlAttribute(XmlName("type"), prop.type.name),
+            ]));
+    return XmlElement(XmlName('properties'), [], properties);
   }
 
-  @Assert("props.getValue('deviceId') != null",
-      "fromFlame: [deviceId] is mandatory")
-  factory ControllerProperties.fromFlame(CustomProperties props) {
-    /* ControllerProperties.fromJson(
-          Map.fromEntries(props.map<MapEntry<String, dynamic>>((e) {
-        return MapEntry(e.name, e.value);
-      }))); */
-    final int? deviceId = int.tryParse(props.getValue('deviceId'));
-    final String? executable = props.getValue('executable');
-    if (deviceId == null) throw ControllerPropertiesException;
-    return ControllerProperties(deviceId: deviceId, executable: executable);
+  void update(Map<String, Property<Object>> map) {
+    map.forEach((key, value) =>
+        byName.update(key, (v) => value, ifAbsent: () => value));
+  }
+
+  void updateItem(
+          String key, Property<Object> Function(Property<Object>) value) =>
+      byName.update(key, value);
+  ControllerProperties copyWith(Map<String, Property<Object>> map) {
+    update(map);
+    return ControllerProperties(byName);
+  }
+
+  Map toJson() {
+    return byName.map((key, value) => MapEntry(key, {
+          "name": value.name,
+          "type": value.type.toString(),
+          "value": value.value.toString()
+        }));
+  }
+
+  factory ControllerProperties.fromJson(
+      Map<String, Map<String, dynamic>> value) {
+    Map<String, Property<Object>> map = value.map((key, value) => MapEntry(
+        key,
+        Property(
+            name: value["name"], type: value["type"], value: value["value"])));
+    return ControllerProperties(map);
   }
 }
-
-class ControllerPropertiesException {}

@@ -1,63 +1,42 @@
 import 'package:controller_widget_api/controller_widget_api.dart';
 import 'package:equatable/equatable.dart';
-import 'package:json_annotation/json_annotation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:xml/xml.dart';
 
+part 'controller_widget.freezed.dart';
 part 'controller_widget.g.dart';
 
-@JsonSerializable()
-class ControllerWidget extends Equatable {
-  final int id;
+@freezed
+class ControllerWidget with _$ControllerWidget {
+  /* final int id;
   final int x;
   final int y;
   final ControllerClass? class_;
   final String? nickname;
   final ControllerBackground? background;
   final List<ControllerWidget> widgets;
+  final ControllerProperties properties; */
 
-  ControllerWidget(
-      {required this.id,
-      int? x,
-      int? y,
-      String? nickname,
-      ControllerClass? class_,
-      ControllerBackground? background,
-      List<ControllerWidget>? widgets})
-      : x = x ?? 0,
-        y = y ?? 0,
-        nickname = nickname,
-        class_ = class_,
-        background = background,
-        widgets = widgets ?? <ControllerWidget>[];
+  const ControllerWidget._();
+  const factory ControllerWidget(
+          {required int id,
+          @Default(0) int x,
+          @Default(0) int y,
+          String? nickname,
+          ControllerClass? class_,
+          ControllerBackground? background,
+          ControllerProperties? properties,
+          String? text,
+          @Default(<ControllerWidget>[]) List<ControllerWidget> widgets}) =
+      _ControllerWidget;
 
   @override
-  List<Object?> get props => [id, x, y, nickname, class_, background, widgets];
-  String get name => "$class_#$id";
+  // List<Object?> get props => [id, x, y, nickname, class_, background, widgets];
+  String get name => "${class_}_$id";
 
-  ControllerWidget copyWith(
-      {int? id,
-      int? x,
-      int? y,
-      String? nickname,
-      ControllerClass? class_,
-      ControllerBackground? background,
-      List<ControllerWidget>? widgets}) {
-    return ControllerWidget(
-        id: id ?? this.id,
-        x: x ?? this.x,
-        y: y ?? this.y,
-        background: background ?? this.background,
-        widgets: widgets ?? this.widgets,
-        nickname: nickname ?? this.nickname,
-        class_: class_ ?? this.class_);
-  }
-
-  /// Deserializes the given [JsonMap] into a [ControllerWidget].
-  static ControllerWidget fromJson(Map<String, dynamic> json) =>
+  /// Deserializes the given [Map] into a [ControllerWidget].
+  factory ControllerWidget.fromJson(Map<String, dynamic> json) =>
       _$ControllerWidgetFromJson(json);
-
-  /// Converts this [ControllerWidget] into a [Map].
-  Map<String, dynamic> toJson() => _$ControllerWidgetToJson(this);
 
   XmlElement toXml() {
     final Iterable<XmlAttribute> attributes = toJson()

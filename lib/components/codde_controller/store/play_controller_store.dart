@@ -1,4 +1,5 @@
 import 'package:controller_widget_api/controller_widget_api.dart';
+import 'package:flame_tiled/flame_tiled.dart';
 import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
 
@@ -10,7 +11,7 @@ abstract class _PlayControllerStore with Store {
   @observable
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
   @observable
-  ControllerProperties? properties;
+  CustomProperties? properties;
 
   @action
   void toggleEndDrawer() {
@@ -25,10 +26,10 @@ abstract class _PlayControllerStore with Store {
   }
 
   @action
-  setProperties(ControllerProperties? props) {
+  setProperties(CustomProperties? props) {
     properties = props;
   }
 
   @computed
-  String? get executable => properties?.executable;
+  String? get executable => properties?.getValue<String>("executable");
 }

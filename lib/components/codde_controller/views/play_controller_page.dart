@@ -11,7 +11,9 @@ import 'package:codde_pi/main.dart';
 import 'package:controller_widget_api/controller_widget_api.dart';
 import 'package:dartssh2/dartssh2.dart';
 import 'package:flame/game.dart';
+import 'package:flame_tiled/flame_tiled.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' as material;
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:get_it/get_it.dart';
 import 'package:provider/provider.dart';
@@ -100,26 +102,9 @@ class PlayControllerPageState
             builder: (context) => PopupMenuButton(
               key: popUpMenuKey,
               itemBuilder: (_) => <PopupMenuItem>[
-                /* PopupMenuItem(
-                value: 0,
-                child: const Text('Edit properties'),
-                onTap: () {
-                  WidgetsBinding.instance.addPostFrameCallback((_) async {
-                    final ControllerProperties? props =
-                        await Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => ControllerPropertiesDialog(),
-                      ),
-                    );
-                    if (props != null) {
-                      changeProperties(context, props);
-                    }
-                  });
-                },
-              ), */
                 PopupMenuItem(
                   value: 0,
-                  child: const Text('Controlled device'),
+                  child: const material.Text('Controlled device'),
                   onTap: () {
                     WidgetsBinding.instance.addPostFrameCallback((_) async {
                       // final _store = GetIt.I.get<PlayControllerStore>();
@@ -138,7 +123,7 @@ class PlayControllerPageState
             ),
           )
         ],
-        title: Text(widget.path.split('/').last),
+        title: material.Text(widget.path.split('/').last),
       ),
       endDrawer: StdControllerView(),
       body: /* Provider(
@@ -175,7 +160,7 @@ class PlayControllerPageState
     } catch (e) {
       print('raise error $e');
       ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(e.toString())));
+          .showSnackBar(SnackBar(content: material.Text(e.toString())));
       return;
     } finally {
       // if done, refresh
@@ -185,4 +170,5 @@ class PlayControllerPageState
 }
 
 SnackBar runResSnackBar({required exitCode, required signal}) => SnackBar(
-    content: Text("Program done. \nexitCode: $exitCode, Signal: $signal"));
+    content:
+        material.Text("Program done. \nexitCode: $exitCode, Signal: $signal"));

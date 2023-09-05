@@ -13,6 +13,7 @@ import 'package:flame/components.dart';
 import 'package:flame/game.dart';
 import 'package:flame_bloc/flame_bloc.dart';
 import 'package:flame_coddecom/flame_coddecom.dart';
+import 'package:flame_mjpeg/flame_mjpeg.dart';
 import 'package:flame_tiled/flame_tiled.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hive/hive.dart';
@@ -37,7 +38,7 @@ class PlayControllerWrapper extends Component
   String path;
   late TiledComponent mapComponent;
   final backend = GetIt.I.get<CoddeBackend>();
-  ControllerProperties? props;
+  late CustomProperties props;
   PlayControllerWrapper(this.path);
   @override
   Future<void> onLoad() async {
@@ -50,14 +51,15 @@ class PlayControllerWrapper extends Component
     mapComponent = await load(content, Vector2.all(16));
     // load props
     try {
-      props =
-          ControllerProperties.fromFlame(mapComponent.tileMap.map.properties);
+      props = mapComponent.tileMap.map.properties;
     } catch (e) {
       print('ERROR: $e');
     } //on ControllerPropertiesException catch (_) {}
-    if (props != null) {
-      final Device? device = Hive.box<Device>("devices").get(props!.deviceId);
-      assert(device?.address != null, "Address is not device :(");
+    final Device? device =
+        Hive.box<Device>("devices").get(props!.getValue<int>("deviceId"));
+    if (device != null) {
+      // TODO: remove assert, disable run button and show snackbar warning
+      assert(device.address != null, "Address is not device :(");
       final view = PlayControllerView(
           path: path,
           builder: ProtocolBuilder().useSocketIO(
@@ -85,7 +87,7 @@ class PlayControllerWrapper extends Component
           PlayControllerStore>(); //Provider.of<CoddeControllerStore>(gameRef.buildContext!);
     } */
     print('$runtimeType assign $props');
-    bloc.add(PlayControllerPropsChanged(props));
+    bloc.add(PlayControllerPropsChanged(ControllerProperties(props.byName)));
   }
 
   static Future<TiledComponent> load(

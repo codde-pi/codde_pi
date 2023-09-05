@@ -1,4 +1,5 @@
 import 'package:controller_widget_api/controller_widget_api.dart';
+import 'package:flame_tiled/flame_tiled.dart';
 import 'package:mobx/mobx.dart';
 
 part 'codde_device_store.g.dart';
@@ -24,6 +25,9 @@ abstract class _CoddeDeviceStore with Store {
 
   @action
   void addExecutable(String exec) {
-    if (props != null) props = props!.copyWith(executable: exec);
+    props?.updateItem(
+        exec,
+        (value) => Property(
+            name: "executable", type: PropertyType.string, value: exec));
   }
 }

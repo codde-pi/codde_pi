@@ -1,12 +1,16 @@
 import 'package:codde_pi/codde_widgets/templates/widget_component.dart';
 import 'package:codde_pi/codde_widgets/templates/widget_painter.dart';
+import 'package:controller_widget_api/controller_widget_api.dart';
 import 'package:flame/events.dart';
 import 'package:flame_coddecom/flame_coddecom.dart';
 
 class WidgetPlayer extends WidgetComponent with TapCallbacks, HasCoddeCom {
+  ControllerProperties? properties;
   WidgetPlayer({
+    this.properties,
     required super.id,
     required super.class_,
+    super.text,
     super.painter,
     super.position,
     super.size,

@@ -37,7 +37,7 @@ class DynamicBarPager {
       iconData: Icons.toys); */
   static final dashboard = DynamicBarDestination(
       name: "dashboard",
-      widget: () => Dashboard(),
+      widget: () => CoddeHost(),
       index: 2,
       iconData: Icons.dns);
   static final terminal = DynamicBarDestination(

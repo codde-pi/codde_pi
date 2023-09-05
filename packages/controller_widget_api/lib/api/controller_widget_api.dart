@@ -43,13 +43,9 @@ class ControllerWidgetApi {
 
   String? editProperties(ControllerProperties props) {
     ControllerMap map = mapStreamController.value;
-    map = map.copyWith(
-        properties: map.properties != null
-            ? map.properties!.copyWith(
-                executable: props.executable, deviceId: props.deviceId)
-            : props);
+    map = map.copyWith(properties: props);
     mapStreamController.add(map);
-    return mapStreamController.value.properties!.executable;
+    return mapStreamController.value.properties!.getValue("executable");
   }
 
   ControllerWidget? removeWidget(int id) {
@@ -145,8 +141,9 @@ class ControllerWidgetApi {
 
   Future<FileEntity> createMap() {
     final map = mapStreamController.value;
-    map.toJson().values.forEach((value) {
-      assert(value != null);
+    // TODO: clarify. Assert doesn't catch error
+    map.toJson().entries.forEach((entry) {
+      if (entry.key != "properties") assert(entry.value != null);
     });
     final builder = XmlBuilder();
     builder.processing('xml', 'version="1.0"');

@@ -7,7 +7,14 @@ class WidgetPainter extends CustomPainter {
   ControllerStyle style;
 
   WidgetPainter(
-      {required this.colorscheme, this.pressed = false, required this.style});
+      {required this.colorscheme, this.pressed = false, ControllerStyle? style})
+      : this.style = style ?? ControllerStyle.material;
+
+  factory WidgetPainter.call(
+          {required ColorScheme colorscheme,
+          bool pressed = false,
+          required ControllerStyle style}) =>
+      WidgetPainter(colorscheme: colorscheme, pressed: pressed, style: style);
 
   @override
   void paint(Canvas canvas, Size size) {
