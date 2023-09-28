@@ -1,6 +1,8 @@
 import 'dart:io';
 
+import 'package:codde_pi/components/project_launcher/steps/choose_project_type_step.dart';
 import 'package:codde_pi/main.dart';
+import 'package:codde_pi/services/db/host.dart';
 import 'package:codde_pi/services/db/project.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
@@ -19,11 +21,14 @@ Future<Project> createProject({required Project instance}) async {
   return instance;
 }
 
-Future<Project> createProjectFromScratch(String name) async {
+Future<Project> createProjectFromScratch(String name,
+    {ProjectType? type, Host? host}) async {
   final project = Project(
       dateCreated: DateTime.now(),
       dateModified: DateTime.now(),
       name: name,
+      type: type ?? ProjectType.controller,
+      host: host,
       path: await getApplicationSupportDirectory()
           .then((value) => join(value.path, name)));
   return createProject(instance: project);

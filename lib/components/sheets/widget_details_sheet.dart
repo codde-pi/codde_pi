@@ -38,7 +38,7 @@ class WidgetDetailsSheet extends BottomSheet {
           final widget = getWidget();
           posX.text = widget.x.toString();
           posY.text = widget.y.toString();
-          return Container(
+          return SizedBox(
             height: MediaQuery.of(context).size.height / 2,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
