@@ -27,7 +27,7 @@ class NewHostDialog extends StatelessWidget {
           cancel: () => Navigator.pop(context),
           validate: (host) {
             createHost(host);
-            Navigator.pop(context);
+            Navigator.pop(context, host);
           },
         ),
       ),

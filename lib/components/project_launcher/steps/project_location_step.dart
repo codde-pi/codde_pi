@@ -12,7 +12,7 @@ import 'package:hive/hive.dart';
 import 'package:path/path.dart' as pth;
 import 'package:path_provider/path_provider.dart';
 
-enum ProjectLocationType { internal, system, ssh }
+enum ProjectLocationType { internal, system, ssh, usb }
 
 class ProjectLocationStep extends StatefulWidget {
   @override

@@ -2,8 +2,6 @@ import 'package:codde_backend/codde_backend.dart';
 import 'package:codde_editor/codde_editor.dart';
 import 'package:codde_pi/app/pages/codde/state/codde_state.dart';
 import 'package:codde_pi/components/codde_controller/codde_controller.dart';
-import 'package:codde_pi/components/dynamic_bar/dynamic_bar.dart';
-import 'package:codde_pi/components/dynamic_bar/models/dynamic_bar_pager.dart';
 import 'package:codde_pi/components/dynamic_bar/state/dynamic_bar_state.dart';
 import 'package:codde_pi/main.dart';
 import 'package:codde_pi/services/db/project.dart';
@@ -120,16 +118,8 @@ class _Codde extends State<Codde> {
             ],
             builder: (context, widget) {
               print('registered');
-              bar.defineDestinations(context, [
-                DynamicBarPager.controller,
-                DynamicBarPager.editor,
-                DynamicBarPager.dashboard,
-                DynamicBarPager.terminal,
-                DynamicBarPager.diagram,
-              ]);
-              return DynamicBar(
-                nested: true,
-                popNested: () => unregisterBackend(),
+              return NavigationBar(
+                popNested_: () => unregisterBackend(),
               );
             });
       },
