@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:codde_backend/codde_backend.dart';
 import 'package:codde_pi/codde_widgets/codde_widgets.dart';
 import 'package:codde_pi/components/codde_controller/codde_controller.dart';
+import 'package:codde_pi/components/codde_controller/flame/codde_tiled_component.dart';
 import 'package:codde_pi/components/codde_controller/utils/hatch_background.dart';
 import 'package:controller_widget_api/controller_widget_api.dart';
 import 'package:flame/components.dart';
@@ -63,7 +64,7 @@ class EditControllerFlameView extends PositionComponent with HasGameRef {
               content += element;
               content += "\n";
             }));
-    mapComponent = await load(content, Vector2.all(100));
+    mapComponent = await CoddeTiledComponent.load(content, provider: provider);
     add(mapComponent);
   }
 
@@ -102,20 +103,4 @@ class EditControllerFlameView extends PositionComponent with HasGameRef {
           BlendMode.color);
     }
   } */
-
-  static Future<TiledComponent> load(
-    String fileContent,
-    Vector2 destTileSize, {
-    int? priority,
-    bool? ignoreFlip,
-  }) async {
-    return TiledComponent(
-      await RenderableTiledMap.fromString(
-        fileContent,
-        destTileSize,
-        ignoreFlip: ignoreFlip,
-      ),
-      priority: priority,
-    );
-  }
 }

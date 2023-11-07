@@ -7,6 +7,7 @@ import 'package:codde_pi/components/codde_controller/codde_controller.dart';
 import 'package:codde_pi/components/dialogs/codde_device_dialog.dart';
 import 'package:codde_pi/components/dynamic_bar/models/dynamic_bar_widget.dart';
 import 'package:codde_pi/components/dynamic_bar/state/dynamic_bar_state.dart';
+import 'package:codde_pi/components/navigation_bar/navigation_bar_state.dart';
 import 'package:codde_pi/main.dart';
 import 'package:controller_widget_api/controller_widget_api.dart';
 import 'package:dartssh2/dartssh2.dart';
@@ -30,7 +31,7 @@ class PlayControllerPage extends DynamicBarStatefulWidget {
 
 class PlayControllerPageState
     extends DynamicBarStateWidget<PlayControllerPage> {
-  final bar = GetIt.I.get<DynamicBarState>();
+  final bar = GetIt.I.get<NavigationBarState>();
   GlobalKey<PopupMenuButtonState<int>> popUpMenuKey =
       GlobalKey<PopupMenuButtonState<int>>();
 
