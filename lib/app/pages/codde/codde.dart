@@ -2,7 +2,7 @@ import 'package:codde_backend/codde_backend.dart';
 import 'package:codde_editor/codde_editor.dart';
 import 'package:codde_pi/app/pages/codde/state/codde_state.dart';
 import 'package:codde_pi/components/codde_controller/codde_controller.dart';
-import 'package:codde_pi/components/dynamic_bar/state/dynamic_bar_state.dart';
+import 'package:codde_pi/components/navigation_bar/navigation_bar.dart';
 import 'package:codde_pi/main.dart';
 import 'package:codde_pi/services/db/project.dart';
 import 'package:codde_pi/theme.dart';
@@ -26,7 +26,7 @@ class _Codde extends State<Codde> {
       await backend.open().then(
           (_) => GetIt.I.registerLazySingleton<CoddeBackend>(() => backend));
     }
-    /* ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+    /* ScaffoldMessenger.of(navigatorKey.currentContext!).showSnackBar(SnackBar(
       content: const Text("Connected !"),
       // backgroundColor: Theme.of(context).colorScheme.tertiary,
     )); */
@@ -53,7 +53,6 @@ class _Codde extends State<Codde> {
 
   @override
   Widget build(BuildContext context) {
-    final bar = GetIt.I.get<DynamicBarState>();
     final Project project =
         ModalRoute.of(context)!.settings.arguments as Project;
     print(project);
@@ -103,7 +102,6 @@ class _Codde extends State<Codde> {
             ),
           );
         }
-        print('UI setup OK');
         return MultiProvider(
             providers: [
               Provider<CoddeControllerStore>(
@@ -117,8 +115,8 @@ class _Codde extends State<Codde> {
               ),
             ],
             builder: (context, widget) {
-              print('registered');
-              return NavigationBar(
+              return NavBar(
+                nested: true,
                 popNested_: () => unregisterBackend(),
               );
             });

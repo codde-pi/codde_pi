@@ -1,10 +1,12 @@
 import 'package:codde_pi/app/pages/codde/codde.dart';
 import 'package:codde_pi/app/pages/home.dart';
+import 'package:codde_pi/app/pages/settings/settings.dart';
 import 'package:codde_pi/components/codde_controller/codde_controller.dart';
 import 'package:codde_pi/services/db/device.dart';
 import 'package:codde_pi/services/db/device_model.dart';
 import 'package:codde_pi/services/db/host.dart';
 import 'package:codde_pi/services/db/project.dart';
+import 'package:codde_pi/services/db/project_type.dart';
 import 'package:codde_pi/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -22,7 +24,9 @@ void main() async {
   await Hive.openBox<Device>('devices');
   Hive.registerAdapter(HostAdapter());
   await Hive.openBox<Host>('hosts');
-  Hive.registerAdapter(ProjectAdapter());
+  Hive
+    ..registerAdapter(ProjectTypeAdapter())
+    ..registerAdapter(ProjectAdapter());
   await Hive.openBox<Project>(projectsBox);
   runApp(const MyApp());
 }
@@ -43,7 +47,8 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => Home(),
         '/codde': (context) => Codde(),
-        '/controller': (_) => CoddeController()
+        '/controller': (_) => CoddeController(),
+        '/settings': (_) => Settings(),
       },
     );
   }

@@ -1,7 +1,8 @@
-import 'package:codde_pi/components/project_launcher/steps/choose_project_type_step.dart';
-import 'package:codde_pi/services/db/device.dart';
-import 'package:codde_pi/services/db/host.dart';
+import 'device.dart';
+import 'host.dart';
 import 'package:hive/hive.dart';
+
+import 'project_type.dart';
 
 part 'project.g.dart';
 

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:codde_backend/codde_backend.dart';
 import 'package:codde_com/codde_com.dart';
+import 'package:codde_pi/codde_widgets/codde_widgets.dart';
 import 'package:codde_pi/components/codde_controller/bloc/play_controller_bloc.dart';
 import 'package:codde_pi/components/codde_controller/bloc/play_controller_event.dart';
 import 'package:codde_pi/components/codde_controller/bloc/play_controller_state.dart';
@@ -48,7 +49,8 @@ class PlayControllerWrapper extends Component
     await backend.read(path).then((value) => value.forEach((element) {
           content += "$element\n";
         }));
-    mapComponent = await load(content, Vector2.all(16));
+    mapComponent = await CoddeTiledComponent.load(content,
+        provider: ControllerWidgetProvider(ControllerWidgetMode.player));
     // load props
     try {
       props = mapComponent.tileMap.map.properties;
@@ -88,22 +90,6 @@ class PlayControllerWrapper extends Component
     } */
     print('$runtimeType assign $props');
     bloc.add(PlayControllerPropsChanged(ControllerProperties(props.byName)));
-  }
-
-  static Future<TiledComponent> load(
-    String fileContent,
-    Vector2 destTileSize, {
-    int? priority,
-    bool? ignoreFlip,
-  }) async {
-    return CoddeTiledComponent(
-      await RenderableTiledMap.fromString(
-        fileContent,
-        destTileSize,
-        ignoreFlip: ignoreFlip,
-      ),
-      priority: priority,
-    );
   }
 }
 

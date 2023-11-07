@@ -1,6 +1,7 @@
-import 'package:codde_pi/components/project_launcher/steps/project_location_step.dart';
+import 'package:codde_pi/components/navigation_bar/navigation_bar_state.dart';
 import 'package:codde_pi/components/project_launcher/utils/project_launcher_utils.dart';
 import 'package:codde_pi/components/snackbars/not_implemented_snackbar.dart';
+import 'package:codde_pi/services/db/project.dart';
 import 'package:codde_pi/theme.dart';
 import 'package:flutter/material.dart';
 
@@ -39,7 +40,7 @@ class CreateProjectDialog extends SimpleDialog {
         SimpleDialogOption(
           onPressed: () async {
             if (store.validate()) {
-              createProjectFromScratch(projNameController.text).then(
+              createProjectFromScratch(context, projNameController.text).then(
                   (value) => goToProject(context: context, instance: value));
             }
           },
@@ -84,3 +85,5 @@ SimpleDialog openProjectDialog(BuildContext context) => SimpleDialog(
         ),
       ],
     );
+
+enum ProjectLocationType { internal, ssh, usb }

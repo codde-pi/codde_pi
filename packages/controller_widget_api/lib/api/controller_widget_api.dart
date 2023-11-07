@@ -19,7 +19,7 @@ class ControllerWidgetApi {
 
   final BehaviorSubject<ControllerMap> mapStreamController;
   final controllerWidgetStreamController;
-  final backend = GetIt.I.get<CoddeBackend>();
+  CoddeBackend get backend => GetIt.I.get<CoddeBackend>();
 
   Stream<Map<int, ControllerWidget>> streamWidgets() {
     return controllerWidgetStreamController.asBroadcastStream();
