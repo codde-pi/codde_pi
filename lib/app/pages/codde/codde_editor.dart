@@ -2,9 +2,7 @@ import 'package:codde_backend/codde_backend.dart';
 import 'package:codde_editor/codde_editor.dart';
 import 'package:codde_pi/components/dynamic_bar/models/dynamic_bar_widget.dart';
 import 'package:codde_editor/src/services/editor/code_field_repository.dart';
-import 'package:codde_pi/components/dynamic_bar/state/dynamic_bar_state.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_code_editor/flutter_code_editor.dart';
 import 'package:flutter_treeview/flutter_treeview.dart';
@@ -63,4 +61,10 @@ class CoddeEditor extends DynamicBarWidget {
             create: (_) => CoddeEditorCubit(path: path),
             child: CoddeEditorView(path));
   }
+
+  @override
+  void setIndexer() {}
+
+  @override
+  get bottomMenu => null;
 }

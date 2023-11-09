@@ -1,11 +1,11 @@
 import 'package:codde_pi/app/pages/codde/state/codde_state.dart';
 import 'package:codde_pi/components/dialogs/select_host_dialog.dart';
+import 'package:codde_pi/components/dynamic_bar/models/dynamic_bar_menu.dart';
 import 'package:codde_pi/components/dynamic_bar/models/dynamic_bar_widget.dart';
 import 'package:codde_pi/main.dart';
 import 'package:codde_pi/services/db/project.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:path/path.dart';
 import 'package:provider/provider.dart';
@@ -70,4 +70,10 @@ class CoddeHost extends DynamicBarWidget {
   setFab(BuildContext context) {
     bar.disableFab();
   }
+
+  @override
+  void setIndexer() {}
+
+  @override
+  List<DynamicBarMenuItem>? get bottomMenu => null;
 }

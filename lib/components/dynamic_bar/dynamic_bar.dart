@@ -1,121 +1,152 @@
-import 'package:codde_backend/codde_backend.dart';
-import 'package:codde_pi/components/dynamic_bar/models/dynamic_bar_destination.dart';
-import 'package:codde_pi/components/dynamic_bar/models/dynamic_fab_selector.dart';
-import 'package:codde_pi/components/dynamic_bar/state/dynamic_bar_state.dart';
+export 'models/dynamic_fab.dart';
+export 'models/dynamic_bar_menu.dart';
+export 'models/dynamic_bar_pager.dart';
+export 'models/dynamic_bar_widget.dart';
+export 'models/dynamic_fab_selector.dart';
+export 'models/dynamic_bar_destination.dart';
+export 'store/dynamic_bar_store.dart';
+
+import 'package:codde_pi/components/dynamic_bar/dynamic_bar.dart';
+import 'package:codde_pi/main.dart';
 import 'package:codde_pi/theme.dart';
-import 'package:flame/extensions.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:get_it/get_it.dart';
-import 'package:mobx/mobx.dart';
 
-class DynamicBar extends StatelessWidget {
+/// Global App Navigation Widget
+///
+/// [nested] If `true`, define destinations of project session
+/// [popNested_] Pass optional function to execute when exiting project session
+/// [indexer_] Function calling specific action on bottom sheet menu item selection
+class DynamicBar extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() => _DynamicBar();
   final bool nested;
+  final Function? popNested_;
+  const DynamicBar({super.key, this.nested = false, this.popNested_});
+}
 
-  final List<DynamicBarDestination>? destinations;
-  final int? startPage;
-  final Function? popNested;
-  final bar = GetIt.I.get<DynamicBarState>();
-  final scrollController = ScrollController();
-
-  DynamicBar(
-      {super.key,
-      this.destinations,
-      this.startPage,
-      this.nested = false,
-      this.popNested});
-
-  bool get isRemoteProject {
-    if (GetIt.I.isRegistered<CoddeBackend>()) {
-      return GetIt.I.get<CoddeBackend>().location == BackendLocation.server;
+class _DynamicBar extends State<DynamicBar> {
+  late final DynamicBarStore bar;
+  @override
+  void initState() {
+    bar = DynamicBarStore(nested: widget.nested);
+    if (GetIt.I.isRegistered<DynamicBarStore>()) {
+      GetIt.I.unregister<DynamicBarStore>();
     }
-    return false;
+    GetIt.I.registerSingleton(bar);
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      bar.updateFab();
+    });
+  }
+
+  @override
+  void dispose() {
+    GetIt.I.unregister(instance: bar);
+    if (widget.popNested_ != null) widget.popNested_!();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return ReactionBuilder(
-      builder: (context) =>
-          reaction((_) => bar.paged[0].builtWidget != null, (p0) {
-        bar.updateFab();
-      }),
-      child: Scaffold(
-        body: Observer(
-          builder: (_) => IndexedStack(
-            index: bar.currentPage,
-            /* physics: const NeverScrollableScrollPhysics(), */
-            children: bar.pages,
-          ),
+    return Scaffold(
+      body: Observer(
+        builder: (_) => IndexedStack(
+          index: bar.currentPage,
+          /* physics: const NeverScrollableScrollPhysics(), */
+          children: bar.pages,
         ),
-        bottomNavigationBar: Observer(
-          builder: (context) => BottomAppBar(
-            color: isRemoteProject
-                ? Theme.of(context).colorScheme.tertiary.darken(0.5)
-                : null,
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Expanded(
-                  child: SingleChildScrollView(
-                    controller: scrollController,
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: [
-                        if (nested) ...[
-                          RotatedBox(
-                            quarterTurns: 2,
-                            child: IconButton(
-                                onPressed: () {
-                                  if (bar.previousDestinations == null) {
-                                    throw DestinationException();
-                                  }
-                                  Navigator.restorablePushNamed(context,
-                                      '/'); // ModalRoute.withName('/'));
-                                  if (popNested != null) popNested!();
-                                  bar.defineDestinations(
-                                      context, bar.previousDestinations!);
-                                },
-                                icon: const Icon(Icons.logout)),
+      ),
+      bottomNavigationBar: BottomAppBar(
+        child: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+          Expanded(
+            child: Observer(
+              builder: (context) => Row(
+                children: [
+                  IconButton(
+                      onPressed: () {
+                        showModalBottomSheet(
+                          context: navigatorKey.currentContext!,
+                          useRootNavigator: true,
+                          builder: (context) => SizedBox(
+                            height: bar.menu.length *
+                                    48.0 /* defaultButtonSize.height */ +
+                                5 * widgetGutter +
+                                48.0,
+                            child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const SizedBox(height: widgetGutter),
+                                  Center(
+                                      child: Text(
+                                    bar.nested ? "Menu" : "Actions",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headlineSmall,
+                                  )),
+                                  const SizedBox(height: widgetGutter),
+                                  const Divider(),
+                                  const SizedBox(height: widgetGutter),
+                                  ...(bar.menu)
+                                      .asMap()
+                                      .entries
+                                      .map(
+                                        (MapEntry<int, DynamicBarMenuItem> e) =>
+                                            ListTile(
+                                                contentPadding:
+                                                    const EdgeInsets.only(
+                                                        left: widgetGutter,
+                                                        right: widgetGutter),
+                                                leading: Icon(e.value.iconData),
+                                                title: Text(e.value.name),
+                                                onTap: () {
+                                                  bar.indexer_(e.key);
+                                                  Navigator.of(context).pop();
+                                                }),
+                                      )
+                                      .toList(),
+                                ]),
                           ),
-                          const SizedBox(
-                              height: 24.0, child: VerticalDivider()),
-                        ],
-                        ...bar.paged.map(
-                          (DynamicBarDestination e) => Padding(
-                            padding: e.index != 0
-                                ? EdgeInsets.only(left: 0)
-                                : EdgeInsets.all(0),
-                            child: Row(
-                              children: [
-                                IconButton(
-                                  onPressed: () {
-                                    bar.setPage(e);
-                                  },
-                                  isSelected: bar.currentPage == e.index,
-                                  icon: Icon(e.iconData),
-                                ),
-                                Visibility(
-                                  visible: bar.currentPage == e.index,
-                                  child: Text(
-                                    e.name.toUpperCase(),
-                                    style: const TextStyle(color: accent),
-                                  ),
-                                )
-                              ],
+                        );
+                      },
+                      icon: const Icon(Icons.menu)),
+                  ...bar.indexedDestinations.map(
+                    (DynamicBarDestination e) => Padding(
+                      padding: e.index != 0
+                          ? const EdgeInsets.only(left: 0)
+                          : const EdgeInsets.all(0),
+                      child: Row(
+                        children: [
+                          IconButton(
+                            onPressed: () {
+                              bar.setPage(e);
+                            },
+                            isSelected: bar.currentPage == e.index,
+                            icon: Icon(e.iconData),
+                          ),
+                          Visibility(
+                            visible: bar.currentPage == e.index,
+                            child: Text(
+                              e.name.toUpperCase(),
+                              style: const TextStyle(color: accent),
                             ),
-                          ),
-                        ),
-                      ],
+                          )
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                if (bar.fab != null)
-                  Container(
-                      alignment: Alignment.centerRight,
-                      child: bar.fab == null
-                          ? null
-                          : /* bar.fab!.extended == null
+                ],
+              ),
+            ),
+          ),
+          Observer(
+            builder: (_) => Container(
+                alignment: Alignment.centerRight,
+                child: bar.fab == null
+                    ? null
+                    : /* bar.fab!.extended == null
                         ? FloatingActionButton(
                             onPressed: () => bar.fab!.action != null
                                 ? bar.fab!.action!()
@@ -130,16 +161,13 @@ class DynamicBar extends StatelessWidget {
                                     : {},
                                 child: Icon(bar.fab!.iconData)),
                           ]), */
-                          FloatingActionButton(
-                              onPressed: () => bar.fab!.action != null
-                                  ? bar.fab!.action!()
-                                  : {},
-                              child: Icon(bar.fab!.iconData),
-                            )),
-              ],
-            ),
+                    FloatingActionButton(
+                        onPressed: () =>
+                            bar.fab!.action != null ? bar.fab!.action!() : {},
+                        child: Icon(bar.fab!.iconData),
+                      )),
           ),
-        ),
+        ]),
       ),
     );
   }

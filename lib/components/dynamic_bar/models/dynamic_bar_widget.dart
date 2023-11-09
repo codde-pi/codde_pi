@@ -15,29 +15,51 @@ abstract class DynamicBarWidget extends StatelessWidget
   // TODO: add built value listener in setFab (for StatelessWidget) ?
 }
 
+enum WaitForAction { setFab, setMenu, setIndexer }
+
 abstract class DynamicBarStatefulWidget extends StatefulWidget
     with DynamicFabSelector {
   DynamicBarStatefulWidget({super.key});
   final ValueNotifier<DynamicBarStateWidget?> _state = ValueNotifier(null);
-  void waitForState(BuildContext context) {
-    print('${runtimeType} waitForState');
+  void waitForState(WaitForAction action, [dynamic arg]) {
     if (_state.value != null) {
-      print('$runtimeType state not null');
-      _state.value!.setFab(context);
+      _callAction(action, arg);
       _state.removeListener(() {});
     } else {
       _state.addListener(() {
-        print('${runtimeType} setFab');
-        // print('${runtimeType} = ${state.value != null}');
-        _state.value?.setFab(context);
+        _callAction(action, arg);
       });
+    }
+  }
+
+  void _callAction(WaitForAction action, [dynamic arg]) {
+    switch (action) {
+      case WaitForAction.setFab:
+        return _state.value!.setFab(arg);
+      case WaitForAction.setMenu:
+        return _state.value!.setMenu();
+      case WaitForAction.setIndexer:
+        return _state.value!.setIndexer();
     }
   }
 
   @override
   setFab(BuildContext context) {
-    waitForState(context);
+    waitForState(WaitForAction.setFab, context);
   }
+
+  @override
+  setMenu() {
+    waitForState(WaitForAction.setMenu);
+  }
+
+  @override
+  setIndexer() {
+    waitForState(WaitForAction.setIndexer);
+  }
+
+  @override
+  get bottomMenu => _state.value!.bottomMenu;
 
   @override
   State<StatefulWidget> createState() {
