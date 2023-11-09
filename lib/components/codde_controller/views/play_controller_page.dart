@@ -1,18 +1,14 @@
-import 'dart:io';
-
 import 'package:codde_backend/codde_backend.dart';
 import 'package:codde_com/codde_com.dart';
 import 'package:codde_pi/components/codde_controller/bloc/play_controller_bloc.dart';
 import 'package:codde_pi/components/codde_controller/codde_controller.dart';
 import 'package:codde_pi/components/dialogs/codde_device_dialog.dart';
+import 'package:codde_pi/components/dynamic_bar/models/dynamic_bar_menu.dart';
 import 'package:codde_pi/components/dynamic_bar/models/dynamic_bar_widget.dart';
-import 'package:codde_pi/components/dynamic_bar/state/dynamic_bar_state.dart';
-import 'package:codde_pi/components/navigation_bar/navigation_bar_state.dart';
-import 'package:codde_pi/main.dart';
+import 'package:codde_pi/components/dynamic_bar/store/dynamic_bar_store.dart';
 import 'package:controller_widget_api/controller_widget_api.dart';
 import 'package:dartssh2/dartssh2.dart';
 import 'package:flame/game.dart';
-import 'package:flame_tiled/flame_tiled.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart' as material;
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -31,7 +27,8 @@ class PlayControllerPage extends DynamicBarStatefulWidget {
 
 class PlayControllerPageState
     extends DynamicBarStateWidget<PlayControllerPage> {
-  final bar = GetIt.I.get<NavigationBarState>();
+  @override
+  final bar = GetIt.I.get<DynamicBarStore>();
   GlobalKey<PopupMenuButtonState<int>> popUpMenuKey =
       GlobalKey<PopupMenuButtonState<int>>();
 
@@ -80,8 +77,9 @@ class PlayControllerPageState
     } /* else {
       bar.setFab(iconData: Icons.link_off, action: com.disconnect);
     } */
-    else
+    else {
       print('no executable');
+    }
   }
 
   @override
@@ -168,6 +166,12 @@ class PlayControllerPageState
       setState(() {});
     }
   }
+
+  @override
+  void setIndexer() {}
+
+  @override
+  get bottomMenu => null;
 }
 
 SnackBar runResSnackBar({required exitCode, required signal}) => SnackBar(

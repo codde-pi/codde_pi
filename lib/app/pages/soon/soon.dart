@@ -1,9 +1,7 @@
 import 'package:codde_pi/app/pages/soon/newsletter_registration.dart';
-import 'package:codde_pi/components/dynamic_bar/models/dynamic_bar_widget.dart';
-import 'package:codde_pi/components/dynamic_bar/models/dynamic_fab_selector.dart';
-import 'package:codde_pi/components/dynamic_bar/state/dynamic_bar_state.dart';
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
+
+import 'package:codde_pi/components/dynamic_bar/dynamic_bar.dart';
 
 class Soon extends DynamicBarWidget {
   final String title;
@@ -40,5 +38,16 @@ class Soon extends DynamicBarWidget {
         ],
       ),
     );
+  }
+
+  @override
+  final List<DynamicBarMenuItem> bottomMenu = [
+    DynamicBarMenuItem(name: "Get Notified", iconData: Icons.notifications),
+    DynamicBarMenuItem(name: "Support Development", iconData: Icons.coffee)
+  ];
+
+  @override
+  void setIndexer() {
+    bar.setIndexer((_) {}); // TODO: not yet implemented
   }
 }

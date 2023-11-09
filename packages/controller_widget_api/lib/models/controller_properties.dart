@@ -48,4 +48,10 @@ class ControllerProperties extends CustomProperties {
             name: value["name"], type: value["type"], value: value["value"])));
     return ControllerProperties(map);
   }
+
+  factory ControllerProperties.fromDevice(int deviceId) =>
+      ControllerProperties({
+        'deviceId':
+            Property(name: "deviceId", type: PropertyType.int, value: deviceId)
+      });
 }

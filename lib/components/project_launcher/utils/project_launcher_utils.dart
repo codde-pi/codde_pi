@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:codde_backend/codde_backend.dart';
-import 'package:codde_pi/components/navigation_bar/navigation_bar_state.dart';
 import 'package:codde_pi/core/utils.dart';
 import 'package:codde_pi/main.dart';
 import 'package:codde_pi/services/db/host.dart';

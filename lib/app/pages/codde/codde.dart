@@ -2,8 +2,7 @@ import 'package:codde_backend/codde_backend.dart';
 import 'package:codde_editor/codde_editor.dart';
 import 'package:codde_pi/app/pages/codde/state/codde_state.dart';
 import 'package:codde_pi/components/codde_controller/codde_controller.dart';
-import 'package:codde_pi/components/navigation_bar/navigation_bar.dart';
-import 'package:codde_pi/main.dart';
+import 'package:codde_pi/components/dynamic_bar/dynamic_bar.dart';
 import 'package:codde_pi/services/db/project.dart';
 import 'package:codde_pi/theme.dart';
 import 'package:flutter/material.dart';
@@ -39,11 +38,11 @@ class _Codde extends State<Codde> {
     }
   }
 
-  @override
+  /* @override
   void deactivate() {
     unregisterBackend();
     super.deactivate();
-  }
+  } */
 
   @override
   void dispose() {
@@ -55,7 +54,6 @@ class _Codde extends State<Codde> {
   Widget build(BuildContext context) {
     final Project project =
         ModalRoute.of(context)!.settings.arguments as Project;
-    print(project);
     return FutureBuilder(
       future: registerBackend(project: project),
       builder: (context, snapshot) {
@@ -115,9 +113,8 @@ class _Codde extends State<Codde> {
               ),
             ],
             builder: (context, widget) {
-              return NavBar(
+              return const DynamicBar(
                 nested: true,
-                popNested_: () => unregisterBackend(),
               );
             });
       },

@@ -22,6 +22,7 @@ const onOthers = Color(0xFF575550);
 
 const widgetSpace = 48.0;
 const widgetGutter = 24.0;
+const defaultButtonSize = Size(88.0, 36.0);
 
 ColorScheme _colorScheme = const ColorScheme(
     brightness: Brightness.dark,

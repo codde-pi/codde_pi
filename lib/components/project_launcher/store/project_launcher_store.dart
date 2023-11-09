@@ -1,5 +1,4 @@
 import 'package:codde_pi/components/dialogs/store/select_host_store.dart';
-import 'package:codde_pi/components/navigation_bar/navigation_bar_state.dart';
 import 'package:codde_pi/components/project_launcher/utils/project_launcher_utils.dart';
 import 'package:codde_pi/services/db/project.dart';
 import 'package:codde_pi/services/db/project_type.dart';

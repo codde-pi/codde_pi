@@ -1,17 +1,13 @@
 import 'package:codde_pi/codde_widgets/codde_widgets.dart';
 import 'package:codde_pi/components/add_widget/add_widget_dialog.dart';
 import 'package:codde_pi/components/codde_controller/codde_controller.dart';
-import 'package:codde_pi/components/dialogs/controller_properties_dialog.dart';
+import 'package:codde_pi/components/dynamic_bar/models/dynamic_bar_menu.dart';
 import 'package:codde_pi/components/dynamic_bar/models/dynamic_bar_widget.dart';
-import 'package:codde_pi/components/dynamic_bar/models/dynamic_fab_selector.dart';
-import 'package:codde_pi/components/dynamic_bar/state/dynamic_bar_state.dart';
 import 'package:codde_pi/components/sheets/widget_details_sheet.dart';
-import 'package:codde_pi/main.dart';
 import 'package:controller_widget_api/controller_widget_api.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get_it/get_it.dart';
 import 'package:provider/provider.dart';
 
 class EditControllerPage extends DynamicBarWidget {
@@ -23,10 +19,11 @@ class EditControllerPage extends DynamicBarWidget {
   late final widgetRepo = ControllerWidgetRepository(
       ControllerWidgetApi(map: ControllerMap(path: path)));
 
-  ValueNotifier<EditControllerView?> _view = ValueNotifier(null);
+  final ValueNotifier<EditControllerView?> _view = ValueNotifier(null);
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     _view.value = EditControllerView(path: path);
     return BlocProvider(
         create: (context) => EditControllerBloc(repo: widgetRepo)
@@ -42,6 +39,12 @@ class EditControllerPage extends DynamicBarWidget {
       _view.value?.setFab(context);
     });
   }
+
+  @override
+  List<DynamicBarMenuItem>? get bottomMenu => null;
+
+  @override
+  void setIndexer() {}
 }
 
 class EditControllerView extends DynamicBarWidget {
@@ -147,4 +150,10 @@ class EditControllerView extends DynamicBarWidget {
           icon: const Icon(Icons.delete)),
     );
   }
+
+  @override
+  List<DynamicBarMenuItem>? get bottomMenu => null;
+
+  @override
+  void setIndexer() {}
 }

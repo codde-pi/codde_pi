@@ -1,15 +1,8 @@
 import 'package:codde_pi/app/pages/settings/license.dart';
-import 'package:codde_pi/components/dynamic_bar/models/dynamic_bar_widget.dart';
-import 'package:codde_pi/components/dynamic_bar/state/dynamic_bar_state.dart';
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
 
-class Settings extends DynamicBarWidget {
+class Settings extends StatelessWidget {
   Settings({super.key});
-  @override
-  setFab(context) {
-    bar.disableFab();
-  }
 
   @override
   Widget build(BuildContext context) {

@@ -1,6 +1,7 @@
 import 'package:codde_backend/codde_backend.dart';
 import 'package:codde_pi/app/pages/codde/state/codde_state.dart';
 import 'package:codde_pi/components/dynamic_bar/models/dynamic_bar_destination.dart';
+import 'package:codde_pi/components/dynamic_bar/models/dynamic_bar_menu.dart';
 import 'package:codde_pi/components/dynamic_bar/models/dynamic_bar_pager.dart';
 import 'package:codde_pi/components/dynamic_bar/models/dynamic_fab.dart';
 import 'package:codde_pi/main.dart';
@@ -11,11 +12,11 @@ import 'package:get_it/get_it.dart';
 import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
 
-part 'navigation_bar_state.g.dart';
+part 'dynamic_bar_store.g.dart';
 
-class NavigationBarState = _NavigationBarState with _$NavigationBarState;
+class DynamicBarStore = _DynamicBarStore with _$DynamicBarStore;
 
-abstract class _NavigationBarState with Store {
+abstract class _DynamicBarStore with Store {
   @observable
   int currentPage;
   @observable
@@ -29,7 +30,16 @@ abstract class _NavigationBarState with Store {
   @observable
   DynamicFab? fab;
 
-  _NavigationBarState({this.currentPage = 0, this.nested = false});
+  @observable
+  List<DynamicBarMenuItem> menu = [];
+
+  @observable
+  late Function(int) indexer_ = (index) => selectMenuItem(index);
+
+  @observable
+  int menuIndex = 0;
+
+  _DynamicBarStore({this.currentPage = 0, this.nested = false});
 
   bool get isRemoteProject {
     if (GetIt.I.isRegistered<CoddeBackend>()) {
@@ -54,37 +64,41 @@ abstract class _NavigationBarState with Store {
     destinations = [DynamicBarPager.controller, DynamicBarPager.community];
   } */
 
-  List<DynamicBarDestination> get projectMenu => [
-        DynamicBarPager.controller,
-        DynamicBarPager.editor,
-        if (isRemoteProject) DynamicBarPager.dashboard,
-        if (isRemoteProject) DynamicBarPager.terminal,
-        DynamicBarPager.diagram,
-      ];
-  List<DynamicBarDestination> get homeMenu => [];
-
   @computed
-  ObservableList<DynamicBarDestination> get paged {
+  ObservableList<DynamicBarDestination> get indexedDestinations {
     return ObservableList.of(destinations)
       ..sort((a, b) => a.index.compareTo(b.index));
   }
 
-  // turn to ation since [pages] causes side effets
+  /// For each page, display Page 0 only if menuIndex 0 is selected
+  /// or menuIndex doesn't correspond to any widget
   @computed
   ObservableList<Widget> get pages {
-    final list = ObservableList.of(
-        paged.map<Widget>((e) => e.builtWidget ?? e.widget()).toList());
+    final list = ObservableList.of(indexedDestinations
+        .map<Widget>((e) => applyMenuPage ?? (e.builtWidget ?? e.widget()))
+        .toList());
     return list;
   }
 
   @computed
   ObservableList<IconData> get icons {
-    return ObservableList.of(paged.map<IconData>((e) => e.iconData).toList());
+    return ObservableList.of(
+        indexedDestinations.map<IconData>((e) => e.iconData).toList());
+  }
+
+  @computed
+  Widget? get applyMenuPage {
+    if (menuIndex != 0 && menu[menuIndex].destination != null) {
+      return menu[menuIndex].destination!.builtWidget ??
+          menu[menuIndex].destination!.widget();
+    }
+    return null;
   }
 
   @action
   void setPage(DynamicBarDestination page) {
     currentPage = page.index;
+    menuIndex = 0;
     updateFab(page: currentPage);
   }
 
@@ -109,8 +123,30 @@ abstract class _NavigationBarState with Store {
   void updateFab({int page = 0}) {
     assert(destinations[page].builtWidget != null,
         'Widget should be built just before');
-    print('update FAB');
+    // set Fab
     (destinations[page].builtWidget as dynamic)
         .setFab(navigatorKey.currentContext!);
+    // set Menu
+    (destinations[page].builtWidget as dynamic).setMenu();
+    // set Indexer
+    (destinations[page].builtWidget as dynamic).setIndexer();
+  }
+
+  @action
+  void selectMenuItem(int index) {
+    menuIndex = index;
+  }
+
+  @action
+  void setMenu(List<DynamicBarMenuItem> menu) {
+    this.menu = menu;
+  }
+
+  @action
+  void setIndexer(Function(int) indexer) {
+    indexer_ = (index) {
+      selectMenuItem(index);
+      indexer(index);
+    };
   }
 }
