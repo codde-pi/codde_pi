@@ -39,7 +39,7 @@ abstract class DynamicBarStatefulWidget extends StatefulWidget
       case WaitForAction.setMenu:
         return _state.value!.setMenu();
       case WaitForAction.setIndexer:
-        return _state.value!.setIndexer();
+        return _state.value!.setIndexer(arg);
     }
   }
 
@@ -54,8 +54,8 @@ abstract class DynamicBarStatefulWidget extends StatefulWidget
   }
 
   @override
-  setIndexer() {
-    waitForState(WaitForAction.setIndexer);
+  setIndexer(context) {
+    waitForState(WaitForAction.setIndexer, context);
   }
 
   @override

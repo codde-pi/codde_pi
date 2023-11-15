@@ -21,11 +21,18 @@ abstract class _DynamicBarStore with Store {
   int currentPage;
   @observable
   bool nested;
+  @observable
+  ProjectType? projectType;
 
   // @observable
   @computed
   List<DynamicBarDestination> get destinations => nested
-      ? [DynamicBarPager.controller, DynamicBarPager.community]
+      ? [
+          projectType == ProjectType.controller
+              ? DynamicBarPager.controller
+              : DynamicBarPager.coddeOverview,
+          DynamicBarPager.community
+        ]
       : [DynamicBarPager.globalProjects, DynamicBarPager.community];
   @observable
   DynamicFab? fab;
@@ -39,7 +46,8 @@ abstract class _DynamicBarStore with Store {
   @observable
   int menuIndex = 0;
 
-  _DynamicBarStore({this.currentPage = 0, this.nested = false});
+  _DynamicBarStore(
+      {this.currentPage = 0, this.nested = false, this.projectType});
 
   bool get isRemoteProject {
     if (GetIt.I.isRegistered<CoddeBackend>()) {
@@ -99,7 +107,7 @@ abstract class _DynamicBarStore with Store {
   void setPage(DynamicBarDestination page) {
     currentPage = page.index;
     menuIndex = 0;
-    updateFab(page: currentPage);
+    updateUI(page: currentPage);
   }
 
   @action
@@ -120,7 +128,7 @@ abstract class _DynamicBarStore with Store {
   }
 
   @action
-  void updateFab({int page = 0}) {
+  void updateUI({int page = 0}) {
     assert(destinations[page].builtWidget != null,
         'Widget should be built just before');
     // set Fab
@@ -129,7 +137,8 @@ abstract class _DynamicBarStore with Store {
     // set Menu
     (destinations[page].builtWidget as dynamic).setMenu();
     // set Indexer
-    (destinations[page].builtWidget as dynamic).setIndexer();
+    (destinations[page].builtWidget as dynamic)
+        .setIndexer(navigatorKey.currentContext!);
   }
 
   @action

@@ -72,7 +72,7 @@ class CoddeHost extends DynamicBarWidget {
   }
 
   @override
-  void setIndexer() {}
+  void setIndexer(context) {}
 
   @override
   List<DynamicBarMenuItem>? get bottomMenu => null;

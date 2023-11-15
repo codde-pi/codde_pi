@@ -44,7 +44,7 @@ class EditControllerPage extends DynamicBarWidget {
   List<DynamicBarMenuItem>? get bottomMenu => null;
 
   @override
-  void setIndexer() {}
+  void setIndexer(context) {}
 }
 
 class EditControllerView extends DynamicBarWidget {
@@ -155,5 +155,5 @@ class EditControllerView extends DynamicBarWidget {
   List<DynamicBarMenuItem>? get bottomMenu => null;
 
   @override
-  void setIndexer() {}
+  void setIndexer(context) {}
 }

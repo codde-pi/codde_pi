@@ -7,6 +7,7 @@ import 'package:codde_pi/app/pages/project/project.dart';
 import 'package:codde_pi/app/pages/settings/settings.dart';
 import 'package:codde_pi/app/pages/tools.dart';
 import 'package:codde_pi/components/codde_controller/codde_controller.dart';
+import 'package:codde_pi/components/codde_overview/codde_overview.dart';
 import 'package:codde_pi/components/codde_terminal/codde_terminal.dart';
 import 'package:codde_pi/components/dynamic_bar/models/dynamic_bar_destination.dart';
 import 'package:flutter/material.dart';
@@ -21,10 +22,15 @@ class DynamicBarPager {
       index: 1); */
   // Codde menu
   static final controller = DynamicBarDestination(
-      name: "controller",
+      name: "WORKSPACE",
       widget: () => CoddeController(),
       index: 0,
-      iconData: Icons.gamepad);
+      iconData: Icons.tab);
+  static final coddeOverview = DynamicBarDestination(
+      name: "WORKSPACE",
+      widget: () => CoddeOverview(),
+      index: 0,
+      iconData: Icons.tab);
   static final editor = DynamicBarDestination(
       name: "editor",
       widget: () => CoddeEditor(),

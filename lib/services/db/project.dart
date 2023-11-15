@@ -1,3 +1,5 @@
+import 'package:codde_backend/codde_backend.dart';
+
 import 'device.dart';
 import 'host.dart';
 import 'package:hive/hive.dart';
@@ -32,6 +34,9 @@ class Project extends HiveObject {
   @HiveField(7, defaultValue: ProjectType.controller)
   ProjectType type;
 
+  @HiveField(8, defaultValue: [])
+  List<FileEntity> executables;
+
   Project(
       {required this.dateCreated,
       required this.dateModified,
@@ -40,6 +45,7 @@ class Project extends HiveObject {
       this.description,
       this.controlledDevice,
       this.type = ProjectType.controller,
+      this.executables = const <FileEntity>[],
       required this.path});
 
   Map<String, dynamic> toJson() {

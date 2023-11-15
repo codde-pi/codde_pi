@@ -7,6 +7,7 @@ import 'package:codde_pi/services/db/host.dart';
 import 'package:codde_pi/services/db/project.dart';
 import 'package:codde_pi/services/db/project_type.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hive/hive.dart';
 import 'package:path/path.dart';
@@ -21,12 +22,23 @@ void goToProject(
   Navigator.pushReplacementNamed(context, '/codde', arguments: instance);
 }
 
-Future<Project> createProject(context, {required Project instance}) async {
-  CoddeBackend backend = CoddeBackend(BackendLocation.local);
+Future<Project> createBackendProject(context,
+    {required Project instance, bool demo = false}) async {
+  CoddeBackend backend = instance.host != null
+      ? CoddeBackend(BackendLocation.server,
+          credentials: instance.host!.toCredentials())
+      : CoddeBackend(BackendLocation.local);
+  backend.open();
   await backend.mkdir(instance.path);
   GetIt.I.registerSingleton(backend);
+  if (demo) {
+    backend.create(join(instance.path, "main.py"),
+        content:
+            await rootBundle.loadString("assets/samples/socketio/main.py"));
+  }
   createControllerMap(context, getControllerName(instance.path))
       .then((_) => Hive.box<Project>(projectsBox).add(instance));
+  backend.close();
   return instance;
 }
 
@@ -40,7 +52,8 @@ Future<Project> createProjectFromScratch(context, String name,
       host: host,
       path: await getApplicationSupportDirectory()
           .then((value) => join(value.path, name)));
-  return createProject(context, instance: project);
+  return createBackendProject(context,
+      instance: project, demo: type == ProjectType.codde_pi);
 }
 
 void launchProject(BuildContext context, Project e) {
