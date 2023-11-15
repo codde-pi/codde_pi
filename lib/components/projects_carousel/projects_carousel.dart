@@ -6,6 +6,7 @@ import 'package:codde_pi/core/utils.dart';
 import 'package:codde_pi/main.dart';
 import 'package:codde_pi/services/db/project.dart';
 import 'package:codde_pi/theme.dart';
+import 'package:flame/extensions.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -42,13 +43,37 @@ class ProjectsCarousel extends StatelessWidget {
               itemCount: projectList.length,
               itemBuilder:
                   (BuildContext context, int itemIndex, int pageViewIndex) =>
-                      GameWidget(
-                game: OverviewControllerFlame(
-                    path: getControllerName(
-                        projectList.elementAt(itemIndex).path),
-                    backend: CoddeBackend(BackendLocation
-                        .local)), // TODO: catch SFTP scenario `if project.host != null`
-              ),
+                      Stack(children: [
+                GameWidget(
+                  game: OverviewControllerFlame(
+                      path: getControllerName(
+                          projectList.elementAt(itemIndex).path),
+                      backend: CoddeBackend(BackendLocation
+                          .local)), // TODO: catch SFTP scenario `if project.host != null`
+                ),
+                Positioned(
+                  bottom: 0.0,
+                  left: 0.0,
+                  right: 0.0,
+                  child: Card(
+                    /* child: Container(
+                    color: Theme.of(context)
+                        .colorScheme
+                        .primary
+                        .darken(0.7)
+                        .withOpacity(0.5), */
+                    child: Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(widgetGutter),
+                        child: Text(
+                          projectList.elementAt(itemIndex).name.toUpperCase(),
+                          style: Theme.of(context).textTheme.bodyLarge,
+                        ),
+                      ),
+                    ),
+                  ),
+                )
+              ]),
               options: CarouselOptions(
                 height: MediaQuery.of(context).size.height / 1.5,
                 aspectRatio: MediaQuery.of(context).devicePixelRatio,

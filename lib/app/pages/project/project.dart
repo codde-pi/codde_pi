@@ -149,7 +149,7 @@ class GlobalProjects extends DynamicBarWidget {
   }
 
   @override
-  void setIndexer() {
+  void setIndexer(context) {
     bar.setIndexer((p0) => p0 == 0 ? print('O') : print('1'));
   }
 

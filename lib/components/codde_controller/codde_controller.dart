@@ -106,7 +106,7 @@ class _CoddeController extends DynamicBarStateWidget<CoddeController>
     print('project path = ${coddeProject.path}');
     return SafeArea(
       child: Scaffold(
-          appBar: AppBar(title: Text(coddeProject.name)),
+          appBar: AppBar(title: Text(coddeProject.name), leading: Container()),
           body: FutureBuilder(
               future: getMap(),
               builder: (context, snapshot) {
@@ -174,10 +174,6 @@ class _CoddeController extends DynamicBarStateWidget<CoddeController>
             name: "Controller",
             iconData: Icons.gamepad,
             destination: DynamicBarPager.controller),
-        DynamicBarMenuItem(
-            name: "Editor",
-            iconData: Icons.code,
-            destination: DynamicBarPager.editor),
         if (bar.isRemoteProject)
           DynamicBarMenuItem(
               name: "Dashboard",
@@ -192,8 +188,20 @@ class _CoddeController extends DynamicBarStateWidget<CoddeController>
             name: "Diagram",
             iconData: Icons.schema,
             destination: DynamicBarPager.diagram),
+        DynamicBarMenuItem(name: "Exit", iconData: Icons.exit_to_app)
       ];
 
   @override
-  void setIndexer() {}
+  void setIndexer(BuildContext context) {
+    bar.setIndexer((p0) => updateMenu(context, p0));
+  }
+
+  void updateMenu(context, int index) {
+    if (index == getLastMenuIndex) {
+      Navigator.of(context).pop();
+      Navigator.of(context).pushReplacementNamed('/');
+    } else {
+      bar.selectMenuItem(index);
+    }
+  }
 }

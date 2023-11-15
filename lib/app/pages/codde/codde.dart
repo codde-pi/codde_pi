@@ -113,9 +113,7 @@ class _Codde extends State<Codde> {
               ),
             ],
             builder: (context, widget) {
-              return const DynamicBar(
-                nested: true,
-              );
+              return DynamicBar(nested: true, projectType: project.type);
             });
       },
     );

@@ -63,7 +63,7 @@ class CoddeEditor extends DynamicBarWidget {
   }
 
   @override
-  void setIndexer() {}
+  void setIndexer(context) {}
 
   @override
   get bottomMenu => null;

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 class CoddeTile extends StatelessWidget {
   Icon? leading;
-  Icon? tailing;
+  Widget? tailing;
   Text title;
   Text? subtitle;
   Function? onTap;
@@ -33,6 +33,7 @@ class CoddeTile extends StatelessWidget {
                     leading ?? Container(),
                     Expanded(
                         child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [title, subtitle ?? Container()],
                     )),
                     tailing ?? Container()

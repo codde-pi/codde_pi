@@ -168,7 +168,7 @@ class PlayControllerPageState
   }
 
   @override
-  void setIndexer() {}
+  void setIndexer(context) {}
 
   @override
   get bottomMenu => null;

@@ -47,7 +47,7 @@ class Soon extends DynamicBarWidget {
   ];
 
   @override
-  void setIndexer() {
+  void setIndexer(context) {
     bar.setIndexer((_) {}); // TODO: not yet implemented
   }
 }

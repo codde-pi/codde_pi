@@ -8,6 +8,7 @@ export 'store/dynamic_bar_store.dart';
 
 import 'package:codde_pi/components/dynamic_bar/dynamic_bar.dart';
 import 'package:codde_pi/main.dart';
+import 'package:codde_pi/services/db/project_type.dart';
 import 'package:codde_pi/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -23,21 +24,24 @@ class DynamicBar extends StatefulWidget {
   State<StatefulWidget> createState() => _DynamicBar();
   final bool nested;
   final Function? popNested_;
-  const DynamicBar({super.key, this.nested = false, this.popNested_});
+  final ProjectType? projectType;
+  const DynamicBar(
+      {super.key, this.nested = false, this.popNested_, this.projectType});
 }
 
 class _DynamicBar extends State<DynamicBar> {
   late final DynamicBarStore bar;
   @override
   void initState() {
-    bar = DynamicBarStore(nested: widget.nested);
+    bar =
+        DynamicBarStore(nested: widget.nested, projectType: widget.projectType);
     if (GetIt.I.isRegistered<DynamicBarStore>()) {
       GetIt.I.unregister<DynamicBarStore>();
     }
     GetIt.I.registerSingleton(bar);
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      bar.updateFab();
+      bar.updateUI();
     });
   }
 

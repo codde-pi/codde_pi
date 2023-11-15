@@ -41,6 +41,7 @@ class SelectHostDialog extends Dialog {
         actions: [
           ElevatedButton(
               onPressed: () async {
+                // TODO: FIXME: Semi hardcoded HOST values !!!
                 print('selectedHost ${store.selectedHost?.name}');
                 print('path ${pathController.text}');
                 if (store.selectedHost != null) {

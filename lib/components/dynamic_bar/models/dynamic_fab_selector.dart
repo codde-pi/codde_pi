@@ -10,7 +10,12 @@ mixin DynamicFabSelector {
 
   List<DynamicBarMenuItem>? get bottomMenu;
 
-  void setIndexer();
+  int get getLastMenuIndex {
+    assert(bottomMenu != null, "bottom Menu is null");
+    return bottomMenu!.length - 1;
+  }
+
+  void setIndexer(BuildContext context);
 
   void fabOnceBuilt(BuildContext context) {
     if (built.value != null) {
