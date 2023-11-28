@@ -8,6 +8,7 @@ import 'package:codde_pi/components/codde_controller/bloc/play_controller_event.
 import 'package:codde_pi/components/codde_controller/bloc/play_controller_state.dart';
 import 'package:codde_pi/components/codde_controller/codde_controller.dart';
 import 'package:codde_pi/components/codde_controller/flame/codde_tiled_component.dart';
+import 'package:codde_pi/components/codde_runner/store/codde_runner_store.dart';
 import 'package:codde_pi/services/db/device.dart';
 import 'package:controller_widget_api/controller_widget_api.dart';
 import 'package:flame/components.dart';
@@ -41,6 +42,7 @@ class PlayControllerWrapper extends Component
   final backend = GetIt.I.get<CoddeBackend>();
   late CustomProperties props;
   PlayControllerWrapper(this.path);
+  late CoddeRunnerStore runnerStore = GetIt.I.get<CoddeRunnerStore>();
   @override
   Future<void> onLoad() async {
     await super.onLoad();
@@ -90,6 +92,11 @@ class PlayControllerWrapper extends Component
     } */
     print('$runtimeType assign $props');
     bloc.add(PlayControllerPropsChanged(ControllerProperties(props.byName)));
+    // TODO: test
+    if (GetIt.I.isRegistered<ControllerProperties>()) {
+      GetIt.I.unregister<ControllerProperties>();
+    }
+    GetIt.I.registerLazySingleton(() => ControllerProperties(props.byName));
   }
 }
 

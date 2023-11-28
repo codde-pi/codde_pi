@@ -2,6 +2,7 @@ import 'package:codde_backend/codde_backend.dart';
 import 'package:codde_pi/app/pages/codde/state/codde_state.dart';
 import 'package:codde_pi/codde_widgets/api/widget_parser.dart';
 import 'package:codde_pi/components/codde_controller/views/codde_device_overview.dart';
+import 'package:codde_pi/components/codde_controller/views/edit_controller_page.dart';
 import 'package:codde_pi/components/utils/no_map_found.dart';
 import 'package:codde_pi/core/exception.dart';
 import 'package:codde_pi/core/utils.dart';
@@ -10,7 +11,6 @@ import 'package:codde_pi/theme.dart';
 import 'package:controller_widget_api/models/controller_properties.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
 import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
 
@@ -26,7 +26,6 @@ export 'store/play_controller_store.dart';
 export 'store/codde_controller_store.dart';
 export 'flame/edit_controller_flame.dart';
 export 'views/edit_controller_outline.dart';
-export 'views/std_controller_view.dart';
 export 'flame/play_controller_game.dart';
 import 'package:flame_tiled/flame_tiled.dart' as tiled;
 
@@ -42,7 +41,7 @@ class _CoddeController extends DynamicBarStateWidget<CoddeController>
   late tiled.TiledComponent mapComponent;
   late ControllerProperties properties;
   late String path;
-  get backend => GetIt.I.get<CoddeBackend>();
+  late CoddeBackend backend = getBackend();
   final controllerWidgetProvider =
       ControllerWidgetProvider(ControllerWidgetMode.overview);
 
@@ -103,7 +102,6 @@ class _CoddeController extends DynamicBarStateWidget<CoddeController>
     }
     path = coddeProject.path;
 
-    print('project path = ${coddeProject.path}');
     return SafeArea(
       child: Scaffold(
           appBar: AppBar(title: Text(coddeProject.name), leading: Container()),
@@ -148,6 +146,19 @@ class _CoddeController extends DynamicBarStateWidget<CoddeController>
                           ),
                         ),
                       ),
+                      Positioned(
+                        right: (MediaQuery.of(context).size.width / 2) -
+                            ((MediaQuery.of(context).size.width / 1.5) / 2),
+                        child: IconButton(
+                            onPressed: () async {
+                              final controller = await Navigator.of(context)
+                                  .push(MaterialPageRoute(
+                                      builder: (_) => EditControllerPage(
+                                          path: getControllerName(path))));
+                              if (controller != null) setState(() {});
+                            },
+                            icon: const Icon(Icons.edit)),
+                      ),
                       const SizedBox(height: widgetGutter),
                       SlideTransition(
                         position: _offsetAnimation,
@@ -157,7 +168,7 @@ class _CoddeController extends DynamicBarStateWidget<CoddeController>
                                   kToolbarHeight +
                                   kBottomNavigationBarHeight),
                           child: CoddeDeviceOverview(
-                              deviceId: properties.getValue('deviceId')),
+                              deviceId: properties.getValue<int>('deviceId')),
                         ),
                       ),
                       // CoddeDeviceDialog(properties: properties),

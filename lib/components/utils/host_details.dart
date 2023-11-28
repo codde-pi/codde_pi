@@ -3,6 +3,7 @@ import 'package:codde_pi/app/pages/codde/state/codde_state.dart';
 import 'package:codde_pi/components/dialogs/select_host_dialog.dart';
 import 'package:codde_pi/components/dynamic_bar/dynamic_bar.dart';
 import 'package:codde_pi/components/views/codde_card.dart';
+import 'package:codde_pi/core/utils.dart';
 import 'package:codde_pi/main.dart';
 import 'package:codde_pi/services/db/host.dart';
 import 'package:codde_pi/services/db/project.dart';
@@ -13,7 +14,7 @@ import 'package:provider/provider.dart';
 
 class HostDetails extends StatelessWidget {
   Host? host;
-  HostDetails({super.key, required this.host});
+  HostDetails({Host? host, super.key});
 
   final store = CoddeHostStore();
   @override
@@ -72,8 +73,8 @@ class HostDetails extends StatelessWidget {
                         onPressed: () async {
                           final res = await showDialog(
                               context: context,
-                              builder: (context) =>
-                                  SelectHostDialog(projectStore.project));
+                              builder: (context) => SelectHostDialog(
+                                  project: projectStore.project));
                           print("HOST ${res.$1}");
                           if (res.$1 != null && res.$2 != null) {
                             // projectStore.selectHost(host);
@@ -87,6 +88,12 @@ class HostDetails extends StatelessWidget {
                         },
                         child: const Text('SELECT HOST'),
                       ))
-                    : Container());
+                    : Center(
+                        child: ElevatedButton(
+                            onPressed: () => reloadProject(
+                                context, box.get(projectStore.project.key)),
+                            child: Text('RELOAD')),
+                      ),
+          );
   }
 }

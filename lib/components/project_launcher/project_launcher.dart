@@ -101,6 +101,7 @@ class ProjectLauncher extends StatelessWidget {
                       ]),
                   const SizedBox(height: widgetGutter),
                   ...store.selectHostStore.hosts.toList()
+                  //TODO: path field
                 ]
               ],
               Center(

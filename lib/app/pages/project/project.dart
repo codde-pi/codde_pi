@@ -1,18 +1,25 @@
+import 'package:codde_backend/codde_backend.dart';
 import 'package:codde_pi/app/pages/project/store/project_store.dart';
 import 'package:codde_pi/components/dialogs/create_project_dialog.dart'
     as dialog;
+import 'package:codde_pi/components/dialogs/select_host_dialog.dart';
 import 'package:codde_pi/components/dynamic_bar/models/dynamic_bar_menu.dart';
 import 'package:codde_pi/components/dynamic_bar/models/dynamic_bar_widget.dart';
 import 'package:codde_pi/components/project_launcher/project_launcher.dart';
 import 'package:codde_pi/components/project_launcher/utils/project_launcher_utils.dart';
+import 'package:codde_pi/components/project_picker/project_picker.dart';
 import 'package:codde_pi/components/projects_carousel/projects_carousel.dart';
 import 'package:codde_pi/components/views/codde_tile.dart';
 import 'package:codde_pi/main.dart';
+import 'package:codde_pi/services/db/host.dart';
 import 'package:codde_pi/services/db/project.dart';
 import 'package:codde_pi/theme.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:get_it/get_it.dart';
 import 'package:hive/hive.dart';
+import 'package:path/path.dart';
 
 class GlobalProjects extends DynamicBarWidget {
   GlobalProjects({super.key});
@@ -21,13 +28,11 @@ class GlobalProjects extends DynamicBarWidget {
 
   @override
   setFab(context) {
-    print('PROJECT setFAB');
     bar.setFab(
         iconData: Icons.add,
         action: () => Navigator.of(context).push(
               MaterialPageRoute(builder: (context) => ProjectLauncher()),
             ));
-    print("is FAB ? ${bar.fab != null}");
   }
 
   Route<Project?> _projectListRoute() {
@@ -52,6 +57,48 @@ class GlobalProjects extends DynamicBarWidget {
 
   Future<Project?> unfoldProjectsList(BuildContext context) async {
     return await Navigator.of(context).push<Project?>(_projectListRoute());
+  }
+
+  Future openProject(
+      BuildContext context, dialog.ProjectLocationType projectLocType) async {
+    String? path;
+    Host? host;
+    if (projectLocType == dialog.ProjectLocationType.usb) {
+      return;
+    } else if (projectLocType == dialog.ProjectLocationType.internal) {
+      path = await FilePicker.platform
+          .getDirectoryPath(dialogTitle: "Select Project");
+    } else if (projectLocType == dialog.ProjectLocationType.ssh) {
+      host = await showDialog(
+          context: context, builder: (context) => SelectHostDialog());
+      if (host != null) {
+        final backend = GetIt.I.registerSingleton(CoddeBackend(
+            BackendLocation.server,
+            credentials: host.toCredentials())
+          ..open());
+        path = await Navigator.push(
+            context, MaterialPageRoute(builder: (context) => ProjectPicker()));
+        backend.close();
+        GetIt.I.unregister(instance: backend);
+      }
+    }
+    if (path != null) {
+      try {
+        Project existingProject = Hive.box<Project>(projectsBox)
+            .values
+            .singleWhere((e) => e.path == path && e.host == host);
+        launchProject(context, existingProject);
+      } catch (e) {
+        Project p = Project(
+            name: basenameWithoutExtension(path),
+            host: host,
+            path: path,
+            dateCreated: DateTime.now(),
+            dateModified: DateTime.now());
+        Hive.box<Project>(projectsBox).add(p);
+        launchProject(context, p);
+      }
+    }
   }
 
   @override
@@ -94,10 +141,14 @@ class GlobalProjects extends DynamicBarWidget {
                   CoddeTile(
                     leading: const Icon(Icons.file_open),
                     title: const Text('Open...'),
-                    onTap: () => showDialog(
-                        context: context,
-                        builder: (context) =>
-                            dialog.openProjectDialog(context)),
+                    onTap: () async {
+                      final dialog.ProjectLocationType projectLocType =
+                          await showDialog(
+                              context: context,
+                              builder: (context) =>
+                                  dialog.openProjectDialog(context));
+                      openProject(context, projectLocType);
+                    },
                   ),
                   const SizedBox(height: widgetSpace),
                   Row(

@@ -35,9 +35,20 @@ class OverviewControllerFlame extends FlameGame with HasGameRef {
 
     if (mapComponent == null) {
       String content = '';
-      await backend.read(path).then((value) => value.forEach((element) {
-            content += "$element\n";
-          }));
+      try {
+        await backend.read(path).then((value) => value.forEach((element) {
+              content += "$element\n";
+            }));
+      } catch (e) {
+        mapComponent = TextComponent(
+          text: 'No map found',
+          textRenderer: regular, // TODO: follow material colors
+          anchor: Anchor.topCenter,
+          position: Vector2(size.x / 2, size.y / 2),
+        );
+        add(mapComponent!);
+        return;
+      }
       try {
         mapComponent = await CoddeTiledComponent.load(content,
             provider: controllerWidgetProvider, scale: Vector2.all(0.5));

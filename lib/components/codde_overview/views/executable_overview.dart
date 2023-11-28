@@ -42,7 +42,9 @@ class _ExecutableOverview extends State<ExecutableOverview> {
 
             // Filter results
             List<FileEntity> execs = widget.project.executables +
-                snapshot.data!.where((f) => isExecutable(f.name)).toList();
+                snapshot.data!
+                    .where((f) => isInTreeExecutable(f.name))
+                    .toList();
 
             // Render
             return Expanded(

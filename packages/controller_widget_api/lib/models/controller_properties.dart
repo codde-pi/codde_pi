@@ -54,4 +54,6 @@ class ControllerProperties extends CustomProperties {
         'deviceId':
             Property(name: "deviceId", type: PropertyType.int, value: deviceId)
       });
+
+  String? get executable => getValue<String>("executable");
 }

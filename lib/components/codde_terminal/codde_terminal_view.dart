@@ -50,7 +50,7 @@ class _CoddeTerminalView extends State<CoddeTerminalView> {
   }
 
   Future<void> initSshTerminal() async {
-    backend.shell ??= await backend.session?.shell(
+    backend.shell ??= await backend.client?.shell(
         pty: SSHPtyConfig(
             width: terminal.viewWidth, height: terminal.viewHeight));
 
