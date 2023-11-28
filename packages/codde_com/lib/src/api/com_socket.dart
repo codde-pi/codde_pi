@@ -34,4 +34,7 @@ class ComSocket implements ComCommon {
   void on(String event, Function handler) {
     // TODO: implement on
   }
+
+  @override
+  bool get connected => socket.connected;
 }

@@ -60,7 +60,7 @@ class CoddeOverview extends DynamicBarWidget {
                 style: Theme.of(context).textTheme.headlineSmall,
               ),
               HostDetails(host: coddeProject.host),
-              SizedBox(height: widgetSpace),
+              const SizedBox(height: widgetSpace),
             ],
           )
         ],

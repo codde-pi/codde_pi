@@ -6,66 +6,6 @@ import 'package:flutter/material.dart';
 
 import 'store/bootstrap_project_store.dart';
 
-class CreateProjectDialog extends SimpleDialog {
-  final projNameController = TextEditingController();
-  final store = BootstrapProjectStore();
-  @override
-  Widget build(BuildContext context) {
-    return SimpleDialog(
-      alignment: Alignment.center,
-      title: const Text("New Project"),
-      children: [
-        Form(
-          key: store.formKey,
-          child: Column(
-            children: [
-              TextFormField(
-                controller: projNameController,
-                decoration: const InputDecoration(
-                    hintText: 'Project name', border: OutlineInputBorder()),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter some text';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: widgetGutter),
-              const Divider(height: 2),
-              const SizedBox(height: widgetGutter),
-            ],
-          ),
-        ),
-        SimpleDialogOption(
-          onPressed: () async {
-            if (store.validate()) {
-              createProjectFromScratch(context, projNameController.text).then(
-                  (value) => goToProject(context: context, instance: value));
-            }
-          },
-          child: const Text('FROM SCRATCH'),
-        ),
-        SimpleDialogOption(
-          child: const Text('BOOTSTRAP'),
-          onPressed: () {
-            Navigator.pop(context);
-            ScaffoldMessenger.of(context)
-                .showSnackBar(NotImplementedSnackBar(context));
-          }, // TODO: bootstrap dialog with simple options
-        ),
-        SimpleDialogOption(
-          child: const Text('CONFIGURE'),
-          onPressed: () {
-            Navigator.pop(context);
-            ScaffoldMessenger.of(context)
-                .showSnackBar(NotImplementedSnackBar(context));
-          },
-        ),
-      ],
-    );
-  }
-}
-
 SimpleDialog openProjectDialog(BuildContext context) => SimpleDialog(
       title: Text("Choose location"),
       alignment: Alignment.center,

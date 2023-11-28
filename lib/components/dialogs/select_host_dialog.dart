@@ -1,20 +1,18 @@
-import 'package:codde_backend/codde_backend.dart';
 import 'package:codde_pi/components/dialogs/new_host_dialog.dart';
+import 'package:codde_pi/core/utils.dart';
 import 'package:codde_pi/services/db/project.dart';
 import 'package:codde_pi/theme.dart';
 import 'package:dart_ping/dart_ping.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:path/path.dart';
 
 import 'store/select_host_store.dart';
 
 class SelectHostDialog extends Dialog {
   final store = SelectHostStore();
-  final pathController = TextEditingController();
-  Project project;
+  Project? project;
 
-  SelectHostDialog(this.project, {super.key});
+  SelectHostDialog({this.project, super.key});
 
   void checkConnection() async {
     if (store.selectedHost == null) {
@@ -41,16 +39,15 @@ class SelectHostDialog extends Dialog {
         actions: [
           ElevatedButton(
               onPressed: () async {
-                // TODO: FIXME: Semi hardcoded HOST values !!!
-                print('selectedHost ${store.selectedHost?.name}');
-                print('path ${pathController.text}');
                 if (store.selectedHost != null) {
-                  var _backend = CoddeBackend(BackendLocation.server,
-                      credentials: store.selectedHost!.toCredentials());
-                  await _backend.open();
-                  FileEntity _path = await _backend.mkdir(project.name);
-                  _backend.close();
-                  Navigator.of(context).pop((store.selectedHost, _path.path));
+                  String? path;
+                  if (project != null) {
+                    path =
+                        await createHostDir(store.selectedHost!, project!.name);
+                  }
+                  Navigator.of(context).pop(path != null
+                      ? (store.selectedHost, path)
+                      : store.selectedHost);
                 } else {
                   store.raiseNoHostError();
                 }

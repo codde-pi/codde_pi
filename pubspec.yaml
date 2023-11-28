@@ -1,3 +1,4 @@
+---
 name: codde_pi
 description: A new Flutter project.
 
@@ -17,7 +18,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 1.0.0+1
+version: 1.0.1+2
 
 environment:
   sdk: ">=3.0.0 <4.0.0"
@@ -34,9 +35,13 @@ dependencies:
 
   # local
   codde_editor:
-    path: packages/codde_editor
+    git:
+      url: git@github.com:codde-pi/codde_editor.git
+      ref: refact_code_editor
   codde_backend:
-    path: packages/codde_backend
+    git:
+      url: git@github.com:codde-pi/codde_backend.git
+      ref: backend_v1
   controller_widget_api:
     path: packages/controller_widget_api
   flame_socketio:
@@ -107,6 +112,7 @@ dependencies:
   flutter_pty: ^0.4.0
   flutter_code_editor: ^0.2.9
   carousel_slider: ^4.2.1
+  backdrop: ^0.9.1
 
 dev_dependencies:
   flutter_test:

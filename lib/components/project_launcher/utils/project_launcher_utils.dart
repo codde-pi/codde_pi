@@ -22,6 +22,8 @@ void goToProject(
   Navigator.pushReplacementNamed(context, '/codde', arguments: instance);
 }
 
+/// Create Project
+/// if [demo], create default python and controller files
 Future<Project> createBackendProject(context,
     {required Project instance, bool demo = false}) async {
   CoddeBackend backend = instance.host != null
@@ -42,6 +44,7 @@ Future<Project> createBackendProject(context,
   return instance;
 }
 
+/// Create project installlocally
 Future<Project> createProjectFromScratch(context, String name,
     {ProjectType? type, Host? host}) async {
   final project = Project(
@@ -50,8 +53,11 @@ Future<Project> createProjectFromScratch(context, String name,
       name: name,
       type: type ?? ProjectType.controller,
       host: host,
-      path: await getApplicationSupportDirectory()
-          .then((value) => join(value.path, name)));
+      path: host == null
+          ? await getApplicationSupportDirectory()
+              .then((value) => join(value.path, name))
+          : join(
+              "~", name)); // TODO: add field in form to customize project path
   return createBackendProject(context,
       instance: project, demo: type == ProjectType.codde_pi);
 }

@@ -24,44 +24,45 @@ class CoddeHost extends DynamicBarWidget {
       body: ValueListenableBuilder<Box>(
         valueListenable: Hive.box<Project>(projectsBox)
             .listenable(keys: [projectStore.project.key]),
-        builder: (context, box, widget) =>
-            box.get(projectStore.project.key).host == null
-                ? Center(
-                    child: FloatingActionButton.extended(
-                        onPressed: () async {
-                          final res = await showDialog(
-                              context: context,
-                              builder: (context) =>
-                                  SelectHostDialog(projectStore.project));
-                          print("HOST ${res.$1}");
-                          if (res.$1 != null && res.$2 != null) {
-                            // projectStore.selectHost(host);
-                            var _project =
-                                (box.get(projectStore.project.key) as Project)
-                                  ..path = res.$2
-                                  ..host = res.$1;
-                            box.put(projectStore.project.key, _project);
-                            store.askCoddeReload();
-                          }
-                        },
-                        label: const Text('Select Host'),
-                        icon: const Icon(Icons.add)))
-                : Observer(
-                    builder: (context) => store.needCoddeReload
-                        ? Center(
-                            child: FloatingActionButton.extended(
-                              onPressed: () => Navigator.of(context)
-                                  .pushReplacementNamed("/codde",
-                                      arguments:
-                                          box.get(projectStore.project.key)),
-                              label: const Text('RELOAD PROJECT'),
-                              icon: const Icon(Icons.refresh_outlined),
-                            ),
-                          )
-                        : const SafeArea(
-                            child: Text("Host details / dashboard"),
-                          ),
-                  ),
+        builder: (context, box, widget) => box
+                    .get(projectStore.project.key)
+                    .host ==
+                null
+            ? Center(
+                child: FloatingActionButton.extended(
+                    onPressed: () async {
+                      final res = await showDialog(
+                          context: context,
+                          builder: (context) =>
+                              SelectHostDialog(project: projectStore.project));
+                      print("HOST ${res.$1}");
+                      if (res.$1 != null && res.$2 != null) {
+                        // projectStore.selectHost(host);
+                        var _project =
+                            (box.get(projectStore.project.key) as Project)
+                              ..path = res.$2
+                              ..host = res.$1;
+                        box.put(projectStore.project.key, _project);
+                        store.askCoddeReload();
+                      }
+                    },
+                    label: const Text('Select Host'),
+                    icon: const Icon(Icons.add)))
+            : Observer(
+                builder: (context) => store.needCoddeReload
+                    ? Center(
+                        child: FloatingActionButton.extended(
+                          onPressed: () => Navigator.of(context)
+                              .pushReplacementNamed("/codde",
+                                  arguments: box.get(projectStore.project.key)),
+                          label: const Text('RELOAD PROJECT'),
+                          icon: const Icon(Icons.refresh_outlined),
+                        ),
+                      )
+                    : const SafeArea(
+                        child: Text("Host details / dashboard"),
+                      ),
+              ),
       ),
     );
   }

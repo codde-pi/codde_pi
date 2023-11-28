@@ -1,16 +1,17 @@
+import 'package:codde_backend/codde_backend.dart';
 import 'package:codde_pi/codde_widgets/codde_widgets.dart';
 import 'package:codde_pi/components/add_widget/add_widget_dialog.dart';
 import 'package:codde_pi/components/codde_controller/codde_controller.dart';
-import 'package:codde_pi/components/dynamic_bar/models/dynamic_bar_menu.dart';
-import 'package:codde_pi/components/dynamic_bar/models/dynamic_bar_widget.dart';
+import 'package:codde_pi/components/dialogs/codde_device_dialog.dart';
 import 'package:codde_pi/components/sheets/widget_details_sheet.dart';
 import 'package:controller_widget_api/controller_widget_api.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
 
-class EditControllerPage extends DynamicBarWidget {
+class EditControllerPage extends StatelessWidget {
   final String path;
   EditControllerPage({
     super.key,
@@ -19,39 +20,24 @@ class EditControllerPage extends DynamicBarWidget {
   late final widgetRepo = ControllerWidgetRepository(
       ControllerWidgetApi(map: ControllerMap(path: path)));
 
-  final ValueNotifier<EditControllerView?> _view = ValueNotifier(null);
-
   @override
   Widget build(BuildContext context) {
-    super.build(context);
-    _view.value = EditControllerView(path: path);
     return BlocProvider(
         create: (context) => EditControllerBloc(repo: widgetRepo)
           ..add(ControllerMapSubscribed())
           ..add(ControllerWidgetSubscribed()),
         lazy: false,
-        child: _view.value);
+        child: EditControllerView(path: path));
   }
-
-  @override
-  setFab(BuildContext context) {
-    _view.addListener(() {
-      _view.value?.setFab(context);
-    });
-  }
-
-  @override
-  List<DynamicBarMenuItem>? get bottomMenu => null;
-
-  @override
-  void setIndexer(context) {}
 }
 
-class EditControllerView extends DynamicBarWidget {
+class EditControllerView extends StatelessWidget {
   final String path;
   EditControllerView({super.key, required this.path});
   final store = EditControllerStore();
   EditControllerBloc? bloc;
+  GlobalKey<PopupMenuButtonState<int>> popUpMenuKey =
+      GlobalKey<PopupMenuButtonState<int>>();
 
   Future<void> addWidget(
     BuildContext context,
@@ -88,8 +74,6 @@ class EditControllerView extends DynamicBarWidget {
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
-    final coddeStore = Provider.of<CoddeControllerStore>(context);
     bloc = context.read<EditControllerBloc>();
     return BlocListener<EditControllerBloc, EditControllerState>(
       listener: (context, state) async {
@@ -108,14 +92,14 @@ class EditControllerView extends DynamicBarWidget {
           leadingWidth: 72,
           leading: TextButton(
             child: const Text('CANCEL'),
-            onPressed: () => coddeStore.playMode(),
+            onPressed: () => Navigator.of(context).pop(),
           ),
           backgroundColor: Colors.transparent,
           actions: [
             IconButton(
                 onPressed: () {
                   context.read<EditControllerBloc>().add(ControllerMapSaved());
-                  coddeStore.playMode();
+                  Navigator.of(context).pop(path);
                 },
                 icon: Icon(
                   Icons.save,
@@ -124,6 +108,30 @@ class EditControllerView extends DynamicBarWidget {
             IconButton(
                 onPressed: () => store.openEndDrawer(),
                 icon: const Icon(Icons.menu)),
+            Observer(
+              builder: (context) => PopupMenuButton(
+                key: popUpMenuKey,
+                itemBuilder: (_) => <PopupMenuItem>[
+                  PopupMenuItem(
+                    value: 0,
+                    child: const Text('Controlled device'),
+                    onTap: () {
+                      WidgetsBinding.instance.addPostFrameCallback((_) async {
+                        print(
+                            '$runtimeType sharing ${bloc?.state.map?.properties}');
+                        final props = await Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => CoddeDeviceDialog(
+                                properties: bloc?.state.map?.properties),
+                          ),
+                        );
+                        if (props != null) changeProperties(context, props);
+                      });
+                    },
+                  ),
+                ],
+              ),
+            )
           ],
           title: Text(path.split('/').last),
         ),
@@ -136,24 +144,30 @@ class EditControllerView extends DynamicBarWidget {
             game: EditControllerFlame(bloc!),
           ),
         ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () async => addWidget(context),
+          child: const Icon(Icons.add),
+        ),
       ),
     );
   }
 
-  @override
-  setFab(BuildContext context) {
-    bar.setFab(
-      iconData: Icons.add,
-      action: () async => addWidget(context),
-      extended: IconButton(
-          onPressed: () {/* TODO: set play mode but warning dialog before */},
-          icon: const Icon(Icons.delete)),
-    );
+  void changeProperties(
+      BuildContext context, ControllerProperties props) async {
+    print('PATH = ${path}');
+    final map = ControllerMap(path: path, properties: props);
+    final api = ControllerWidgetApi(map: map);
+    FileEntity? file;
+    try {
+      file = await api.saveProperties();
+    } catch (e) {
+      print('raise error $e');
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(e.toString())));
+      return;
+    } finally {
+      // if done, refresh
+      // TODO: refresh all UI ?
+    }
   }
-
-  @override
-  List<DynamicBarMenuItem>? get bottomMenu => null;
-
-  @override
-  void setIndexer(context) {}
 }

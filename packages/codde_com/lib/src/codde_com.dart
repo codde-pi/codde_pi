@@ -46,6 +46,9 @@ class CoddeCom implements ComCommon {
   void updateState(CoddeComState value) {
     comState.value = value;
   }
+
+  @override
+  bool get connected => com.isConnected;
 }
 
 enum CoddeProtocol { socket, socketio, usb, bluetooth, http }

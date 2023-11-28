@@ -16,7 +16,9 @@ dependencies:
   codde_com:
     path: ../codde_com
   codde_backend:
-    path: ../codde_backend
+    git:
+      url: git@github.com:codde-pi/codde_backend.git
+      ref: backend_v1
 
   json_serializable: ^6.5.4
   equatable: ^2.0.5
