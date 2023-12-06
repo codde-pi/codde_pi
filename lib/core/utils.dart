@@ -115,3 +115,12 @@ Future sideloadProject(BuildContext context,
             }
           }));
 }
+
+//TODO: find right syntax
+/* T getOrRegister<T>(T instance) {
+  if (!GetIt.I.isRegistered<T>()) {
+    return GetIt.I.registerSingleton<T>(instance);
+  } else {
+    return GetIt.I.get<Object>();
+  }
+} */

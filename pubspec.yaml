@@ -35,13 +35,16 @@ dependencies:
 
   # local
   codde_editor:
-    git:
-      url: git@github.com:codde-pi/codde_editor.git
-      ref: refact_code_editor
+    path: packages/codde_editor
+    # git:
+    #   url: git@github.com:codde-pi/codde_editor.git
+    #   ref: refact_code_editor
+  file_stack_repository:
+    path: packages/codde_editor/packages/file_stack_repository
   codde_backend:
     git:
       url: git@github.com:codde-pi/codde_backend.git
-      ref: backend_v1
+      ref: main
   controller_widget_api:
     path: packages/controller_widget_api
   flame_socketio:
