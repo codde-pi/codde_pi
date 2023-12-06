@@ -108,9 +108,6 @@ class _Codde extends State<Codde> {
               Provider<CoddeState>(
                 create: (_) => CoddeState(project),
               ),
-              Provider<CoddeEditorCubit>(
-                create: (_) => CoddeEditorCubit(path: project.path),
-              ),
             ],
             builder: (context, widget) {
               return DynamicBar(nested: true, projectType: project.type);

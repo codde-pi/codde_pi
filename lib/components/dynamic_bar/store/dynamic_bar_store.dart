@@ -82,11 +82,13 @@ abstract class _DynamicBarStore with Store {
   /// or menuIndex doesn't correspond to any widget
   @computed
   ObservableList<Widget> get pages {
-    final list = ObservableList.of(indexedDestinations
-        .map<Widget>((e) => applyMenuPage ?? (e.builtWidget ?? e.widget()))
-        .toList());
-    return list;
+    final List<Widget> list =
+        indexedDestinations.map<Widget>((e) => getWidget(e)!).toList();
+    list[0] = applyMenuPage ?? list[0];
+    return ObservableList.of(list);
   }
+
+  Widget? getWidget(e) => e?.builtWidget ?? e?.widget();
 
   @computed
   ObservableList<IconData> get icons {
@@ -97,8 +99,7 @@ abstract class _DynamicBarStore with Store {
   @computed
   Widget? get applyMenuPage {
     if (menuIndex != 0 && menu[menuIndex].destination != null) {
-      return menu[menuIndex].destination!.builtWidget ??
-          menu[menuIndex].destination!.widget();
+      return getWidget(menu[menuIndex].destination);
     }
     return null;
   }

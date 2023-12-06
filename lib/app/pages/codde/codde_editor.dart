@@ -1,9 +1,10 @@
 import 'package:codde_backend/codde_backend.dart';
+import 'package:codde_editor/codde_editor.dart' as cdd;
 import 'package:codde_editor/codde_editor.dart';
+import 'package:codde_pi/app/pages/codde/state/codde_state.dart';
 import 'package:codde_pi/components/dynamic_bar/models/dynamic_bar_widget.dart';
-import 'package:codde_editor/src/services/editor/code_field_repository.dart';
+import 'package:file_stack_repository/file_stack_repository.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_code_editor/flutter_code_editor.dart';
 import 'package:flutter_treeview/flutter_treeview.dart';
 import 'package:get_it/get_it.dart';
@@ -12,15 +13,16 @@ import 'package:provider/provider.dart';
 class CoddeEditor extends DynamicBarWidget {
   String path;
   CoddeBackend backend;
-  CodeFieldRepository? fileStackInstance;
+  // CodeFieldRepository? fileStackInstance;
   ThemeData? materialThemeData;
   CodeThemeData? codeThemeData;
   TreeViewTheme? treeViewTheme;
+  late FileStackRepository repo;
   CoddeEditor(
       {super.key,
       this.path = '',
       CoddeBackend? backend,
-      this.fileStackInstance,
+      // this.fileStackInstance,
       this.materialThemeData,
       this.codeThemeData,
       this.treeViewTheme})
@@ -31,8 +33,10 @@ class CoddeEditor extends DynamicBarWidget {
   void setFab(BuildContext context) {
     bar.setFab(
         iconData: Icons.add,
-        action: () {
-          /* TODO: open dialog to repo.createFile(fileNameController.text) */
+        action: () async {
+          final res = await showDialog(
+              context: context, builder: (context) => CreateFileDialog());
+          repo.createFile(res);
         });
   }
 
@@ -42,11 +46,13 @@ class CoddeEditor extends DynamicBarWidget {
     if (!GetIt.I.isRegistered<CoddeBackend>()) {
       GetIt.I.registerLazySingleton(() => backend);
     }
-    if (!GetIt.I.isRegistered<CodeFieldRepository>()) {
-      GetIt.I.registerLazySingleton<CodeFieldRepository>(
-          () => fileStackInstance ?? CodeFieldRepository());
+    if (!GetIt.I.isRegistered<FileStackRepository>()) {
+      repo = GetIt.I.registerSingleton<FileStackRepository>(
+          FileStackRepository(backend: backend, mode: FileStackMode.single));
+    } else {
+      repo = GetIt.I.get<FileStackRepository>();
     }
-    final provider = Provider.of<CoddeEditorCubit?>(context);
+    final provider = Provider.of<CoddeState>(context);
 
     /* GetIt.I.registerLazySingleton<ThemeData>(
         () => materialThemeData ?? theme.defaultTheme);
@@ -55,11 +61,7 @@ class CoddeEditor extends DynamicBarWidget {
     GetIt.I.registerLazySingleton<TreeViewTheme>(
         () => treeViewTheme ?? theme.treeViewTheme); */
 
-    return provider != null
-        ? CoddeEditorView(provider.state.path)
-        : BlocProvider(
-            create: (_) => CoddeEditorCubit(path: path),
-            child: CoddeEditorView(path));
+    return cdd.CoddeEditor(path: provider.project.path);
   }
 
   @override
