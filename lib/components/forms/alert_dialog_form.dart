@@ -7,13 +7,15 @@ class AlertDialogForm extends AlertDialog {
   final Function validate;
   final Widget child;
   final Widget? title;
+  AlertDialogFormStore store;
+
   AlertDialogForm(
       {required this.context,
       required this.validate,
       required this.child,
+      required this.store,
       this.title,
       super.key});
-  AlertDialogFormStore store = AlertDialogFormStore();
 
   @override
   Widget? get content =>
