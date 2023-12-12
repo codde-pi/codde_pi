@@ -35,10 +35,9 @@ dependencies:
 
   # local
   codde_editor:
-    path: packages/codde_editor
-    # git:
-    #   url: git@github.com:codde-pi/codde_editor.git
-    #   ref: refact_code_editor
+    git:
+      url: git@github.com:codde-pi/codde_editor.git
+      ref: main
   codde_backend:
     git:
       url: git@github.com:codde-pi/codde_backend.git
