@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_treeview/flutter_treeview.dart';
 // import 'package:flutter_html/flutter_html.dart';
 import 'package:google_fonts/google_fonts.dart';
 // import 'package:xterm/theme/terminal_theme.dart';
@@ -90,6 +91,33 @@ class ErrorColor extends MaterialStateColor {
     return const Color(_defaultColor);
   }
 }
+
+TreeViewTheme treeViewTheme = TreeViewTheme(
+  expanderTheme: const ExpanderThemeData(
+    type: ExpanderType.caret,
+    modifier: ExpanderModifier.none,
+    position: ExpanderPosition.start,
+    color: Colors.blueAccent,
+    size: 20,
+  ),
+  labelStyle: const TextStyle(
+    fontSize: 16,
+    letterSpacing: 0.3,
+  ),
+  parentLabelStyle: const TextStyle(
+    fontSize: 16,
+    letterSpacing: 0.1,
+    fontWeight: FontWeight.w800,
+    color: Colors.blueAccent,
+  ),
+  iconTheme: IconThemeData(
+    size: 18,
+    color: Colors.grey.shade800,
+  ),
+  colorScheme: const ColorScheme.light(),
+);
+
+ThemeData defaultTheme = ThemeData();
 
 /*
 class TerminalThemes {

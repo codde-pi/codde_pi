@@ -1,7 +1,7 @@
 import 'package:codde_pi/app/pages/boards.dart';
 import 'package:codde_pi/app/pages/codde/codde_diagram.dart';
-import 'package:codde_pi/app/pages/codde/codde_editor.dart';
 import 'package:codde_pi/app/pages/codde/dashboard/dashboard.dart';
+import 'package:codde_pi/app/pages/codde/editor/codde_editor.dart';
 import 'package:codde_pi/app/pages/community.dart';
 import 'package:codde_pi/app/pages/project/project.dart';
 import 'package:codde_pi/app/pages/settings/settings.dart';

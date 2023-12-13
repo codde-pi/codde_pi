@@ -1,7 +1,8 @@
 import 'package:codde_backend/codde_backend.dart';
 import 'package:codde_editor/codde_editor.dart';
-import 'package:codde_editor/codde_editor.dart' as codde_editor;
 import 'package:codde_pi/app/pages/codde/state/codde_state.dart';
+import 'package:codde_pi/components/codde_editor/file_tab/file_tab.dart';
+import 'package:codde_pi/components/codde_editor/file_tree/file_tree.dart';
 import 'package:codde_pi/components/dialogs/create_file_dialog.dart';
 import 'package:codde_pi/components/dynamic_bar/models/dynamic_bar_widget.dart';
 import 'package:codde_pi/core/responsive.dart';
