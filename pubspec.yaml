@@ -21,7 +21,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 version: 1.0.2+3
 
 environment:
-  sdk: ">=3.0.0 <4.0.0"
+  sdk: ">=3.2.0 <4.0.0"
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -42,10 +42,8 @@ dependencies:
     git:
       url: git@github.com:codde-pi/codde_backend.git
       ref: main
-  controller_widget_api:
-    path: packages/controller_widget_api
-  flame_socketio:
-    path: packages/flame_socketio
+  # flame_socketio:
+  # path: packages/flame_socketio
   codde_com:
     path: packages/codde_com
   flame_coddecom:
@@ -75,9 +73,16 @@ dependencies:
   flutter_treeview: ^1.0.7+1
   file_picker: ^5.3.0
   simple_markdown_editor: ^0.2.0
-  flame: ^1.7.2
-  flame_svg: ^1.7.4
-  flame_tiled: ^1.10.0
+  # flame: ^1.7.2
+  flame:
+    path: packages/flame/packages/flame
+  # flame_svg: ^1.7.4
+  flame_svg:
+    path: packages/flame/packages/flame_svg
+  # flame_tiled: ^1.10.0
+  flame_tiled:
+    path: packages/flame/packages/flame_tiled
+  # flame_bloc: ^1.8.4
   xterm: ^3.6.1-pre
   dartssh2: ^2.8.2
   webview_flutter: ^4.2.2
@@ -96,7 +101,6 @@ dependencies:
   hive_flutter: ^1.1.0
   bloc: ^8.1.1
   flutter_bloc: ^8.1.2
-  flame_bloc: ^1.8.4
   mobx: ^2.2.0
   flutter_mobx: ^2.0.6+5
   mobx_codegen: ^2.3.0

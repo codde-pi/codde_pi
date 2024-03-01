@@ -15,8 +15,10 @@ dependencies:
   # local
   codde_com:
     path: ../codde_com
-  
-  flame: ^1.7.3
+
+  # flame: ^1.7.3
+  flame:
+    path: ../flame/packages/flame
   meta: ^1.7.00
 
 dev_dependencies:
