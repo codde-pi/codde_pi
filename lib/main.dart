@@ -2,8 +2,6 @@ import 'package:codde_pi/app/pages/codde/codde.dart';
 import 'package:codde_pi/app/pages/home.dart';
 import 'package:codde_pi/app/pages/settings/settings.dart';
 import 'package:codde_pi/components/codde_controller/codde_controller.dart';
-import 'package:codde_pi/components/codde_controller/views/edit_controller_page.dart';
-import 'package:codde_pi/components/codde_runner/codde_runner.dart';
 import 'package:codde_pi/services/db/device.dart';
 import 'package:codde_pi/services/db/device_model.dart';
 import 'package:codde_pi/services/db/host.dart';

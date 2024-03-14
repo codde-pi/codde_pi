@@ -1,19 +1,34 @@
-export 'models/controller_widget_def.dart';
-export 'models/controller_api_attribute.dart';
+import 'package:codde_pi/components/sheets/widget_details_sheet.dart';
+import 'package:flame/components.dart';
 
-export 'templates/widget_editor.dart';
-export 'templates/widget_player.dart';
-export 'templates/widget_painter.dart';
-export 'api/widget_parser.dart';
+import 'dart:async';
+
+import 'package:flame/events.dart';
+import 'package:flame/input.dart';
+import 'package:flame_tiled/flame_tiled.dart' hide Frame;
+import 'package:flutter/material.dart';
+
+import 'package:flutter_codde_protocol/flutter_codde_protocol.dart';
+import 'package:codde_pi/codde_widgets/codde_widgets.dart';
+
 export 'registry/registry.dart';
+export 'models/controller_map.dart';
+export 'models/controller_widget_def.dart';
 
-export 'registry/simple_button/simple_button.dart';
-export 'registry/simple_button/simple_button_painter.dart';
-export "registry/unknown/unknown_button.dart";
-export 'registry/press_button/press_button.dart';
-export 'registry/press_button/press_button_painter.dart';
-export 'registry/directional_button/directional_button.dart';
-export 'registry/directional_button/directional_button_painter.dart';
-export 'registry/error/error_widget.dart';
-export 'registry/error/error_painter.dart';
-export 'registry/camera_view/camera_stream_component.dart';
+part 'templates/components/widget_editor.dart';
+part 'templates/base/widget_component.dart';
+part 'templates/base/widget_painter.dart';
+part 'templates/base/flame_codde_protocol.dart';
+
+part 'api/widget_parser.dart';
+part 'api/utils.dart';
+part 'api/codde_com.dart';
+
+part 'templates/mixin/has_material.dart';
+part 'templates/components/widget_dummy.dart';
+part 'templates//mixin/has_tiled.dart';
+part 'templates/mixin/has_codde_protocol.dart';
+
+part 'models/controller_properties.dart';
+part 'models/controller_class.dart';
+part 'models/controller_style.dart';

@@ -1,8 +1,7 @@
 import 'package:codde_pi/codde_widgets/codde_widgets.dart';
-import 'package:codde_pi/codde_widgets/templates/widget_component.dart';
-import 'package:controller_widget_api/controller_widget_api.dart';
 import 'package:flame/components.dart';
-import 'package:flutter/material.dart';
+import 'package:flame_tiled/flame_tiled.dart';
+import 'package:flutter_codde_protocol/flutter_codde_protocol.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'controller_widget_def.freezed.dart';
@@ -14,24 +13,20 @@ class ControllerWidgetDef with _$ControllerWidgetDef {
       {required ControllerClass class_, // toString <=> uid
       required String description,
       required String name,
-      required List<ControllerApiAttribute> api,
+      required WidgetRegistry? command,
+      ResultRegistry? response,
       @Default(ControllerCommitFrequency.triggered)
       ControllerCommitFrequency commitFrequency,
-      required int size,
-      required WidgetPainter? Function(
-              {required ColorScheme colorscheme,
-              bool? pressed,
-              ControllerStyle? style})
-          painter,
-      required Component Function(
+      ControllerProperties? defaultProperties,
+      required WidgetComponent Function(
               {required int id,
               required ControllerClass class_,
-              ControllerProperties? properties,
-              WidgetPainter? painter,
+              required ControllerProperties properties,
               Vector2? position,
+              Vector2? size,
               String? text,
-              Vector2? size})
-          player}) = _ControllerWidgetDef;
+              required ControllerStyle style})
+          component}) = _ControllerWidgetDef;
 
   // factory ControllerWidgetDef.fromJson(Map<String, Object?> json) =>
   //     _$ControllerWidgetDefFromJson(json);

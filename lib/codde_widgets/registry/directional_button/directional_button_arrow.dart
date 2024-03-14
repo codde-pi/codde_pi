@@ -1,24 +1,35 @@
-import 'package:codde_pi/codde_widgets/codde_widgets.dart';
-import 'package:codde_pi/codde_widgets/registry/press_button/press_button.dart';
-import 'package:flame/src/events/messages/tap_down_event.dart';
-import 'package:flame/src/events/messages/tap_up_event.dart';
+part of '../registry.dart';
 
-import 'directional_button.dart';
-
-class DirectionalButtonArrow extends WidgetPlayer {
+class DirectionalButtonArrow extends WidgetComponent with HasCoddeProtocol {
   DirectionalButtonValue direction;
+  DirectionalButtonArrowPainter painter;
   DirectionalButtonArrow(
       {required this.direction,
       required super.id,
       required super.class_,
+      required this.painter,
+      super.style,
       super.position,
-      super.painter,
-      super.size});
+      super.margin,
+      super.size,
+      super.properties = ControllerProperties.empty});
 
   @override
-  void onTapDown(TapDownEvent event) {
-    super.onTapDown(event);
-    com.send(name, packet);
+  FutureOr<void> onLoad() {
+    super.onLoad();
+    add(
+      ButtonComponent(
+          button: CustomPainterComponent(
+            painter: painter..pressed = false,
+          ),
+          buttonDown: CustomPainterComponent(
+            painter: painter..pressed = true,
+          ),
+          onPressed: () =>
+              com.send(id, WidgetRegistry.directionalButton(direction: packet)),
+          onReleased: () => com.send(
+              id, WidgetRegistry.directionalButton(direction: packet))),
+    );
   }
 
   /// Direction increment according to watch hands
@@ -37,8 +48,5 @@ class DirectionalButtonArrow extends WidgetPlayer {
   }
 
   @override
-  void onTapUp(TapUpEvent event) {
-    super.onTapUp(event);
-    com.send(name, 0);
-  }
+  int get defaultSize => 1;
 }

@@ -1,4 +1,5 @@
 import 'package:codde_pi/services/db/device_model.dart';
+import 'package:flutter_codde_protocol/flutter_codde_protocol.dart';
 import 'package:hive/hive.dart';
 import 'package:uuid/uuid.dart';
 
@@ -10,7 +11,7 @@ class Device extends HiveObject {
   String name;
 
   @HiveField(1)
-  DeviceProtocol protocol;
+  Protocol protocol;
 
   @HiveField(2)
   DeviceModel model;

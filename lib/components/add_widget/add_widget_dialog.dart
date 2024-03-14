@@ -9,7 +9,10 @@ import 'store/add_widget_store.dart';
 class AddWidgetDialog extends StatelessWidget {
   final AddWidgetStore state = AddWidgetStore();
 
-  AddWidgetDialog({super.key});
+  final Function(ControllerWidgetDef) funSelect;
+  final Function funCancel;
+  AddWidgetDialog(
+      {super.key, required this.funSelect, required this.funCancel});
   @override
   Widget build(BuildContext context) {
     return Provider<AddWidgetStore>(
@@ -28,13 +31,13 @@ class AddWidgetDialog extends StatelessWidget {
                     icon: const Icon(Icons.arrow_back),
                     onPressed: () => state.selectWidget(null))
                 : IconButton(
-                    onPressed: () => Navigator.pop(context),
+                    onPressed: () => funCancel(),
                     icon: const Icon(Icons.close)),
             actions: [
               Observer(
                 builder: (context) => ElevatedButton(
                   onPressed: state.widget != null
-                      ? () => Navigator.of(context).pop(state.widget)
+                      ? () => funSelect(state.widget)
                       : null,
                   child: const Text('VALIDATE'),
                 ),
@@ -55,7 +58,7 @@ class AddWidgetDialog extends StatelessWidget {
           ),
           bottomNavigationBar: state.widget != null
               ? ElevatedButton(
-                  onPressed: () => Navigator.pop(context, state.widget),
+                  onPressed: () => funSelect(state.widget),
                   child: const Text('SELECT'))
               : null,
         ),
@@ -82,7 +85,7 @@ class AddWidgetList extends StatelessWidget {
   }
 }
 
-class AddWidgetSheet extends BottomSheet {
+/* class AddWidgetSheet extends BottomSheet {
   AddWidgetSheet({super.key})
       : super(
             onClosing: () {},
@@ -90,4 +93,4 @@ class AddWidgetSheet extends BottomSheet {
   @override
   WidgetBuilder get builder => (context) => AddWidgetDialog();
   // TODO: hide FAB, then modify it to validiate wiget selection
-}
+} */

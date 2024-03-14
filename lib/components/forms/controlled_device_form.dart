@@ -2,11 +2,12 @@ import 'package:codde_pi/components/utils/ip_device_finder.dart';
 import 'package:codde_pi/services/db/device.dart';
 import 'package:codde_pi/services/db/device_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_codde_protocol/flutter_codde_protocol.dart';
 
 class ControlledDeviceForm extends StatelessWidget {
   final nameController = TextEditingController();
   final addressController = TextEditingController();
-  final protocol = ValueNotifier(DeviceProtocol.socketio);
+  final protocol = ValueNotifier(Protocol.socket);
   final model = ValueNotifier(DeviceModel.sbc);
 
   final Function cancel;
@@ -59,7 +60,7 @@ class ControlledDeviceForm extends StatelessWidget {
               flex: 2,
               child: DropdownButton(
                 value: protocol.value,
-                items: DeviceProtocol.values
+                items: Protocol.values
                     .map((e) => DropdownMenuItem(
                           value: e,
                           child: Text(e.name),

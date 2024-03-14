@@ -1,10 +1,4 @@
-import 'dart:math';
-
-import 'package:codde_pi/codde_widgets/codde_widgets.dart';
-import 'package:controller_widget_api/controller_widget_api.dart';
-import 'package:flutter/material.dart';
-
-import 'directional_button.dart';
+part of '../registry.dart';
 
 class DirectionalButtonArrowPainter extends WidgetPainter {
   DirectionalButtonValue direction;

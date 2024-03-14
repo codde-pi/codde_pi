@@ -10,33 +10,6 @@ import 'views/executable_overview.dart';
 
 class CoddeOverview extends DynamicBarWidget {
   @override
-  List<DynamicBarMenuItem> get bottomMenu => [
-        DynamicBarMenuItem(
-            name: "Overview",
-            iconData: Icons.gamepad,
-            destination: DynamicBarPager.coddeOverview),
-        DynamicBarMenuItem(
-            name: "Editor",
-            iconData: Icons.code,
-            destination: DynamicBarPager.editor),
-        if (bar.isRemoteProject)
-          DynamicBarMenuItem(
-              name: "Dashboard",
-              iconData: Icons.dashboard,
-              destination: DynamicBarPager.dashboard),
-        if (bar.isRemoteProject)
-          DynamicBarMenuItem(
-              name: "Terminal",
-              iconData: Icons.terminal,
-              destination: DynamicBarPager.terminal),
-        DynamicBarMenuItem(
-            name: "Diagram",
-            iconData: Icons.schema,
-            destination: DynamicBarPager.diagram),
-        DynamicBarMenuItem(name: "Exit", iconData: Icons.exit_to_app)
-      ];
-
-  @override
   Widget build(BuildContext context) {
     super.build(context);
     final coddeProject = Provider.of<CoddeState>(context).project;
@@ -67,6 +40,33 @@ class CoddeOverview extends DynamicBarWidget {
       ),
     );
   }
+
+  @override
+  List<DynamicBarMenuItem> get bottomMenu => [
+        DynamicBarMenuItem(
+            name: "Overview",
+            iconData: Icons.gamepad,
+            destination: DynamicBarPager.coddeOverview),
+        DynamicBarMenuItem(
+            name: "Editor",
+            iconData: Icons.code,
+            destination: DynamicBarPager.editor),
+        if (bar.isRemoteProject)
+          DynamicBarMenuItem(
+              name: "Dashboard",
+              iconData: Icons.dashboard,
+              destination: DynamicBarPager.dashboard),
+        if (bar.isRemoteProject)
+          DynamicBarMenuItem(
+              name: "Terminal",
+              iconData: Icons.terminal,
+              destination: DynamicBarPager.terminal),
+        DynamicBarMenuItem(
+            name: "Diagram",
+            iconData: Icons.schema,
+            destination: DynamicBarPager.diagram),
+        DynamicBarMenuItem(name: "Exit", iconData: Icons.exit_to_app)
+      ];
 
   void updateMenu(context, int index) {
     if (index == getLastMenuIndex) {

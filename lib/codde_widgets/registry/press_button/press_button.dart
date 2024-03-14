@@ -1,48 +1,37 @@
-import 'package:codde_pi/codde_widgets/codde_widgets.dart';
-import 'package:flame/events.dart';
+part of '../registry.dart';
 //useful
 
-class PressButton extends WidgetPlayer {
+class PressButton extends WidgetComponent with HasCoddeProtocol {
   PressButton(
       {required super.id,
       required super.class_,
-      super.position,
-      super.painter,
+      super.style,
       super.text,
-      super.size});
+      super.margin,
+      super.position,
+      super.size,
+      required super.properties});
 
   @override
-  void onLongTapDown(TapDownEvent event) {
-    super.onLongTapDown(event);
-    print('long tap $name');
-    com.send(name, true);
+  FutureOr<void> onLoad() {
+    super.onLoad();
+    add(
+      ButtonComponent(
+        button: CustomPainterComponent(
+            painter: PressButtonPainter(
+                colorscheme: colorscheme, style: style, pressed: false)),
+        buttonDown: CustomPainterComponent(
+            painter: PressButtonPainter(
+                colorscheme: colorscheme, style: style, pressed: true)),
+        onPressed: () =>
+            com.send(id, const WidgetRegistry.pressButton(pressed: true)),
+        onReleased: () =>
+            com.send(id, const WidgetRegistry.pressButton(pressed: false)),
+        children: [textComponent],
+      ),
+    );
   }
-
-  /* @override
-  void onTapDown(TapDownEvent event) {
-    super.onTapDown(event);
-    print('tap ${this.name}');
-    com.send(this.name, true);
-  } */
 
   @override
-  void onTapUp(TapUpEvent event) {
-    super.onTapUp(event);
-    print('release');
-    com.send(name, false);
-  }
+  int get defaultSize => 1;
 }
-
-/* mixin GestureCallbacks on Component {
-  void onLongPress() {}
-  void onLongPressUp() {}
-
-  @override
-  @mustCallSuper
-  void onMount() {
-    super.onMount();
-    final game = findGame()! as FlameGame;
-    if (game.firstChild<>() == null) {
-      game.add(MultiTapDispatcher());
-    }
-  }} */

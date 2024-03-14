@@ -8,22 +8,21 @@ import 'package:flame/palette.dart';
 import 'package:flame_tiled/flame_tiled.dart';
 import 'package:flutter/rendering.dart';
 import 'package:get_it/get_it.dart';
-import 'package:xml/xml.dart';
 
+/// Display the overview of the controller, without any interaction
 class OverviewControllerFlame extends FlameGame with HasGameRef {
   OverviewControllerFlame({required this.path, CoddeBackend? backend})
-      : this._tmp_backend = backend;
+      : _tmpBackend = backend;
   OverviewControllerFlame.preload(this.mapComponent) : path = "";
   String path;
-  CoddeBackend? _tmp_backend;
+  CoddeBackend? _tmpBackend;
   Component? mapComponent;
   late CustomProperties props;
-  final controllerWidgetProvider =
-      ControllerWidgetProvider(ControllerWidgetMode.overview);
+  final controllerWidgetMode = ControllerWidgetMode.dummy;
 
   CoddeBackend get backend {
     try {
-      return _tmp_backend ?? GetIt.I.get<CoddeBackend>();
+      return _tmpBackend ?? GetIt.I.get<CoddeBackend>();
     } on WaitingTimeOutException {
       throw NoRegsiteredBackendException();
     }
@@ -40,6 +39,7 @@ class OverviewControllerFlame extends FlameGame with HasGameRef {
               content += "$element\n";
             }));
       } catch (e) {
+        // TODO: export no map found error
         mapComponent = TextComponent(
           text: 'No map found',
           textRenderer: regular, // TODO: follow material colors
@@ -51,7 +51,7 @@ class OverviewControllerFlame extends FlameGame with HasGameRef {
       }
       try {
         mapComponent = await CoddeTiledComponent.load(content,
-            provider: controllerWidgetProvider, scale: Vector2.all(0.5));
+            mode: controllerWidgetMode, scale: Vector2.all(0.5));
       } catch (e) {
         print('MAP $content');
         mapComponent = TextComponent(

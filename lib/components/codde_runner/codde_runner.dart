@@ -1,11 +1,10 @@
 import 'package:backdrop/backdrop.dart';
 import 'package:codde_backend/codde_backend.dart';
-import 'package:codde_com/codde_com.dart';
+import 'package:codde_pi/codde_widgets/codde_widgets.dart';
 import 'package:codde_pi/components/codde_controller/bloc/play_controller_bloc.dart';
 import 'package:codde_pi/components/codde_controller/flame/play_controller_game.dart';
 import 'package:codde_pi/components/codde_runner/store/codde_runner_store.dart';
 import 'package:codde_pi/core/utils.dart';
-import 'package:controller_widget_api/models/controller_properties.dart';
 import 'package:dartssh2/dartssh2.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +14,10 @@ import 'package:path/path.dart';
 
 import 'views/runtime_std_view.dart';
 
+/// [CoddeRunner] Page run scripts (.sh, .py, .rs) and controllers
+/// Scripts need a valid SSH connection
+/// Controllers are read and generated in [PlayControllerGame] component
+/// [CoddeCom] and [CoddeBackend] sessions are shared between these pages
 class CoddeRunner extends StatefulWidget {
   final String exec;
   const CoddeRunner(this.exec, {super.key});
