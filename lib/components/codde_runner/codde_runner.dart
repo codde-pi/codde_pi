@@ -1,7 +1,6 @@
 import 'package:backdrop/backdrop.dart';
 import 'package:codde_backend/codde_backend.dart';
 import 'package:codde_pi/codde_widgets/codde_widgets.dart';
-import 'package:codde_pi/components/codde_controller/bloc/play_controller_bloc.dart';
 import 'package:codde_pi/components/codde_controller/flame/play_controller_game.dart';
 import 'package:codde_pi/components/codde_runner/store/codde_runner_store.dart';
 import 'package:codde_pi/core/utils.dart';
@@ -29,7 +28,6 @@ class _CoddeRunner extends State<CoddeRunner> {
   CoddeBackend get backend => GetIt.I.get<CoddeBackend>();
   final CoddeRunnerStore store = CoddeRunnerStore();
   late String exec = widget.exec;
-  final bloc = PlayControllerBloc();
 
   @override
   void dispose() {
@@ -50,16 +48,20 @@ class _CoddeRunner extends State<CoddeRunner> {
         subHeader: BackdropSubHeader(title: Text(store.lastStd)),
         revealBackLayerAtStart: isControllerFile(exec),
         backLayer: isControllerFile(exec)
-            ? GameWidget(game: PlayControllerGame(bloc, widget.exec))
+            ? GameWidget(game: PlayControllerGame(widget.exec))
             : Container(), // TODO: message for user OR exposed code source ?
         frontLayer: RuntimeStdView(command),
         floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            store.isRunning
+          onPressed: () async {
+            await store.isRunning
                 ? (isControllerFile(exec) ? runController() : runExec())
                 : stopExec();
           },
-          child: Icon(store.isRunning ? Icons.stop : Icons.play_arrow),
+          child: FutureBuilder(
+              future: store.isRunning,
+              initialData: false,
+              builder: (context, snapshot) =>
+                  Icon(snapshot.data! ? Icons.stop : Icons.play_arrow)),
         ),
       ),
     );
@@ -94,8 +96,8 @@ class _CoddeRunner extends State<CoddeRunner> {
 
   String get command => getCommand(exec);
 
-  void stopExec() {
-    if (store.isComOpen) GetIt.I.get<CoddeCom>().disconnect();
+  void stopExec() async {
+    if (await store.isComOpen) GetIt.I.get<CoddeCom>().disconnect();
     store.session?.kill(SSHSignal.TERM);
     store.session?.close();
   }
