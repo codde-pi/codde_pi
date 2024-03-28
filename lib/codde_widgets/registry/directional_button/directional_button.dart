@@ -1,6 +1,8 @@
 part of '../registry.dart';
 
 class DirectionalButton extends WidgetComponent {
+  @override
+  double get sizeFactor => 2.0;
   DirectionalButton(
       {required super.id,
       required super.class_,
@@ -15,6 +17,7 @@ class DirectionalButton extends WidgetComponent {
     super.onLoad();
     add(
       CustomPainterComponent(
+          size: size,
           painter: DirectionalButtonPainter(
             colorscheme: colorscheme,
             style: style,
@@ -27,8 +30,8 @@ class DirectionalButton extends WidgetComponent {
                     style: ControllerStyle.material),
                 direction: DirectionalButtonValue.up,
                 id: id,
-                class_: class_,
-                size: computedSize,
+                style: style,
+                size: childComputedSize,
                 position: computedPosition(DirectionalButtonValue.up)),
             DirectionalButtonArrow(
                 painter: DirectionalButtonArrowPainter(
@@ -37,8 +40,8 @@ class DirectionalButton extends WidgetComponent {
                     style: ControllerStyle.material),
                 direction: DirectionalButtonValue.right,
                 id: id,
-                class_: class_,
-                size: computedSize,
+                style: style,
+                size: childComputedSize,
                 position: computedPosition(DirectionalButtonValue.right)),
             DirectionalButtonArrow(
                 painter: DirectionalButtonArrowPainter(
@@ -47,8 +50,8 @@ class DirectionalButton extends WidgetComponent {
                     style: ControllerStyle.material),
                 direction: DirectionalButtonValue.down,
                 id: id,
-                class_: class_,
-                size: computedSize,
+                style: style,
+                size: childComputedSize,
                 position: computedPosition(DirectionalButtonValue.down)),
             DirectionalButtonArrow(
                 painter: DirectionalButtonArrowPainter(
@@ -57,8 +60,8 @@ class DirectionalButton extends WidgetComponent {
                     style: ControllerStyle.material),
                 direction: DirectionalButtonValue.left,
                 id: id,
-                class_: class_,
-                size: computedSize,
+                style: style,
+                size: childComputedSize,
                 position: computedPosition(DirectionalButtonValue.left))
           ]),
     );
@@ -67,22 +70,19 @@ class DirectionalButton extends WidgetComponent {
   Vector2 computedPosition(DirectionalButtonValue direction) {
     switch (direction) {
       case DirectionalButtonValue.up:
-        return Vector2(childWidth * 2.5, childHeight * 0.5);
+        return Vector2(childWidth * 1.5, childHeight * 0.25);
       case DirectionalButtonValue.right:
-        return Vector2(childWidth * 3.5, childHeight * 2.5);
+        return Vector2(childWidth * 2.75, childHeight * 1.5);
       case DirectionalButtonValue.down:
-        return Vector2(childWidth * 2.5, childHeight * 3.5);
+        return Vector2(childWidth * 1.5, childHeight * 2.75);
       case DirectionalButtonValue.left:
-        return Vector2(childWidth * 0.5, childHeight * 2.5);
+        return Vector2(childWidth * 0.25, childHeight * 1.5);
     }
   }
 
-  Vector2 get computedSize => Vector2(childWidth, childHeight);
+  Vector2 get childComputedSize => Vector2(childWidth, childHeight);
   double get childWidth => size.x / 4;
   double get childHeight => size.y / 4;
-
-  @override
-  int get defaultSize => 4; // TODO: 4 or 2 ?
 }
 
 enum DirectionalButtonValue { up, down, left, right }

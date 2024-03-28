@@ -56,7 +56,10 @@ class ProjectLauncher extends StatelessWidget {
                         : null,
                   ),
                   ListTile(
-                    onTap: () => store.setProjectType(ProjectType.codde_pi),
+                    onTap: () {
+                      store.setProjectType(ProjectType.codde_pi);
+                      store.selectHostStore.refreshHosts(context);
+                    },
                     title: const Text('Project'),
                     subtitle: const Text(
                         "Configure a CODDE Pi project with your code and specs then deploy it on your robot"),

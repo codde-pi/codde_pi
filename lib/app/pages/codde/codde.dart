@@ -23,6 +23,9 @@ class _Codde extends State<Codde> {
       // TODO: conditional backend opening
       await backend.open().then(
           (_) => GetIt.I.registerLazySingleton<CoddeBackend>(() => backend));
+    } else {
+      final backend = GetIt.I.get<CoddeBackend>();
+      if (!backend.isRunning) await backend.open();
     }
     /* ScaffoldMessenger.of(navigatorKey.currentContext!).showSnackBar(SnackBar(
       content: const Text("Connected !"),

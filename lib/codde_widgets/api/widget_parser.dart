@@ -2,7 +2,6 @@ part of '../codde_widgets.dart';
 
 Future<Component> createPlayerOf(BuildContext context, ControllerClass class_,
     id, position, style, text, ControllerProperties properties) async {
-  print(class_);
   final ControllerWidgetDef? def = controllerWidgetDef[class_.name];
   assert(
       def != null, "No widget definition found"); // TODO: clean error raising
@@ -18,11 +17,10 @@ Future<Component> createPlayerOf(BuildContext context, ControllerClass class_,
 Component createEditorOf(BuildContext context, ControllerClass class_, id,
     position, style, text, ControllerProperties properties) {
   final ControllerWidgetDef? def = controllerWidgetDef[class_.name];
-  print(class_);
   final WidgetComponent component = def!.component(
       class_: class_,
       id: id,
-      position: position,
+      position: Vector2(0, 0),
       properties: properties,
       style: style,
       text: text);
@@ -32,28 +30,28 @@ Component createEditorOf(BuildContext context, ControllerClass class_, id,
       id: id,
       class_: class_,
       position: position, // TODO: margin
-      size: component.computedSize,
-      text: text,
-      children: [component]);
+      size: component.size,
+      sizeFactor: component.sizeFactor,
+      // text: text,
+      children: [
+        WidgetDummy(position: Vector2(0, 0), children: [component])
+      ]);
 }
 
 Component createDummyOf(BuildContext context, ControllerClass class_, id,
     position, style, text, ControllerProperties properties) {
   final ControllerWidgetDef? def = controllerWidgetDef[class_.name];
-  print(class_);
   final WidgetComponent component = def!.component(
       class_: class_,
       id: id,
-      position: position,
+      position: Vector2(0, 0),
       properties: properties,
       style: style,
       text: text);
 
   assert(def != null);
   return WidgetDummy(
-      id: id,
-      class_: class_,
-      size: component.computedSize,
+      // size: component.size,
       position: position, // TODO: margin
       children: [component]);
 }

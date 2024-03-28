@@ -7,6 +7,7 @@ import 'package:codde_pi/services/db/device_model.dart';
 import 'package:codde_pi/services/db/host.dart';
 import 'package:codde_pi/services/db/project.dart';
 import 'package:codde_pi/services/db/project_type.dart';
+import 'package:codde_pi/services/db/protocol_adapter.dart';
 import 'package:codde_pi/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_codde_protocol/flutter_codde_protocol.dart';
@@ -20,7 +21,8 @@ void main() async {
   await Hive.initFlutter(); // TODO: find right location
   Hive
     ..registerAdapter(DeviceModelAdapter())
-    ..registerAdapter(DeviceAdapter());
+    ..registerAdapter(DeviceAdapter())
+    ..registerAdapter(ProtocolAdapter());
   await Hive.openBox<Device>('devices');
   Hive.registerAdapter(HostAdapter());
   await Hive.openBox<Host>('hosts');

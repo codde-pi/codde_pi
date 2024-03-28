@@ -40,6 +40,7 @@ class CoddeDeviceDialog extends StatelessWidget {
                         final deviceId = await showDialog(
                             context: context,
                             builder: (context) => SelectDeviceDialog());
+                        print('DEVICEID $deviceId');
                         if (deviceId != null) {
                           tiled.Property<Object> newProp = tiled.Property(
                               name: 'deviceId',

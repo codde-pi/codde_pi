@@ -4,14 +4,25 @@ import 'package:codde_pi/services/db/device_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_codde_protocol/flutter_codde_protocol.dart';
 
-class ControlledDeviceForm extends StatelessWidget {
+class ControlledDeviceForm extends StatefulWidget {
+  final Function cancel;
+  final Function validate;
+  final Device? existingDevice;
+  ControlledDeviceForm(
+      {super.key,
+      required this.cancel,
+      required this.validate,
+      this.existingDevice});
+
+  @override
+  State<StatefulWidget> createState() => _ControlledDeviceForm();
+}
+
+class _ControlledDeviceForm extends State<ControlledDeviceForm> {
   final nameController = TextEditingController();
   final addressController = TextEditingController();
   final protocol = ValueNotifier(Protocol.webSocket);
   final model = ValueNotifier(DeviceModel.sbc);
-
-  final Function cancel;
-  final Function validate;
 
   void getAddress(BuildContext context) async {
     addressController.text = await showGeneralDialog<String>(
@@ -21,8 +32,16 @@ class ControlledDeviceForm extends StatelessWidget {
         '';
   }
 
-  ControlledDeviceForm(
-      {super.key, required this.cancel, required this.validate});
+  @override
+  void initState() {
+    if (widget.existingDevice != null) {
+      nameController.text = widget.existingDevice!.name;
+      addressController.text = widget.existingDevice!.address ?? '';
+      model.value = widget.existingDevice!.model;
+      protocol.value = widget.existingDevice!.protocol;
+    }
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -90,9 +109,10 @@ class ControlledDeviceForm extends StatelessWidget {
         ),
         Row(
           children: [
-            TextButton(onPressed: () => cancel(), child: const Text('CANCEL')),
+            TextButton(
+                onPressed: () => widget.cancel(), child: const Text('CANCEL')),
             ElevatedButton(
-                onPressed: () => validate(
+                onPressed: () => widget.validate(
                       Device(
                           name: nameController.text,
                           model: model.value,

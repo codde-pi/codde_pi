@@ -1,18 +1,18 @@
 part of '../registry.dart';
 
-class DirectionalButtonArrow extends WidgetComponent with HasCoddeProtocol {
+class DirectionalButtonArrow extends PositionComponent with HasCoddeProtocol {
   DirectionalButtonValue direction;
   DirectionalButtonArrowPainter painter;
-  DirectionalButtonArrow(
-      {required this.direction,
-      required super.id,
-      required super.class_,
-      required this.painter,
-      super.style,
-      super.position,
-      super.margin,
-      super.size,
-      super.properties = ControllerProperties.empty});
+  int id;
+  ControllerStyle style;
+  DirectionalButtonArrow({
+    required this.direction,
+    required this.id,
+    required this.painter,
+    required this.style,
+    super.position,
+    super.size,
+  });
 
   @override
   FutureOr<void> onLoad() {
@@ -20,9 +20,11 @@ class DirectionalButtonArrow extends WidgetComponent with HasCoddeProtocol {
     add(
       ButtonComponent(
           button: CustomPainterComponent(
+            size: size,
             painter: painter..pressed = false,
           ),
           buttonDown: CustomPainterComponent(
+            size: size,
             painter: painter..pressed = true,
           ),
           onPressed: () =>
@@ -46,7 +48,4 @@ class DirectionalButtonArrow extends WidgetComponent with HasCoddeProtocol {
         return 4;
     }
   }
-
-  @override
-  int get defaultSize => 1;
 }

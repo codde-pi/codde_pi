@@ -3,7 +3,7 @@ part of '../codde_widgets.dart';
 class CoddeCom {
   CoddeCom({required this.protocol, required this.addr}) {
     switch (protocol) {
-      case Protocol.socket:
+      case Protocol.webSocket:
         com = ComSocketClient(address: addr);
         break;
       default:
@@ -15,16 +15,16 @@ class CoddeCom {
   Protocol protocol;
   String addr;
 
-  void connect() {
-    com.connect();
+  Future connect() {
+    return com.connect();
   }
 
-  void send(int id, WidgetRegistry data) {
-    com.send(data: Frame(id: id, data: data));
+  Future send(int id, WidgetRegistry data) {
+    return com.send(data: Frame(id: id, data: data));
   }
 
-  void disconnect() {
-    com.disconnect();
+  Future disconnect() {
+    return com.disconnect();
   }
 
   Future<ResultFrame?> receive() {

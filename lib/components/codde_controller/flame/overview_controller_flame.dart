@@ -8,6 +8,7 @@ import 'package:flame/game.dart';
 import 'package:flame/palette.dart';
 import 'package:flame_tiled/flame_tiled.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_codde_protocol/flutter_codde_protocol.dart';
 import 'package:get_it/get_it.dart';
 
 /// Display the overview of the controller, without any interaction
@@ -63,7 +64,10 @@ class OverviewControllerFlame extends FlameGame with HasGameRef {
         );
       }
     }
-    add(mapComponent!);
+    final dummyProtocol =
+        FlameCoddeProtocol(protocol: Protocol.webSocket, address: '');
+    dummyProtocol.add(mapComponent!);
+    add(dummyProtocol);
   }
 }
 
