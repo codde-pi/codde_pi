@@ -1,70 +1,105 @@
+import 'package:codde_backend/codde_backend.dart';
+import 'package:codde_pi/app/pages/codde/dashboard/api/dashboard_commands.dart';
 import 'package:codde_pi/app/pages/codde/state/codde_state.dart';
 import 'package:codde_pi/components/dialogs/select_host_dialog.dart';
 import 'package:codde_pi/components/dynamic_bar/models/dynamic_bar_menu.dart';
 import 'package:codde_pi/components/dynamic_bar/models/dynamic_bar_widget.dart';
-import 'package:codde_pi/main.dart';
-import 'package:codde_pi/services/db/project.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:hive_flutter/hive_flutter.dart';
-import 'package:path/path.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:get_it/get_it.dart';
 import 'package:provider/provider.dart';
 
+import 'api/dashboard_data.dart';
 import 'store/dashboard_store.dart';
+import 'views/cards.dart';
 
-class CoddeHost extends DynamicBarWidget {
-  CoddeHost({super.key});
-  final store = CoddeHostStore();
+class Dashboard extends DynamicBarStatefulWidget {
+  Dashboard({super.key});
+
+  @override
+  DynamicBarStateWidget<DynamicBarStatefulWidget> createDynamicState() {
+    return _Dashboard();
+  }
+}
+
+class _Dashboard extends DynamicBarStateWidget<Dashboard> {
+  final store = DashboardStore();
+  late final DashboardCommands dbd = DashboardCommands();
+
+  CoddeBackend get backend => GetIt.I<CoddeBackend>();
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     final projectStore = Provider.of<CoddeState>(context);
     return Scaffold(
-      appBar: null,
-      body: ValueListenableBuilder<Box>(
-        valueListenable: Hive.box<Project>(projectsBox)
-            .listenable(keys: [projectStore.project.key]),
-        builder: (context, box, widget) => box
-                    .get(projectStore.project.key)
-                    .host ==
-                null
-            ? Center(
-                child: FloatingActionButton.extended(
-                    onPressed: () async {
-                      final res = await showDialog(
-                          context: context,
-                          builder: (context) =>
-                              SelectHostDialog(project: projectStore.project));
-                      print("HOST ${res.$1}");
-                      if (res.$1 != null && res.$2 != null) {
-                        // projectStore.selectHost(host);
-                        var _project =
-                            (box.get(projectStore.project.key) as Project)
-                              ..path = res.$2
-                              ..host = res.$1;
-                        box.put(projectStore.project.key, _project);
-                        store.askCoddeReload();
-                      }
-                    },
-                    label: const Text('Select Host'),
-                    icon: const Icon(Icons.add)))
-            : Observer(
-                builder: (context) => store.needCoddeReload
-                    ? Center(
-                        child: FloatingActionButton.extended(
-                          onPressed: () => Navigator.of(context)
-                              .pushReplacementNamed("/codde",
-                                  arguments: box.get(projectStore.project.key)),
-                          label: const Text('RELOAD PROJECT'),
-                          icon: const Icon(Icons.refresh_outlined),
-                        ),
-                      )
-                    : const SafeArea(
-                        child: Text("Host details / dashboard"),
-                      ),
-              ),
-      ),
-    );
+        appBar: null,
+        body: Observer(builder: (_) {
+          if (projectStore.project.host == null) {
+            return Center(
+                child: SelectHostDialog()); // TODO: button navigation instead?
+          }
+
+          if (backend.client == null) {
+            return const Center(child: Text('No connection'));
+          }
+          return SafeArea(
+              child: StreamBuilder<DashboardData?>(
+            stream: dbd.streamCommands(),
+            builder: (context, snapshot) {
+              //print('stream is listened');
+
+              if (snapshot.hasError) {
+                return const Center(
+                    child: Text('Error ')); //${snapshot.error ?? ""}'));
+              }
+
+              if (!snapshot.hasData) {
+                return const Center(child: Text('Nodata'));
+              } else {
+                final DashboardData data = snapshot.data!;
+                /* data = json
+                                    .decode(snapshot.data.toString())['data']; */
+
+                return StaggeredGrid.count(
+                  /*physics: NeverScrollableScrollPhysics(),*/
+                  crossAxisCount: 2,
+                  mainAxisSpacing: 8.0,
+                  crossAxisSpacing: 8.0,
+                  children: <StaggeredGridTile>[
+                    StaggeredGridTile.count(
+                        crossAxisCellCount: 1,
+                        mainAxisCellCount: 1,
+                        child: CardVoltage(data.voltage)),
+                    StaggeredGridTile.count(
+                        crossAxisCellCount: 1,
+                        mainAxisCellCount: 1,
+                        child: CardCpu(cpu: data.cpu)),
+                    StaggeredGridTile.count(
+                        crossAxisCellCount: 1,
+                        mainAxisCellCount: 1,
+                        child: CardMem(data.mem)),
+                    StaggeredGridTile.count(
+                        crossAxisCellCount: 1,
+                        mainAxisCellCount: 1,
+                        child: CardDisk(data.disk)),
+                    /* StaggeredGridTile.count(
+                        crossAxisCellCount: 2,
+                        mainAxisCellCount: 1,
+                        child: CardTemp(
+                          data.temp,
+                        )), */
+                    StaggeredGridTile.count(
+                        crossAxisCellCount: 2,
+                        mainAxisCellCount: 1,
+                        child: CardTasks(data.tasks)),
+                  ],
+                );
+              }
+            },
+          ));
+        }));
   }
 
   @override

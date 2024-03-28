@@ -1,13 +1,16 @@
 import 'package:mobx/mobx.dart';
+
 part 'dashboard_store.g.dart';
 
-class CoddeHostStore = _CoddeHostStore with _$CoddeHostStore;
+class DashboardStore = _DashboardStore with _$DashboardStore;
 
-abstract class _CoddeHostStore with Store {
+abstract class _DashboardStore with Store {
+  /* @observable
+  DashboardData? dashboardData; */
+
+  /* @observable
+  int counter = 0;
+
   @observable
-  bool needCoddeReload = false;
-  @action
-  void askCoddeReload() {
-    needCoddeReload = true;
-  }
+  List tempData = []; */
 }
