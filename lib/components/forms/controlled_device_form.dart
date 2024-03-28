@@ -7,7 +7,7 @@ import 'package:flutter_codde_protocol/flutter_codde_protocol.dart';
 class ControlledDeviceForm extends StatelessWidget {
   final nameController = TextEditingController();
   final addressController = TextEditingController();
-  final protocol = ValueNotifier(Protocol.socket);
+  final protocol = ValueNotifier(Protocol.webSocket);
   final model = ValueNotifier(DeviceModel.sbc);
 
   final Function cancel;

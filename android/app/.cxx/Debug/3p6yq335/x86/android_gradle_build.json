@@ -1,0 +1,28 @@
+{
+  "buildFiles": [
+    "/home/matt/Projects/codde_pi/codde_pi/android/app/CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "/opt/android-sdk/cmake/3.18.1/bin/ninja",
+      "-C",
+      "/home/matt/Projects/codde_pi/codde_pi/android/app/.cxx/Debug/3p6yq335/x86",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "/opt/android-sdk/cmake/3.18.1/bin/ninja",
+    "-C",
+    "/home/matt/Projects/codde_pi/codde_pi/android/app/.cxx/Debug/3p6yq335/x86",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {},
+  "toolchains": {
+    "toolchain": {
+      "cCompilerExecutable": "/opt/android-sdk/ndk/23.1.7779620/toolchains/llvm/prebuilt/linux-x86_64/bin/clang.lld",
+      "cppCompilerExecutable": "/opt/android-sdk/ndk/23.1.7779620/toolchains/llvm/prebuilt/linux-x86_64/bin/clang++.lld"
+    }
+  },
+  "cFileExtensions": [],
+  "cppFileExtensions": []
+}

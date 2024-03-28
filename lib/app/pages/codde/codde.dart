@@ -1,7 +1,5 @@
 import 'package:codde_backend/codde_backend.dart';
-import 'package:codde_editor/codde_editor.dart';
 import 'package:codde_pi/app/pages/codde/state/codde_state.dart';
-import 'package:codde_pi/components/codde_controller/codde_controller.dart';
 import 'package:codde_pi/components/dynamic_bar/dynamic_bar.dart';
 import 'package:codde_pi/services/db/project.dart';
 import 'package:codde_pi/theme.dart';
@@ -22,6 +20,7 @@ class _Codde extends State<Codde> {
       final backend = CoddeBackend(
           project.host == null ? BackendLocation.local : BackendLocation.server,
           credentials: project.host?.toCredentials());
+      // TODO: conditional backend opening
       await backend.open().then(
           (_) => GetIt.I.registerLazySingleton<CoddeBackend>(() => backend));
     }
@@ -57,7 +56,9 @@ class _Codde extends State<Codde> {
     return FutureBuilder(
       future: registerBackend(project: project),
       builder: (context, snapshot) {
-        if (snapshot.connectionState != ConnectionState.done) {
+        if (snapshot.connectionState != ConnectionState.done &&
+            (!GetIt.I
+                .isRegistered<CoddeBackend>() /* || backend.isNotOpen */)) {
           return Center(
               child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -102,9 +103,6 @@ class _Codde extends State<Codde> {
         }
         return MultiProvider(
             providers: [
-              Provider<CoddeControllerStore>(
-                create: (_) => CoddeControllerStore(),
-              ),
               Provider<CoddeState>(
                 create: (_) => CoddeState(project),
               ),

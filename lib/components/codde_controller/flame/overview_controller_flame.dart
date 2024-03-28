@@ -2,6 +2,7 @@ import 'package:codde_backend/codde_backend.dart';
 import 'package:codde_pi/codde_widgets/codde_widgets.dart';
 import 'package:codde_pi/components/codde_controller/flame/codde_tiled_component.dart';
 import 'package:codde_pi/core/exception.dart';
+import 'package:codde_pi/logger.dart';
 import 'package:flame/components.dart';
 import 'package:flame/game.dart';
 import 'package:flame/palette.dart';
@@ -38,6 +39,7 @@ class OverviewControllerFlame extends FlameGame with HasGameRef {
         await backend.read(path).then((value) => value.forEach((element) {
               content += "$element\n";
             }));
+        logger.d("OVERVIEW: $content");
       } catch (e) {
         // TODO: export no map found error
         mapComponent = TextComponent(
@@ -53,7 +55,6 @@ class OverviewControllerFlame extends FlameGame with HasGameRef {
         mapComponent = await CoddeTiledComponent.load(content,
             mode: controllerWidgetMode, scale: Vector2.all(0.5));
       } catch (e) {
-        print('MAP $content');
         mapComponent = TextComponent(
           text: 'Invalid map: $e',
           textRenderer: regular, // TODO: follow material colors

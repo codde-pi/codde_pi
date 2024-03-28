@@ -1,7 +1,6 @@
 import 'package:codde_pi/components/dialogs/codde_device_dialog.dart';
 import 'package:codde_pi/services/db/device.dart';
 import 'package:codde_pi/theme.dart';
-import 'package:controller_widget_api/models/controller_properties.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 

@@ -9,6 +9,7 @@ import 'package:codde_pi/services/db/project.dart';
 import 'package:codde_pi/services/db/project_type.dart';
 import 'package:codde_pi/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_codde_protocol/flutter_codde_protocol.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 // TODO: replace with this box name
@@ -19,7 +20,6 @@ void main() async {
   await Hive.initFlutter(); // TODO: find right location
   Hive
     ..registerAdapter(DeviceModelAdapter())
-    ..registerAdapter(DeviceProtocolAdapter())
     ..registerAdapter(DeviceAdapter());
   await Hive.openBox<Device>('devices');
   Hive.registerAdapter(HostAdapter());
@@ -28,6 +28,7 @@ void main() async {
     ..registerAdapter(ProjectTypeAdapter())
     ..registerAdapter(ProjectAdapter());
   await Hive.openBox<Project>(projectsBox);
+  await RustLib.init();
   runApp(const MyApp());
 }
 

@@ -1,6 +1,6 @@
+import 'package:codde_pi/codde_widgets/codde_widgets.dart';
 import 'package:codde_pi/components/dialogs/select_device_dialog.dart';
 import 'package:codde_pi/services/db/device.dart';
-import 'package:controller_widget_api/controller_widget_api.dart';
 import 'package:flame_tiled/flame_tiled.dart' as tiled;
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
