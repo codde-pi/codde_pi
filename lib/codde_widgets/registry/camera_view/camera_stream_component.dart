@@ -20,10 +20,4 @@ class CameraStreamComponent extends WidgetComponent with HasCoddeProtocol {
     super.onLoad();
     add(MjpegStreamComponent.parseUri(uri: uri));
   }
-
-  @override
-  int get defaultSize => 0;
-
-  @override
-  Vector2 get computedSize => gameRef.size;
 }

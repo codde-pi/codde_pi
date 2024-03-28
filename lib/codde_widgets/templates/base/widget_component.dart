@@ -1,7 +1,5 @@
 part of '../../codde_widgets.dart';
 
-const SCALE_FACTOR = 100.0;
-
 abstract class WidgetComponent extends HudMarginComponent
     with HasGameRef, HasMaterial {
   int id;
@@ -10,8 +8,7 @@ abstract class WidgetComponent extends HudMarginComponent
   ControllerStyle style;
   ControllerProperties properties;
   String nickyName;
-
-  int get defaultSize;
+  double sizeFactor = 1.0;
 
   WidgetComponent({
     required this.id,
@@ -19,26 +16,26 @@ abstract class WidgetComponent extends HudMarginComponent
     required this.properties,
     this.style = ControllerStyle.material,
     this.text,
+    // super.size,
+    Vector2? size,
     super.margin,
     super.position,
-    super.size,
-    super.scale,
     super.angle,
-    super.anchor = Anchor.center,
+    super.anchor = Anchor.topLeft,
     super.children,
     super.priority,
     this.nickyName = '',
-  });
+  }) : super(size: size ?? Vector2.all(100.0));
+  /* })  : sizeFactor = sizeFactor ?? 1.0,
+        super(size: (size ?? Vector2.all(100.0)) * (sizeFactor ?? 1.0)); */
 
   @override
   FutureOr<void> onLoad() {
     super.onLoad();
-    size = computedSize;
+    size = size * sizeFactor;
+
     // TODO: disabled prop
   }
-
-  Vector2 get computedSize =>
-      Vector2.all((properties.size ?? defaultSize) * SCALE_FACTOR);
 
   // String get name => "$id_${class_.name}";
 
@@ -46,7 +43,8 @@ abstract class WidgetComponent extends HudMarginComponent
     final regular = TextStyle(
         fontWeight: FontWeight.w700,
         color: Theme.of(gameRef.buildContext!).textTheme.bodyMedium?.color);
-    return TextComponent(text: text, textRenderer: TextPaint(style: regular))
+    return TextComponent(
+        size: size, text: text, textRenderer: TextPaint(style: regular))
       ..anchor = Anchor.center
       ..x = size.x / 2 // size is a property from game
       ..y = size.y / 2;

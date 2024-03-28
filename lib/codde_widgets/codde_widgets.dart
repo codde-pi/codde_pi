@@ -1,4 +1,7 @@
 import 'package:codde_pi/components/sheets/widget_details_sheet.dart';
+import 'package:flame/game.dart';
+
+import 'registry/registry.dart';
 import 'package:flame/components.dart';
 
 import 'dart:async';
@@ -9,7 +12,8 @@ import 'package:flame_tiled/flame_tiled.dart' hide Frame;
 import 'package:flutter/material.dart';
 
 import 'package:flutter_codde_protocol/flutter_codde_protocol.dart';
-import 'package:codde_pi/codde_widgets/codde_widgets.dart';
+
+import 'models/controller_widget_def.dart';
 
 export 'registry/registry.dart';
 export 'models/controller_map.dart';
@@ -26,7 +30,7 @@ part 'api/codde_com.dart';
 
 part 'templates/mixin/has_material.dart';
 part 'templates/components/widget_dummy.dart';
-part 'templates//mixin/has_tiled.dart';
+part 'templates/mixin/has_tiled.dart';
 part 'templates/mixin/has_codde_protocol.dart';
 
 part 'models/controller_properties.dart';

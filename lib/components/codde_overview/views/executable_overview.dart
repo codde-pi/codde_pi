@@ -1,6 +1,10 @@
 import 'package:codde_backend/codde_backend.dart';
+import 'package:codde_pi/components/codde_controller/codde_controller.dart';
+import 'package:codde_pi/components/codde_overview/codde_overview.dart';
+import 'package:codde_pi/components/codde_runner/codde_runner.dart';
 import 'package:codde_pi/components/views/codde_tile.dart';
 import 'package:codde_pi/core/utils.dart';
+import 'package:codde_pi/logger.dart';
 import 'package:codde_pi/services/db/project.dart';
 import 'package:codde_pi/theme.dart';
 import 'package:flutter/material.dart';
@@ -41,6 +45,7 @@ class _ExecutableOverview extends State<ExecutableOverview> {
             }
 
             // Filter results
+            logger.d("LIST ${snapshot.data?.map((e) => e.name)}");
             List<FileEntity> execs = widget.project.executables +
                 snapshot.data!
                     .where((f) => isInTreeExecutable(f.name))
@@ -60,7 +65,9 @@ class _ExecutableOverview extends State<ExecutableOverview> {
                         ),
                         leading: Icon(
                             isPythonFile(e.name) ? Icons.code : Icons.gamepad),
-                        onTap: null,
+                        onTap: () => Navigator.of(context).push(
+                            MaterialPageRoute(
+                                builder: (context) => CoddeRunner(e.path))),
                         onLongPress: () {/* TODO: options DELETE, EDIT */},
                       )),
                   if (snapshot.connectionState != ConnectionState.done)

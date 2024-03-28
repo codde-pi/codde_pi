@@ -1,6 +1,5 @@
 import 'package:codde_pi/codde_widgets/codde_widgets.dart';
 import 'package:flame/components.dart';
-import 'package:flame_tiled/flame_tiled.dart';
 import 'package:flutter_codde_protocol/flutter_codde_protocol.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -12,7 +11,6 @@ class ControllerWidgetDef with _$ControllerWidgetDef {
   const factory ControllerWidgetDef(
       {required ControllerClass class_, // toString <=> uid
       required String description,
-      required String name,
       required WidgetRegistry? command,
       ResultRegistry? response,
       @Default(ControllerCommitFrequency.triggered)
