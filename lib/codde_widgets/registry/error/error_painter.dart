@@ -1,6 +1,4 @@
-import 'dart:ui';
-
-import 'package:codde_pi/codde_widgets/codde_widgets.dart';
+part of '../registry.dart';
 
 class ErrorPainter extends WidgetPainter {
   ErrorPainter({required super.colorscheme, required super.style});

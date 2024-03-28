@@ -1,63 +1,67 @@
-import 'dart:async';
+part of '../registry.dart';
 
-import 'package:codde_pi/codde_widgets/codde_widgets.dart';
-import 'package:controller_widget_api/controller_widget_api.dart';
-import 'package:flame/components.dart';
-import 'package:flutter/material.dart';
-
-import 'directional_button_arrow.dart';
-import 'directional_button_arrow_painter.dart';
-
-class DirectionalButton extends WidgetPlayer {
+class DirectionalButton extends WidgetComponent {
   DirectionalButton(
       {required super.id,
       required super.class_,
+      super.text,
       super.position,
-      super.painter,
-      super.size});
+      super.margin,
+      super.style,
+      super.size,
+      required super.properties});
   @override
   FutureOr<void> onLoad() {
     super.onLoad();
-    add(DirectionalButtonArrow(
-        painter: DirectionalButtonArrowPainter(
-            direction: DirectionalButtonValue.up,
-            colorscheme: Theme.of(gameRef.buildContext!).colorScheme,
-            style: ControllerStyle.material),
-        direction: DirectionalButtonValue.up,
-        id: id,
-        class_: class_,
-        size: computedSize,
-        position: computedPosition(DirectionalButtonValue.up)));
-    add(DirectionalButtonArrow(
-        painter: DirectionalButtonArrowPainter(
-            direction: DirectionalButtonValue.right,
-            colorscheme: Theme.of(gameRef.buildContext!).colorScheme,
-            style: ControllerStyle.material),
-        direction: DirectionalButtonValue.right,
-        id: id,
-        class_: class_,
-        size: computedSize,
-        position: computedPosition(DirectionalButtonValue.right)));
-    add(DirectionalButtonArrow(
-        painter: DirectionalButtonArrowPainter(
-            direction: DirectionalButtonValue.down,
-            colorscheme: Theme.of(gameRef.buildContext!).colorScheme,
-            style: ControllerStyle.material),
-        direction: DirectionalButtonValue.down,
-        id: id,
-        class_: class_,
-        size: computedSize,
-        position: computedPosition(DirectionalButtonValue.down)));
-    add(DirectionalButtonArrow(
-        painter: DirectionalButtonArrowPainter(
-            direction: DirectionalButtonValue.left,
-            colorscheme: Theme.of(gameRef.buildContext!).colorScheme,
-            style: ControllerStyle.material),
-        direction: DirectionalButtonValue.left,
-        id: id,
-        class_: class_,
-        size: computedSize,
-        position: computedPosition(DirectionalButtonValue.left)));
+    add(
+      CustomPainterComponent(
+          painter: DirectionalButtonPainter(
+            colorscheme: colorscheme,
+            style: style,
+          ),
+          children: [
+            DirectionalButtonArrow(
+                painter: DirectionalButtonArrowPainter(
+                    direction: DirectionalButtonValue.up,
+                    colorscheme: Theme.of(gameRef.buildContext!).colorScheme,
+                    style: ControllerStyle.material),
+                direction: DirectionalButtonValue.up,
+                id: id,
+                class_: class_,
+                size: computedSize,
+                position: computedPosition(DirectionalButtonValue.up)),
+            DirectionalButtonArrow(
+                painter: DirectionalButtonArrowPainter(
+                    direction: DirectionalButtonValue.right,
+                    colorscheme: Theme.of(gameRef.buildContext!).colorScheme,
+                    style: ControllerStyle.material),
+                direction: DirectionalButtonValue.right,
+                id: id,
+                class_: class_,
+                size: computedSize,
+                position: computedPosition(DirectionalButtonValue.right)),
+            DirectionalButtonArrow(
+                painter: DirectionalButtonArrowPainter(
+                    direction: DirectionalButtonValue.down,
+                    colorscheme: Theme.of(gameRef.buildContext!).colorScheme,
+                    style: ControllerStyle.material),
+                direction: DirectionalButtonValue.down,
+                id: id,
+                class_: class_,
+                size: computedSize,
+                position: computedPosition(DirectionalButtonValue.down)),
+            DirectionalButtonArrow(
+                painter: DirectionalButtonArrowPainter(
+                    direction: DirectionalButtonValue.left,
+                    colorscheme: Theme.of(gameRef.buildContext!).colorScheme,
+                    style: ControllerStyle.material),
+                direction: DirectionalButtonValue.left,
+                id: id,
+                class_: class_,
+                size: computedSize,
+                position: computedPosition(DirectionalButtonValue.left))
+          ]),
+    );
   }
 
   Vector2 computedPosition(DirectionalButtonValue direction) {
@@ -76,6 +80,9 @@ class DirectionalButton extends WidgetPlayer {
   Vector2 get computedSize => Vector2(childWidth, childHeight);
   double get childWidth => size.x / 4;
   double get childHeight => size.y / 4;
+
+  @override
+  int get defaultSize => 4; // TODO: 4 or 2 ?
 }
 
 enum DirectionalButtonValue { up, down, left, right }

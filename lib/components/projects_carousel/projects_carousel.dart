@@ -43,37 +43,54 @@ class ProjectsCarousel extends StatelessWidget {
               itemCount: projectList.length,
               itemBuilder:
                   (BuildContext context, int itemIndex, int pageViewIndex) =>
-                      Stack(children: [
-                GameWidget(
-                  game: OverviewControllerFlame(
-                      path: getControllerName(
-                          projectList.elementAt(itemIndex).path),
-                      backend: CoddeBackend(BackendLocation
-                          .local)), // TODO: catch SFTP scenario `if project.host != null`
-                ),
-                Positioned(
-                  bottom: 0.0,
-                  left: 0.0,
-                  right: 0.0,
-                  child: Card(
-                    /* child: Container(
+                      Stack(
+                children: [
+                  GameWidget(
+                    // TODO: if unable to connect, show nothing, else instantiate remote backend
+                    game: OverviewControllerFlame(
+                        path: getControllerName(
+                            projectList.elementAt(itemIndex).path),
+                        backend: CoddeBackend(BackendLocation
+                            .local)), // TODO: catch SFTP scenario `if project.host != null`
+                  ),
+                  Positioned(
+                    top: 0.0,
+                    // left: 0.0,
+                    right: 0.0,
+                    child: PopupMenuButton(
+                      icon: const Icon(Icons.more_vert),
+                      itemBuilder: (BuildContext context) => [
+                        PopupMenuItem(
+                          child: const Text('Delete'),
+                          onTap: () => deleteProject(context, focusedProject),
+                        )
+                      ],
+                    ),
+                  ),
+                  Positioned(
+                    bottom: 0.0,
+                    left: 0.0,
+                    right: 0.0,
+                    child: Container(
+                      /* child: Container(
                     color: Theme.of(context)
                         .colorScheme
                         .primary
                         .darken(0.7)
                         .withOpacity(0.5), */
-                    child: Center(
-                      child: Padding(
-                        padding: EdgeInsets.all(widgetGutter),
-                        child: Text(
-                          projectList.elementAt(itemIndex).name.toUpperCase(),
-                          style: Theme.of(context).textTheme.bodyLarge,
+                      child: Center(
+                        child: Padding(
+                          padding: const EdgeInsets.all(widgetGutter),
+                          child: Text(
+                            projectList.elementAt(itemIndex).name.toUpperCase(),
+                            style: Theme.of(context).textTheme.bodyLarge,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                )
-              ]),
+                  )
+                ],
+              ),
               options: CarouselOptions(
                 height: MediaQuery.of(context).size.height / 1.5,
                 aspectRatio: MediaQuery.of(context).devicePixelRatio,

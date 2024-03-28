@@ -1,5 +1,5 @@
 import 'package:codde_backend/codde_backend.dart';
-import 'package:codde_com/codde_com.dart';
+import 'package:codde_pi/codde_widgets/codde_widgets.dart';
 import 'package:dartssh2/dartssh2.dart';
 import 'package:get_it/get_it.dart';
 import 'package:mobx/mobx.dart';
@@ -24,9 +24,10 @@ abstract class _CoddeRunnerStore with Store {
   @action
   writeStd(String std) => lastStd = std;
 
-  bool get isComOpen =>
-      (GetIt.I.isRegistered<CoddeCom>() && GetIt.I.get<CoddeCom>().connected);
-  bool get isRunning => GetIt.I.get<CoddeBackend>().isRunning || isComOpen;
+  Future<bool> get isComOpen async => (GetIt.I.isRegistered<CoddeCom>() &&
+      await GetIt.I.get<CoddeCom>().connected);
+  Future<bool> get isRunning async =>
+      GetIt.I.get<CoddeBackend>().isRunning || await isComOpen;
 
   @action
   void setExecutable(String? exec) {

@@ -30,11 +30,11 @@ Future<Project> createBackendProject(context,
       ? CoddeBackend(BackendLocation.server,
           credentials: instance.host!.toCredentials())
       : CoddeBackend(BackendLocation.local);
-  backend.open();
+  await backend.open();
   await backend.mkdir(instance.path);
   GetIt.I.registerSingleton(backend);
   if (demo) {
-    backend.create(join(instance.path, "main.py"),
+    await backend.create(join(instance.path, "main.py"),
         content:
             await rootBundle.loadString("assets/samples/socketio/main.py"));
   }

@@ -1,26 +1,31 @@
+import 'dart:async';
+
 import 'package:codde_pi/codde_widgets/codde_widgets.dart';
-import 'package:controller_widget_api/controller_widget_api.dart';
+import 'package:codde_pi/components/codde_controller/utils/hatch_background.dart';
 import 'package:enum_to_string/enum_to_string.dart';
 import 'package:flame/components.dart';
 import 'package:flame_mjpeg/flame_mjpeg.dart';
 import 'package:flame_tiled/flame_tiled.dart';
+import 'package:flutter/material.dart';
 
 /// [CoddeTiledComponent] Place generated widget in [onMount] in order to use gameRef
 ///  and get current material colors
-class CoddeTiledComponent extends TiledComponent {
-  ControllerWidgetProvider provider;
+class CoddeTiledComponent extends TiledComponent with HasGameRef {
+  ControllerWidgetMode mode;
   String content;
+
+  @override
   CoddeTiledComponent(super.tileMap,
-      {required this.provider, super.scale, super.position})
+      {required this.mode, super.scale, super.position})
       : content = tileMap.map.toString();
 
   static Future<CoddeTiledComponent> load(String content,
-          {required ControllerWidgetProvider provider,
+          {required ControllerWidgetMode mode,
           int? priority,
           Vector2? scale,
           Vector2? position}) async =>
       CoddeTiledComponent(await _load(content, Vector2.all(16)),
-          provider: provider, scale: scale, position: position);
+          mode: mode, scale: scale, position: position);
 
   @override
   void onMount() async {
@@ -29,16 +34,29 @@ class CoddeTiledComponent extends TiledComponent {
     var videoStream = MjpegStreamComponent.parseUri(
         uri: "http://192.168.0.40:8080/?action=stream");
     add(videoStream); */
-    for (var value in tileMap.map.layers) {
+    // Load MAP
+    if (mode == ControllerWidgetMode.editor) {
+      add(CustomPainterComponent(
+          size: Vector2.all(1),
+          painter: HatchBackground(
+              colorscheme: Theme.of(gameRef.buildContext!).colorScheme)));
+    }
+    for (var layer in tileMap.map.layers) {
       if (game.buildContext != null) {
-        add(await provider.generateWidget(
-            context: gameRef.buildContext!,
-            id: value.id!,
-            class_: EnumToString.fromString(
-                    ControllerClass.values, value.class_ ?? '') ??
-                ControllerClass.unknown,
-            x: value.x,
-            y: value.y));
+        if (layer.id != null && layer.type == LayerType.objectGroup) {
+          add(
+            await generateWidget(
+                mode: mode,
+                context: gameRef.buildContext!,
+                id: layer.id!,
+                class_: EnumToString.fromString(
+                        ControllerClass.values, layer.class_ ?? '') ??
+                    ControllerClass.error,
+                properties: layer.properties,
+                x: layer.x,
+                y: layer.y) as Component,
+          );
+        }
       }
     }
   }

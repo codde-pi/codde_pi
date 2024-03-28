@@ -1,6 +1,7 @@
 import 'package:codde_backend/codde_backend.dart';
 import 'package:codde_pi/services/db/device.dart';
 import 'package:codde_pi/services/db/device_model.dart';
+import 'package:flutter_codde_protocol/flutter_codde_protocol.dart';
 import 'package:hive/hive.dart';
 import 'package:uuid/uuid.dart';
 
@@ -37,11 +38,12 @@ class Host extends HiveObject {
 
   Device toDevice() {
     return Device(
-        uid: uid,
-        name: name,
-        model: DeviceModel.sbc,
-        address: addr,
-        protocol: DeviceProtocol.socketio);
+      uid: uid,
+      name: name,
+      model: DeviceModel.sbc,
+      address: addr,
+      protocol: Protocol.webSocket,
+    );
   }
 
   Map<String, dynamic> toJson() {

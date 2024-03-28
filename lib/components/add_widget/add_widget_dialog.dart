@@ -9,7 +9,10 @@ import 'store/add_widget_store.dart';
 class AddWidgetDialog extends StatelessWidget {
   final AddWidgetStore state = AddWidgetStore();
 
-  AddWidgetDialog({super.key});
+  final Function(ControllerWidgetDef) funSelect;
+  final Function funCancel;
+  AddWidgetDialog(
+      {super.key, required this.funSelect, required this.funCancel});
   @override
   Widget build(BuildContext context) {
     return Provider<AddWidgetStore>(
@@ -20,7 +23,7 @@ class AddWidgetDialog extends StatelessWidget {
           appBar: AppBar(
             title: Observer(
               builder: (_) => Text(state.widget != null
-                  ? state.widget!.name
+                  ? state.widget!.class_.name
                   : 'Select your widget'),
             ),
             leading: state.widget != null
@@ -28,13 +31,13 @@ class AddWidgetDialog extends StatelessWidget {
                     icon: const Icon(Icons.arrow_back),
                     onPressed: () => state.selectWidget(null))
                 : IconButton(
-                    onPressed: () => Navigator.pop(context),
+                    onPressed: () => funCancel(),
                     icon: const Icon(Icons.close)),
             actions: [
               Observer(
                 builder: (context) => ElevatedButton(
                   onPressed: state.widget != null
-                      ? () => Navigator.of(context).pop(state.widget)
+                      ? () => funSelect(state.widget!)
                       : null,
                   child: const Text('VALIDATE'),
                 ),
@@ -55,7 +58,9 @@ class AddWidgetDialog extends StatelessWidget {
           ),
           bottomNavigationBar: state.widget != null
               ? ElevatedButton(
-                  onPressed: () => Navigator.pop(context, state.widget),
+                  onPressed: state.widget != null
+                      ? () => funSelect(state.widget!)
+                      : null,
                   child: const Text('SELECT'))
               : null,
         ),
@@ -65,24 +70,23 @@ class AddWidgetDialog extends StatelessWidget {
 }
 
 class AddWidgetList extends StatelessWidget {
-  final widgetList = controllerWidgetDef;
   @override
   Widget build(BuildContext context) {
     final controller = Provider.of<AddWidgetStore>(context);
     return ListView.builder(
-      itemCount: widgetList.length,
+      itemCount: controllerWidgetDef.length,
       itemBuilder: (context, index) => Card(
           child: ListTile(
-        title: Text(widgetList.values.elementAt(index).name),
+        title: Text(controllerWidgetDef.values.elementAt(index).class_.name),
         leading: const Icon(Icons.gamepad_outlined),
-        onTap: () =>
-            controller.selectWidget(widgetList.values.elementAt(index)),
+        onTap: () => controller
+            .selectWidget(controllerWidgetDef.values.elementAt(index)),
       )),
     );
   }
 }
 
-class AddWidgetSheet extends BottomSheet {
+/* class AddWidgetSheet extends BottomSheet {
   AddWidgetSheet({super.key})
       : super(
             onClosing: () {},
@@ -90,4 +94,4 @@ class AddWidgetSheet extends BottomSheet {
   @override
   WidgetBuilder get builder => (context) => AddWidgetDialog();
   // TODO: hide FAB, then modify it to validiate wiget selection
-}
+} */

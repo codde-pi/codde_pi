@@ -1,33 +1,29 @@
-import 'dart:ui';
+part of '../registry.dart';
 
-import 'package:codde_pi/codde_widgets/templates/view_component.dart';
-import 'package:controller_widget_api/controller_widget_api.dart';
-import 'package:controller_widget_api/models/controller_constraints.dart';
-import 'package:flame/components.dart';
-import 'package:flame_mjpeg/flame_mjpeg.dart';
-
-class CameraStreamComponent extends MjpegStreamComponent with HasGameRef {
-  ControllerConstraints constraints;
+// TODO: separate URI Camera stream from CoddeProtocol driven camera stream
+class CameraStreamComponent extends WidgetComponent with HasCoddeProtocol {
+  String uri;
   CameraStreamComponent(
-      {ControllerConstraints? constraints, required properties})
+      {required super.class_,
+      required super.id,
+      super.margin,
+      super.position,
+      super.text,
+      super.style,
+      required super.properties})
       : assert(properties.getValue('uri') != null, "No URI provided"),
-        constraints = constraints ?? const ControllerConstraints(),
-        super(uri: properties.getValue('uri'));
+        uri = properties.getValue<String>(
+            'uri')!; // FIXME:  Do an assert is really BAD, insteadprint Textcomponent indicating no URI is provided
 
   @override
-  void update(double dt) {
-    super.update(dt);
-    var pos = getConstraintsPosition();
-    position.x = pos.x;
-    position.y = pos.y;
+  FutureOr<void> onLoad() {
+    super.onLoad();
+    add(MjpegStreamComponent.parseUri(uri: uri));
   }
 
-  ({double x, double y}) getConstraintsPosition() {
-    // TODO: handle x then y, then offset (absolute or relative)
-    var x = 0.0;
-    var y = 0.0;
-    // size.y
+  @override
+  int get defaultSize => 0;
 
-    return (x: x, y: y);
-  }
+  @override
+  Vector2 get computedSize => gameRef.size;
 }

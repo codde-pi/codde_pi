@@ -1,6 +1,4 @@
-import 'package:codde_pi/codde_widgets/templates/widget_painter.dart';
-import 'package:controller_widget_api/controller_widget_api.dart';
-import 'package:flutter/material.dart';
+part of '../registry.dart';
 
 //Copy this CustomPainter code to the Bottom of the File
 class ClickButtonPainter extends WidgetPainter {

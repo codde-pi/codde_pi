@@ -26,26 +26,20 @@ class ProjectLauncher extends StatelessWidget {
           key: store.formKey,
           child: Column(
             children: [
-              const Text("Project name"),
-              const SizedBox(height: widgetGutter),
-              Row(children: [
-                Expanded(
-                  flex: 4,
-                  child: TextFormField(
-                    controller: projNameController,
-                    decoration: const InputDecoration(
-                        hintText: 'Project name', border: OutlineInputBorder()),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter some text';
-                      }
-                      return null;
-                    },
-                  ),
+              Padding(
+                padding: const EdgeInsets.all(widgetGutter),
+                child: TextFormField(
+                  controller: projNameController,
+                  decoration: const InputDecoration(
+                      hintText: 'Project name', border: OutlineInputBorder()),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter some text';
+                    }
+                    return null;
+                  },
                 ),
-                const SizedBox(height: widgetGutter),
-                const Text('.tmx'),
-              ]),
+              ),
               const SizedBox(height: widgetGutter),
               Column(
                 mainAxisSize: MainAxisSize.max,

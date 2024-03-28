@@ -35,21 +35,9 @@ dependencies:
 
   # local
   codde_editor:
-    git:
-      url: git@github.com:codde-pi/codde_editor.git
-      ref: main
+    path: packages/codde_editor
   codde_backend:
-    git:
-      url: git@github.com:codde-pi/codde_backend.git
-      ref: main
-  controller_widget_api:
-    path: packages/controller_widget_api
-  flame_socketio:
-    path: packages/flame_socketio
-  codde_com:
-    path: packages/codde_com
-  flame_coddecom:
-    path: packages/flame_coddecom
+    path: packages/codde_backend
   flame_mjpeg:
     path: packages/flame_mjpeg
 
@@ -71,21 +59,28 @@ dependencies:
 
   # components
   flutter_svg: ^2.0.5
-  google_fonts: ^4.0.3
+  google_fonts: ^6.2.1
   flutter_treeview: ^1.0.7+1
-  file_picker: ^5.3.0
+  file_picker: ^6.2.0
   simple_markdown_editor: ^0.2.0
-  flame: ^1.7.2
-  flame_svg: ^1.7.4
-  flame_tiled: ^1.10.0
-  xterm: ^3.6.1-pre
+  # flame: ^1.7.2
+  flame:
+    path: packages/flame/packages/flame
+  # flame_svg: ^1.7.4
+  flame_svg:
+    path: packages/flame/packages/flame_svg
+  # flame_tiled: ^1.10.0
+  flame_tiled:
+    path: packages/flame/packages/flame_tiled
+  # flame_bloc: ^1.8.4
+  xterm: ^4.0.0
   dartssh2: ^2.8.2
   webview_flutter: ^4.2.2
   patterns_canvas: ^0.4.0
 
   # from fileX
   mime: ^1.0.3
-  intl: ^0.17.0
+  intl: ^0.19.0
   mime_type: ^1.0.0
   isolate_handler: ^1.0.2
 
@@ -96,7 +91,6 @@ dependencies:
   hive_flutter: ^1.1.0
   bloc: ^8.1.1
   flutter_bloc: ^8.1.2
-  flame_bloc: ^1.8.4
   mobx: ^2.2.0
   flutter_mobx: ^2.0.6+5
   mobx_codegen: ^2.3.0
@@ -105,15 +99,18 @@ dependencies:
   # tools
   network_info_plus: ^4.0.1
   arp_scanner: ^1.2.7
-  lan_scanner: ^3.5.0
+  lan_scanner: ^4.0.0+1
   after_layout: ^1.2.0
-  uuid: ^3.0.7
-  dart_ping: ^7.0.2
+  uuid: ^4.2.2
+  dart_ping: ^9.0.1
   flutter_pty: ^0.4.0
-  flutter_code_editor: ^0.2.9
   carousel_slider: ^4.2.1
   backdrop: ^0.9.1
-  logger: ^1.4.0
+  logger: ^2.1.0
+  flutter_codde_protocol: # ^0.1.1+2
+    path: ../codde_protocol/packages/flutter_codde_protocol
+  # codde_protocol: # ^0.1.1+2
+  #   path: ../codde_protocol
 
 dev_dependencies:
   flutter_test:
@@ -124,7 +121,7 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^2.0.0
+  flutter_lints: ^3.0.1
   hive_generator: ^2.0.0
   build_runner: ^2.3.2
 

@@ -8,7 +8,9 @@ environment:
   flutter: ">=3.3.0"
 
 dependencies:
-  flame: ^1.7.3
+  # flame: ^1.7.3
+  flame:
+    path: ../flame/packages/flame
   http: ^1.1.0
   meta: ^1.9.1
 
