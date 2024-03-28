@@ -14,30 +14,14 @@ class ControllerWidgetIntroduction extends StatelessWidget {
         children: [
           const SizedBox(height: INTERSPACE),
           Text(
-            widget.name,
+            widget.class_.name,
             style: cddTheme.textTheme.headlineLarge,
           ),
           const SizedBox(height: INTERSPACE),
           // Center(child: SvgPicture.asset(getWidgetAsset(widget.class_))),
           const SizedBox(height: INTERSPACE),
-          Text(widget.description),
-          Table(// TODO:: replace by better DataTable
-              children: [
-            TableRow(
-                children: const ControllerApiAttribute(valueType: 'null')
-                    .toJson()
-                    .keys
-                    .map<Text>((e) => Text(e ?? 'unknwon e'))
-                    .toList()),
-            ...widget.api
-                .map((e) => TableRow(
-                    children: e
-                        .toJson()
-                        .values
-                        .map<Text>((value) => Text(value ?? 'unknown value'))
-                        .toList()))
-                .toList()
-          ]),
+          Text(widget.class_.name),
+// TODO: codde_doc generator
           // TODO: example ?
         ],
       ),

@@ -2,7 +2,6 @@ import 'package:codde_backend/codde_backend.dart';
 import 'package:codde_pi/app/pages/codde/state/codde_state.dart';
 import 'package:codde_pi/codde_widgets/codde_widgets.dart';
 import 'package:codde_pi/components/codde_controller/views/codde_device_overview.dart';
-import 'package:codde_pi/components/codde_controller/views/edit_controller_page.dart';
 import 'package:codde_pi/components/codde_runner/codde_runner.dart';
 import 'package:codde_pi/components/controller_editor/controller_editor.dart';
 import 'package:codde_pi/components/utils/no_map_found.dart';
@@ -19,9 +18,7 @@ import '../dynamic_bar/dynamic_bar.dart';
 import 'flame/codde_tiled_component.dart';
 import 'flame/overview_controller_flame.dart';
 
-export 'bloc/edit_controller_bloc.dart';
 export 'store/std_controller_store.dart';
-export 'store/edit_controller_store.dart';
 export 'views/edit_controller_outline.dart';
 export 'flame/play_controller_game.dart';
 import 'package:flame_tiled/flame_tiled.dart' as tiled;
@@ -32,6 +29,7 @@ import 'package:flame_tiled/flame_tiled.dart' as tiled;
 ///
 /// Controller is overviewed. User can edit or run it.
 /// Device metadata are listed.
+// TODO: move to `app` folder
 class CoddeController extends DynamicBarStatefulWidget {
   CoddeController({super.key});
 
@@ -46,6 +44,7 @@ class _CoddeController extends DynamicBarStateWidget<CoddeController>
   late String path;
   late CoddeBackend backend = getBackend();
   final controllerWidgetProvider = ControllerWidgetMode.dummy;
+  String content = '';
 
   @override
   void setFab(BuildContext context) {
@@ -56,7 +55,6 @@ class _CoddeController extends DynamicBarStateWidget<CoddeController>
   }
 
   Future<tiled.TiledComponent> getMap() async {
-    String content = '';
     await backend
         .read(getControllerName(path))
         .then((value) => value.forEach((element) {
@@ -111,7 +109,9 @@ class _CoddeController extends DynamicBarStateWidget<CoddeController>
               future: getMap(),
               builder: (context, snapshot) {
                 if (snapshot.hasError) {
-                  return Text("ERROR: ${snapshot.error}");
+                  return SingleChildScrollView(
+                      child:
+                          Text("ERROR: ${snapshot.error}\nCONTENT: $content"));
                 }
 
                 if (snapshot.connectionState == ConnectionState.done &&

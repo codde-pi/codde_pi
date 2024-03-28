@@ -1,8 +1,5 @@
-import 'dart:io';
-
 import 'package:codde_backend/codde_backend.dart';
-import 'package:controller_widget_api/controller_widget_api.dart';
-import 'package:dartssh2/dartssh2.dart';
+import 'package:codde_pi/codde_widgets/codde_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:path/path.dart';
@@ -57,10 +54,9 @@ class AddControllerMapDialog extends AlertDialog {
     print('PATH = ${join(path, nameController.text)}');
     final map = ControllerMap.create(
         context: context, path: join(path, nameController.text.trim()));
-    final api = ControllerWidgetApi(map: map);
     FileEntity? file;
     try {
-      file = await api.createMap();
+      file = await map.createMap();
     } catch (e) {
       /* if (e is SftpStatusError || e is FileSystemException) {
         print('raise error $e');

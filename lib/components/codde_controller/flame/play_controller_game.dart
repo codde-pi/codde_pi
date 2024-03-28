@@ -49,7 +49,9 @@ class PlayControllerGame extends FlameGame with HasGameRef {
       view.add(mapComponent);
       add(view);
     } else {
-      add(mapComponent);
+      // FIXME: instead, display an error message
+      // add(mapComponent);
+      add(TextComponent(text: "No linked device found"));
     }
   }
 

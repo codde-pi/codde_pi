@@ -1,5 +1,5 @@
-import 'package:codde_pi/app/pages/codde/dashboard/store/dashboard_store.dart';
 import 'package:codde_pi/app/pages/codde/state/codde_state.dart';
+import 'package:codde_pi/components/codde_overview/store/host_store.dart';
 import 'package:codde_pi/components/dialogs/select_host_dialog.dart';
 import 'package:codde_pi/components/dynamic_bar/dynamic_bar.dart';
 import 'package:codde_pi/components/views/codde_card.dart';
@@ -16,7 +16,7 @@ class HostDetails extends StatelessWidget {
   Host? host;
   HostDetails({Host? host, super.key});
 
-  final store = CoddeHostStore();
+  final store = HostStore();
   @override
   Widget build(BuildContext context) {
     final projectStore = Provider.of<CoddeState>(context);
