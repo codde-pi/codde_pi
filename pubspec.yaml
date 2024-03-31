@@ -45,6 +45,10 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
 
+  # scripts
+  args: ^2.4.2
+  screenshot: ^2.3.0
+
   # types
   path: ^1.8.2
   file_manager: ^1.0.1
@@ -62,7 +66,7 @@ dependencies:
   google_fonts: ^6.2.1
   flutter_treeview: ^1.0.7+1
   file_picker: ^6.2.0
-  simple_markdown_editor: ^0.2.0
+  flutter_markdown: ^0.6.22
   # flame: ^1.7.2
   flame:
     path: packages/flame/packages/flame
@@ -103,12 +107,18 @@ dependencies:
   after_layout: ^1.2.0
   uuid: ^4.2.2
   dart_ping: ^9.0.1
-  flutter_pty: ^0.4.0
   carousel_slider: ^4.2.1
   backdrop: ^0.9.1
   logger: ^2.1.0
   flutter_codde_protocol: # ^0.1.1+2
     path: ../codde_protocol/packages/flutter_codde_protocol
+  flutter_staggered_grid_view: ^0.7.0
+  pie_chart: ^5.4.0
+  json_table: ^2.0.1
+  graphic: ^2.2.1
+  responsive_builder: ^0.7.0
+  ffigen: ^11.0.0
+  path_provider: ^2.1.2
   # codde_protocol: # ^0.1.1+2
   #   path: ../codde_protocol
 
@@ -142,6 +152,7 @@ flutter:
     - assets/widgets/simple_button/classic/
     - assets/widgets/unknown/classic/
     - assets/images/hatch_background_export.png
+    - assets/codde_doc/widgets/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
