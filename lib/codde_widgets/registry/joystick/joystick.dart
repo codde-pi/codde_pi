@@ -5,6 +5,8 @@ class Joystick extends WidgetComponent with HasCoddeProtocol {
   JoystickComponent? joystick;
   WidgetRegistry_Joystick lastData =
       const WidgetRegistry_Joystick(delta: Coord(x: 0, y: 0), intensity: 0);
+  @override
+  double get sizeFactor => 2.0;
 
   Joystick(
       {required super.id,
@@ -20,14 +22,17 @@ class Joystick extends WidgetComponent with HasCoddeProtocol {
   FutureOr<void> onLoad() {
     super.onLoad();
     final joystick = JoystickComponent(
+      anchor: Anchor.topLeft,
       knob: CircleComponent(
-        scale: size, // TODO: replace by size
+        radius: (size.s / 2) * .50,
+        paint: Paint()..color = colorscheme.onSurface,
       ),
       background: CircleComponent(
-        scale: size * 1.5, // TODO: replace by size
+        radius: (size.s / 2),
+        paint: Paint()..color = colorscheme.surface,
       ),
-      margin: const EdgeInsets.only(left: 40, bottom: 40),
-      knobRadius: radius,
+      // margin: const EdgeInsets.only(left: 40, bottom: 40),
+      // knobRadius: (size.s / 2) * .75,
     );
     add(joystick);
   }
@@ -56,7 +61,4 @@ class Joystick extends WidgetComponent with HasCoddeProtocol {
       }
     }
   }
-
-  @override
-  int get defaultSize => 2;
 }

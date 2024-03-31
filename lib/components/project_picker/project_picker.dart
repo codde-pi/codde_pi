@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 class ProjectPicker extends StatefulWidget {
   String home;
-  ProjectPicker({super.key, this.home = "~"});
+  ProjectPicker({super.key, this.home = "/root"});
   @override
   State<StatefulWidget> createState() => _ProjectPicker();
 }
@@ -19,13 +19,23 @@ class _ProjectPicker extends State<ProjectPicker> {
     super.initState();
   }
 
+  Future<List<FileEntity>> listChildren(String path) async {
+    if (!backend.isOpen) {
+      await backend.open();
+    }
+    List<FileEntity> list = await backend.listChildren(path);
+    // list.sort((a, b) => a.path.compareTo(b.path));
+    return list;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Select Project"),
         leading: IconButton(
-            onPressed: Navigator.of(context).pop,
+            onPressed: () =>
+                Navigator.of(context)..pop, // FIXME: stuck on black screen
             icon: const Icon(Icons.close)),
         actions: [
           TextButton(
@@ -33,8 +43,8 @@ class _ProjectPicker extends State<ProjectPicker> {
               child: const Text('VALIDATE')),
         ],
       ),
-      body: StreamBuilder(
-          stream: backend.listenChildren(selection),
+      body: FutureBuilder(
+          future: listChildren(selection),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
@@ -45,7 +55,7 @@ class _ProjectPicker extends State<ProjectPicker> {
               );
             } else if (snapshot.hasData) {
               return ListView.builder(
-                itemCount: snapshot.data!.length,
+                itemCount: snapshot.data?.length,
                 itemBuilder: (context, index) {
                   final FileEntity item = children.elementAt(index);
                   return ListTile(

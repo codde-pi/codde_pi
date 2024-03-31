@@ -31,9 +31,10 @@ Future<String> getAssetControllerContent() async {
 Future<FileEntity?> createControllerMap(
     BuildContext context, String path) async {
   if (p.dirname(path).contains("layout")) {
-    if (!await getBackend().isDirectory(p.dirname(path))) {
+    final dummyIsDirectory = await getBackend().dirExists(p.dirname(path));
+
+    if (!dummyIsDirectory) {
       logger.d('CREATING DIR: ${p.dirname(path)}');
-      // TODO: bad way to verify the directory doesn't exist yet
       await getBackend().mkdir(p.dirname(path));
     } else {
       logger.d('NOPE');
@@ -185,3 +186,7 @@ Future<Project> addExistingProject(context, String name,
     return GetIt.I.get<Object>();
   }
 } */
+
+String getUserHome(String username) {
+  return "/home/$username";
+}

@@ -1,4 +1,5 @@
 import 'package:codde_pi/components/sheets/widget_details_sheet.dart';
+import 'package:flame/game.dart';
 
 import 'registry/registry.dart';
 import 'package:flame/components.dart';

@@ -76,10 +76,12 @@ class GlobalProjects extends DynamicBarWidget {
       if (host != null) {
         final backend = GetIt.I.registerSingleton(CoddeBackend(
             BackendLocation.server,
-            credentials: host.toCredentials())
-          ..open());
+            credentials: host.toCredentials()));
         path = await Navigator.push(
-            context, MaterialPageRoute(builder: (context) => ProjectPicker()));
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    ProjectPicker(home: getUserHome(host!.user))));
         if (path != null) {
           final pjt = addExistingProject(context, p.basename(path), path: path);
           Navigator.of(context).pushNamed('/codde', arguments: pjt);

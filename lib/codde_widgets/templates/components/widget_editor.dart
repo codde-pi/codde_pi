@@ -2,6 +2,7 @@ part of '../../codde_widgets.dart';
 
 class WidgetEditor extends WidgetComponent
     with TapCallbacks, DragCallbacks, HasTiled {
+  double sizeFactor;
   WidgetEditor({
     required super.id,
     required super.class_,
@@ -9,7 +10,7 @@ class WidgetEditor extends WidgetComponent
     super.position,
     super.margin,
     super.size,
-    super.scale,
+    required this.sizeFactor,
     super.angle,
     super.anchor,
     super.children,
@@ -20,9 +21,14 @@ class WidgetEditor extends WidgetComponent
 
   @override
   FutureOr<void> onLoad() {
-    // HACK: DO NOT use [WidgetComponent.onLoad]!
-    // size assignment issue
+    super.onLoad();
+    /* add(RectangleComponent(
+        size: size,
+        scale: scale,
+        position: Vector2(0, 0),
+        paint: Paint()..color = Colors.red)); // DEBUG */
   }
+
   @override
   void onTapUp(TapUpEvent event) async {
     // navigation to bottom sheet
@@ -42,8 +48,9 @@ class WidgetEditor extends WidgetComponent
   void onDragEnd(DragEndEvent event) {
     super.onDragEnd(event);
     getLayer(id)!
-      ..offsetY = position.y
-      ..offsetX = position.x;
+      ..y = position.y.toInt()
+      ..x = position.x.toInt();
+    // TODO: use offset with margin
   }
 
   @override
@@ -56,9 +63,10 @@ class WidgetEditor extends WidgetComponent
       tiledComponent.tileMap.map.layers.add(ObjectGroup(
           id: id,
           name: nickyName,
-          offsetX: position.x,
-          offsetY: position.y,
-          class_: class_.toString(),
+          x: position.x.toInt(),
+          y: position.y.toInt(),
+          // TODO: use offset with margin
+          class_: class_.name,
           objects: [])); // TODO: widgets as TiledLayer instead
     }
   }
@@ -74,7 +82,4 @@ class WidgetEditor extends WidgetComponent
     }
     super.onRemove();
   }
-
-  @override
-  int get defaultSize => 1;
 }

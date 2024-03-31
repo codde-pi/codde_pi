@@ -28,7 +28,6 @@ final controllerWidgetDef = {
   'clickButton': ControllerWidgetDef(
       class_: ControllerClass.clickButton,
       description: 'simple button description',
-      name: "Click Button",
       commitFrequency: ControllerCommitFrequency.triggered,
       command: const WidgetRegistry.clickButton(),
       component: (
@@ -37,6 +36,7 @@ final controllerWidgetDef = {
               required ControllerProperties properties,
               Vector2? position,
               Vector2? size,
+              double? sizeFactor,
               String? text,
               required ControllerStyle style}) =>
           ClickButton(
@@ -50,7 +50,6 @@ final controllerWidgetDef = {
   'pressButton': ControllerWidgetDef(
       class_: ControllerClass.pressButton,
       description: 'simple button description',
-      name: "Click Button",
       commitFrequency: ControllerCommitFrequency.triggered,
       command: const WidgetRegistry.pressButton(pressed: false),
       component: (
@@ -59,19 +58,20 @@ final controllerWidgetDef = {
               required ControllerProperties properties,
               Vector2? position,
               Vector2? size,
+              double? sizeFactor,
               String? text,
               required ControllerStyle style}) =>
-          ClickButton(
+          PressButton(
               id: id,
               class_: class_,
               position: position,
+              size: size,
               text: text,
               style: style,
               properties: properties)),
   'directionalButton': ControllerWidgetDef(
     class_: ControllerClass.directionalButton,
     description: 'directional button description',
-    name: "Directional Button",
     commitFrequency: ControllerCommitFrequency.pressed,
     command: const WidgetRegistry.directionalButton(direction: 0),
     component: (
@@ -93,7 +93,6 @@ final controllerWidgetDef = {
   'error': ControllerWidgetDef(
     class_: ControllerClass.error,
     description: 'Error widget',
-    name: "Error",
     commitFrequency: ControllerCommitFrequency.pressed,
     command: null,
     response: const ResultRegistry.errorResult(error: ''),
@@ -106,12 +105,15 @@ final controllerWidgetDef = {
             String? text,
             required ControllerStyle style}) =>
         ErrorWidget(
-            id: id, class_: class_, position: position, properties: properties),
+            id: id,
+            class_: class_,
+            position: position,
+            size: size,
+            properties: properties),
   ),
   'joystick': ControllerWidgetDef(
     class_: ControllerClass.joystick,
     description: "Unknown button fallback",
-    name: "Unknown button",
     command:
         WidgetRegistry.joystick(delta: toCoord(Vector2.zero()), intensity: 0),
     component: (
@@ -123,12 +125,15 @@ final controllerWidgetDef = {
             String? text,
             required ControllerStyle style}) =>
         Joystick(
-            id: id, class_: class_, position: position, properties: properties),
+            id: id,
+            class_: class_,
+            position: position,
+            size: size,
+            properties: properties),
   ),
   'cameraView': ControllerWidgetDef(
       class_: ControllerClass.cameraView,
       description: 'This is camera view',
-      name: "Camera View",
       command: null,
       defaultProperties: ControllerProperties(
           {'uri': Property(name: 'uri', type: PropertyType.string, value: '')}),

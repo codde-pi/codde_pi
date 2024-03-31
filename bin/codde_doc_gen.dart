@@ -170,7 +170,7 @@ class _DocGenState extends State<DocGen> {
       "Value"
     ], [
       {"Property": "Commitment", "Value": def.commitFrequency.name},
-      {"Property": "Size", "Value": component?.defaultSize},
+      {"Property": "Size", "Value": component.sizeFactor},
       {
         "Property": "Properties",
         "Value": def.defaultProperties?.toJson()

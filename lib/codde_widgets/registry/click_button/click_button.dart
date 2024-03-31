@@ -12,17 +12,16 @@ class ClickButton extends WidgetComponent with HasCoddeProtocol {
       super.size});
 
   @override
-  int get defaultSize => 1;
-
-  @override
   FutureOr<void> onLoad() {
     super.onLoad();
     add(
       ButtonComponent(
         button: CustomPainterComponent(
+            size: size,
             painter: ClickButtonPainter(
                 colorscheme: colorscheme, style: style, pressed: false)),
         buttonDown: CustomPainterComponent(
+            size: size,
             painter: ClickButtonPainter(
                 colorscheme: colorscheme, style: style, pressed: true)),
         onPressed: () => com.send(id, const WidgetRegistry.clickButton()),

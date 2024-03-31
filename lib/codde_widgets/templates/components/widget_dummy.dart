@@ -1,17 +1,8 @@
 part of '../../codde_widgets.dart';
 
-/// Dummy implementation of [WidgetComponent],
+/// Dummy Widget deactivating any gestures for children,
 /// providing widget painting without any interaction
-class WidgetDummy extends HudMarginComponent {
-  int id;
-  ControllerClass class_;
-
+class WidgetDummy extends HudMarginComponent with IgnoreEvents {
   WidgetDummy(
-      {required this.id,
-      required this.class_,
-      super.position,
-      super.margin,
-      super.size,
-      super.children});
-  // TODO: find image based on class name and add [SpriteComponent]
+      {super.position, super.margin, super.size, super.children, super.scale});
 }

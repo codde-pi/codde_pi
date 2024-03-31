@@ -10,7 +10,7 @@ class DirectionalButtonArrowPainter extends WidgetPainter {
   @override
   void paint(Canvas canvas, Size size) {
     Paint paint_0_fill = Paint()..style = PaintingStyle.fill;
-    paint_0_fill.color = colorscheme.surface;
+    paint_0_fill.color = colorscheme.onSurface;
 
     var origin = (0.0, 0.0);
     var peak =
@@ -21,18 +21,24 @@ class DirectionalButtonArrowPainter extends WidgetPainter {
       ..lineTo(peak.$1, peak.$2)
       ..lineTo(end.$1, end.$2)
       ..lineTo(origin.$1, origin.$2);
-    canvas.drawPath(path, paint_0_fill);
+    canvas.save();
+    final centerx = size.width / 2;
+    final centery = size.width / 2;
+    canvas.translate(centerx, centery);
     canvas.rotate((pi / 2) * rotation);
+    canvas.translate(-centerx, -centery);
+    canvas.drawPath(path, paint_0_fill);
+    canvas.restore();
   }
 
   int get rotation {
     switch (direction) {
       case DirectionalButtonValue.up:
-        return 0;
+        return 2;
       case DirectionalButtonValue.right:
         return 3;
       case DirectionalButtonValue.down:
-        return 2;
+        return 0;
       case DirectionalButtonValue.left:
         return 1;
     }

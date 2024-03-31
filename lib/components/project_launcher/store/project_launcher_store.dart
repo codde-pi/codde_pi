@@ -53,6 +53,8 @@ abstract class _ProjectLauncherStore with Store {
   @action
   void createProject(BuildContext context, {required String title}) =>
       createProjectFromScratch(context, title,
-              host: selectHostStore.selectedHost, type: projectType)
+              host: selectHostStore.selectedHost,
+              type: projectType,
+              keepBackendInstance: true)
           .then((value) => goToProject(context: context, instance: value));
 }

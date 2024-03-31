@@ -31,7 +31,4 @@ class PressButton extends WidgetComponent with HasCoddeProtocol {
       ),
     );
   }
-
-  @override
-  int get defaultSize => 1;
 }
