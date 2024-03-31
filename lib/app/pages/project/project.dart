@@ -10,6 +10,7 @@ import 'package:codde_pi/components/project_launcher/utils/project_launcher_util
 import 'package:codde_pi/components/project_picker/project_picker.dart';
 import 'package:codde_pi/components/projects_carousel/projects_carousel.dart';
 import 'package:codde_pi/components/views/codde_tile.dart';
+import 'package:codde_pi/core/utils.dart';
 import 'package:codde_pi/main.dart';
 import 'package:codde_pi/services/db/host.dart';
 import 'package:codde_pi/services/db/project.dart';
@@ -20,6 +21,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hive/hive.dart';
 import 'package:path/path.dart';
+import 'package:path/path.dart' as p;
 
 class GlobalProjects extends DynamicBarWidget {
   GlobalProjects({super.key});
@@ -78,8 +80,14 @@ class GlobalProjects extends DynamicBarWidget {
           ..open());
         path = await Navigator.push(
             context, MaterialPageRoute(builder: (context) => ProjectPicker()));
-        backend.close();
-        GetIt.I.unregister(instance: backend);
+        if (path != null) {
+          final pjt = addExistingProject(context, p.basename(path), path: path);
+          Navigator.of(context).pushNamed('/codde', arguments: pjt);
+        } else {
+          Navigator.pop(context);
+          ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text("Failed to pick remote project")));
+        }
       }
     }
     if (path != null) {

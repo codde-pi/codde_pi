@@ -3,7 +3,7 @@ part of '../codde_widgets.dart';
 class CoddeCom {
   CoddeCom({required this.protocol, required this.addr}) {
     switch (protocol) {
-      case Protocol.socket:
+      case Protocol.webSocket:
         com = ComSocketClient(address: addr);
         break;
       default:

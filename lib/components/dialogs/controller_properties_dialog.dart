@@ -1,6 +1,4 @@
-import 'package:codde_com/codde_com.dart';
 import 'package:codde_pi/theme.dart';
-import 'package:controller_widget_api/controller_widget_api.dart';
 import 'package:flutter/material.dart';
 
 class ControllerPropertiesDialog extends StatelessWidget {

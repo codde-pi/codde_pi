@@ -2,9 +2,11 @@ import 'package:codde_backend/codde_backend.dart';
 import 'package:codde_pi/codde_widgets/codde_widgets.dart';
 import 'package:codde_pi/components/dialogs/sideload_warning_dialog.dart';
 import 'package:codde_pi/core/exception.dart';
+import 'package:codde_pi/logger.dart';
 import 'package:codde_pi/main.dart';
 import 'package:codde_pi/services/db/host.dart';
 import 'package:codde_pi/services/db/project.dart';
+import 'package:codde_pi/services/db/project_type.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
@@ -15,8 +17,10 @@ import 'package:path/path.dart' as p;
 // FILE MANAGEMENT
 // ===========================================================================
 
-String getControllerName(String projectPath) {
-  return p.join(projectPath, "${p.basename(projectPath)}.tmx");
+String getControllerName({required bool isRemote, required String path}) {
+  return isRemote
+      ? p.join(path, "layout", "${p.basename(path)}.tmx")
+      : p.join(path, "${p.basename(path)}.tmx");
 }
 
 Future<String> getAssetControllerContent() async {
@@ -25,9 +29,16 @@ Future<String> getAssetControllerContent() async {
 }
 
 Future<FileEntity?> createControllerMap(
-  BuildContext context,
-  String path,
-) async {
+    BuildContext context, String path) async {
+  if (p.dirname(path).contains("layout")) {
+    if (!await getBackend().isDirectory(p.dirname(path))) {
+      logger.d('CREATING DIR: ${p.dirname(path)}');
+      // TODO: bad way to verify the directory doesn't exist yet
+      await getBackend().mkdir(p.dirname(path));
+    } else {
+      logger.d('NOPE');
+    }
+  }
   final map = ControllerMap.create(context: context, path: path);
   return await map.createMap();
 }
@@ -150,6 +161,20 @@ Future<void> deleteProject(BuildContext context, Project project) async {
                   child: const Text('DELETE'))
             ],
           ));
+}
+
+Future<Project> addExistingProject(context, String name,
+    {ProjectType? type, Host? host, required String path}) async {
+  final instance = Project(
+      dateCreated: DateTime
+          .now(), // TODO: ideally, pick the project creation date in directory metadata
+      dateModified: DateTime.now(),
+      name: name,
+      type: type ?? ProjectType.codde_pi,
+      host: host,
+      path: path);
+  await Hive.box<Project>(projectsBox).add(instance);
+  return instance;
 }
 
 //TODO: find right syntax

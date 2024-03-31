@@ -42,6 +42,7 @@ class _CoddeController extends DynamicBarStateWidget<CoddeController>
   late tiled.TiledComponent mapComponent;
   late ControllerProperties properties;
   late String path;
+  late bool isRemote;
   late CoddeBackend backend = getBackend();
   final controllerWidgetProvider = ControllerWidgetMode.dummy;
   String content = '';
@@ -50,13 +51,21 @@ class _CoddeController extends DynamicBarStateWidget<CoddeController>
   void setFab(BuildContext context) {
     bar.setFab(
         iconData: Icons.play_arrow,
-        action: () => Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => CoddeRunner(getControllerName(path)))));
+        action: () => properties.getValue<int>('deviceId') != null
+            ? Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => CoddeRunner(
+                    getControllerName(isRemote: isRemote, path: path))))
+            : ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text(
+                      "Regsister a device and select a protocol before any run"),
+                ),
+              ));
   }
 
   Future<tiled.TiledComponent> getMap() async {
     await backend
-        .read(getControllerName(path))
+        .read(getControllerName(isRemote: isRemote, path: path))
         .then((value) => value.forEach((element) {
               content += "$element\n";
             }));
@@ -101,6 +110,7 @@ class _CoddeController extends DynamicBarStateWidget<CoddeController>
       throw RuntimeProjectException();
     }
     path = coddeProject.path;
+    isRemote = coddeProject.isRemote;
 
     return SafeArea(
       child: Scaffold(
@@ -156,7 +166,9 @@ class _CoddeController extends DynamicBarStateWidget<CoddeController>
                               final controller = await Navigator.of(context)
                                   .push(MaterialPageRoute(
                                       builder: (_) => ControllerEditor(
-                                          path: getControllerName(path))));
+                                          path: getControllerName(
+                                              isRemote: isRemote,
+                                              path: path))));
                               if (controller != null) setState(() {});
                             },
                             icon: const Icon(Icons.edit)),

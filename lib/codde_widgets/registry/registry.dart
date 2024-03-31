@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:codde_pi/codde_widgets/codde_widgets.dart';
 import 'dart:async';
 
@@ -138,5 +140,9 @@ final controllerWidgetDef = {
               Vector2? size,
               String? text,
               required ControllerStyle style}) =>
-          CameraStreamComponent(class_: class_, id: id, properties: properties))
+          CameraStreamComponent(
+              class_: class_,
+              id: id,
+              properties: properties,
+              position: position))
 };

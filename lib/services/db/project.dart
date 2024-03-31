@@ -48,6 +48,8 @@ class Project extends HiveObject {
       this.executables = const <FileEntity>[],
       required this.path});
 
+  bool get isRemote => host != null;
+
   Map<String, dynamic> toJson() {
     return {
       'date_created': dateCreated,

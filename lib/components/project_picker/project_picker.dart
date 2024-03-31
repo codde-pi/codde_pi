@@ -34,28 +34,42 @@ class _ProjectPicker extends State<ProjectPicker> {
         ],
       ),
       body: StreamBuilder(
-        stream: backend.listenChildren(selection),
-        builder: (context, builder) => ListView.builder(
-          itemCount: children.length,
-          itemBuilder: (context, index) {
-            final FileEntity item = children.elementAt(index);
-            return ListTile(
-              title: item.name,
-              leading: item.isDir
-                  ? const Icon(
-                      Icons.folder,
-                      color: Colors.blue,
-                    )
-                  : const Icon(Icons.file_open_sharp),
-              onTap: () => item.isDir
-                  ? setState(() {
-                      selection = item.path;
-                    })
-                  : null,
-            );
-          },
-        ),
-      ),
+          stream: backend.listenChildren(selection),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            if (snapshot.hasError) {
+              return Center(
+                child: Text(snapshot.error.toString()),
+              );
+            } else if (snapshot.hasData) {
+              return ListView.builder(
+                itemCount: snapshot.data!.length,
+                itemBuilder: (context, index) {
+                  final FileEntity item = children.elementAt(index);
+                  return ListTile(
+                    title: item.name,
+                    leading: item.isDir
+                        ? const Icon(
+                            Icons.folder,
+                            color: Colors.blue,
+                          )
+                        : const Icon(Icons.file_open_sharp),
+                    onTap: () => item.isDir
+                        ? setState(() {
+                            selection = item.path;
+                          })
+                        : null,
+                  );
+                },
+              );
+            } else {
+              return const Center(
+                child: Text('Nothing to show. Please retry later'),
+              );
+            }
+          }),
     );
   }
 }

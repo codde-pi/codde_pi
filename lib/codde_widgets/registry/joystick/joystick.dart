@@ -2,7 +2,7 @@ part of '../registry.dart';
 
 class Joystick extends WidgetComponent with HasCoddeProtocol {
   final double radius = 1;
-  late JoystickComponent joystick;
+  JoystickComponent? joystick;
   WidgetRegistry_Joystick lastData =
       const WidgetRegistry_Joystick(delta: Coord(x: 0, y: 0), intensity: 0);
 
@@ -35,23 +35,25 @@ class Joystick extends WidgetComponent with HasCoddeProtocol {
   @override
   void update(double dt) {
     super.update(dt);
-    if (joystick.direction != JoystickDirection.idle) {
-      if (lastData.delta != toCoord(joystick.delta) ||
-          lastData.intensity != joystick.intensity) {
+    if (joystick != null) {
+      if (joystick!.direction != JoystickDirection.idle) {
+        if (lastData.delta != toCoord(joystick!.delta) ||
+            lastData.intensity != joystick!.intensity) {
+          com.send(
+              id,
+              WidgetRegistry.joystick(
+                  delta: toCoord(joystick!.relativeDelta),
+                  intensity: joystick!.intensity));
+          lastData = WidgetRegistry.joystick(
+              delta: toCoord(joystick!.relativeDelta),
+              intensity: joystick!.intensity) as WidgetRegistry_Joystick;
+        }
+      } else {
         com.send(
             id,
             WidgetRegistry.joystick(
-                delta: toCoord(joystick.relativeDelta),
-                intensity: joystick.intensity));
-        lastData = WidgetRegistry.joystick(
-            delta: toCoord(joystick.relativeDelta),
-            intensity: joystick.intensity) as WidgetRegistry_Joystick;
+                delta: toCoord(Vector2.zero()), intensity: 0));
       }
-    } else {
-      com.send(
-          id,
-          WidgetRegistry.joystick(
-              delta: toCoord(Vector2.zero()), intensity: 0));
     }
   }
 

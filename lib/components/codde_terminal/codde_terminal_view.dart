@@ -7,7 +7,7 @@ import 'package:dartssh2/dartssh2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:flutter_pty/flutter_pty.dart';
+// import 'package:flutter_pty/flutter_pty.dart';
 import 'package:get_it/get_it.dart';
 import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
@@ -31,11 +31,7 @@ class _CoddeTerminalView extends State<CoddeTerminalView> {
   @override
   void initState() {
     super.initState();
-    /* if (backend.location == BackendLocation.server) {
-      initSshTerminal();
-    } else {
-      initPty();
-    } */
+    initSshTerminal();
   }
 
   @override
@@ -43,10 +39,16 @@ class _CoddeTerminalView extends State<CoddeTerminalView> {
     if (backend.location == BackendLocation.server) {
       (backend.shell as SSHSession).close();
     } else {
-      (backend.shell as Pty).kill();
+      // (backend.shell as Pty).kill();
     }
     backend.shell == null;
     super.dispose();
+  }
+
+  @override
+  didUpdateWidget(CoddeTerminalView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // terminal.buffer
   }
 
   Future<void> initSshTerminal() async {
@@ -80,7 +82,7 @@ class _CoddeTerminalView extends State<CoddeTerminalView> {
         .listen(terminal.write);
   }
 
-  void initPty() {
+  /* void initPty() {
     backend.shell ??= Pty.start(
       'sh', // bash
       columns: terminal.viewWidth,
@@ -103,7 +105,7 @@ class _CoddeTerminalView extends State<CoddeTerminalView> {
     terminal.onResize = (w, h, pw, ph) {
       backend.shell.resize(h, w);
     };
-  }
+  } */
 
   @override
   Widget build(BuildContext context) {

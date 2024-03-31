@@ -38,5 +38,5 @@ class ErrorWidget extends WidgetComponent {
 
   @override
   int get defaultSize =>
-      4; // TODO: Or all device width ? -> use HudMarrgon component as parent of Custom Painter component
+      2; // TODO: Or all device width ? -> use HudMarrgon component as parent of Custom Painter component
 }

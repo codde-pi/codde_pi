@@ -2,6 +2,7 @@ import 'package:codde_backend/codde_backend.dart';
 import 'package:codde_pi/codde_widgets/codde_widgets.dart';
 import 'package:codde_pi/components/add_widget/add_widget_dialog.dart';
 import 'package:codde_pi/components/codde_controller/flame/codde_tiled_component.dart';
+import 'package:codde_pi/logger.dart';
 import 'package:codde_pi/theme.dart';
 import 'package:enum_to_string/enum_to_string.dart';
 import 'package:flame/game.dart';
@@ -46,6 +47,7 @@ class ControllerEditorGame extends FlameGame {
           y: 50) as WidgetComponent;
       overlays.remove('AddWidget');
       mapComponent.add(widgetComponent);
+      logger.d('component added');
       resumeEngine();
     }, funCancel: () {
       overlays.remove('AddWidget');

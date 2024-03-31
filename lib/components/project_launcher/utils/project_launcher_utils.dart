@@ -26,7 +26,7 @@ void goToProject(
 /// if [demo], create default python and controller files
 Future<Project> createBackendProject(context,
     {required Project instance, bool demo = false}) async {
-  CoddeBackend backend = instance.host != null
+  CoddeBackend backend = instance.isRemote
       ? CoddeBackend(BackendLocation.server,
           credentials: instance.host!.toCredentials())
       : CoddeBackend(BackendLocation.local);
@@ -38,9 +38,11 @@ Future<Project> createBackendProject(context,
         content:
             await rootBundle.loadString("assets/samples/socketio/main.py"));
   }
-  createControllerMap(context, getControllerName(instance.path))
+  createControllerMap(context,
+          getControllerName(isRemote: instance.isRemote, path: instance.path))
       .then((_) => Hive.box<Project>(projectsBox).add(instance));
-  backend.close();
+  backend
+      .close(); // TODO: good idea (to close) or not ? Need to re-open just after when loading project, but conditional
   return instance;
 }
 
@@ -56,8 +58,7 @@ Future<Project> createProjectFromScratch(context, String name,
       path: host == null
           ? await getApplicationSupportDirectory()
               .then((value) => join(value.path, name))
-          : join(
-              "~", name)); // TODO: add field in form to customize project path
+          : join(name)); // TODO: add field in form to customize project path
   return createBackendProject(context,
       instance: project, demo: type == ProjectType.codde_pi);
 }
