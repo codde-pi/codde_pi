@@ -18,9 +18,11 @@ class PressButton extends WidgetComponent with HasCoddeProtocol {
     add(
       ButtonComponent(
         button: CustomPainterComponent(
+            size: size,
             painter: PressButtonPainter(
                 colorscheme: colorscheme, style: style, pressed: false)),
         buttonDown: CustomPainterComponent(
+            size: size,
             painter: PressButtonPainter(
                 colorscheme: colorscheme, style: style, pressed: true)),
         onPressed: () =>

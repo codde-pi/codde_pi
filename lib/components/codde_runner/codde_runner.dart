@@ -1,8 +1,8 @@
 import 'package:backdrop/backdrop.dart';
 import 'package:codde_backend/codde_backend.dart';
 import 'package:codde_pi/codde_widgets/codde_widgets.dart';
-import 'package:codde_pi/components/codde_controller/flame/play_controller_game.dart';
 import 'package:codde_pi/components/codde_runner/store/codde_runner_store.dart';
+import 'package:codde_pi/components/play_controller/flame/play_controller_game.dart';
 import 'package:codde_pi/core/utils.dart';
 import 'package:dartssh2/dartssh2.dart';
 import 'package:flame/game.dart';
@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:get_it/get_it.dart';
 import 'package:path/path.dart';
+import 'package:provider/provider.dart';
 
 import 'views/runtime_std_view.dart';
 
@@ -19,7 +20,8 @@ import 'views/runtime_std_view.dart';
 /// [CoddeCom] and [CoddeBackend] sessions are shared between these pages
 class CoddeRunner extends StatefulWidget {
   final String exec;
-  const CoddeRunner(this.exec, {super.key});
+  final bool play;
+  const CoddeRunner(this.exec, {this.play = false, super.key});
   @override
   State<StatefulWidget> createState() => _CoddeRunner();
 }
@@ -30,6 +32,13 @@ class _CoddeRunner extends State<CoddeRunner> {
   late String exec = widget.exec;
 
   @override
+  void initState() {
+    super.initState();
+    store.setExecutable(widget.exec);
+    if (widget.play) (isControllerFile(exec) ? runController() : runExec());
+  }
+
+  @override
   void dispose() {
     super.dispose();
     stopExec();
@@ -37,31 +46,34 @@ class _CoddeRunner extends State<CoddeRunner> {
 
   @override
   Widget build(BuildContext context) {
-    return Observer(
-      builder: (context) => BackdropScaffold(
-        appBar: AppBar(
-            leading: IconButton(
-                onPressed: () => Navigator.of(context).pop(),
-                icon: const Icon(Icons.delete)),
-            title: Text(basename(exec))),
-        stickyFrontLayer: !isControllerFile(exec),
-        subHeader: BackdropSubHeader(title: Text(store.lastStd)),
-        revealBackLayerAtStart: isControllerFile(exec),
-        backLayer: isControllerFile(exec)
-            ? GameWidget(game: PlayControllerGame(widget.exec))
-            : Container(), // TODO: message for user OR exposed code source ?
-        frontLayer: RuntimeStdView(command),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () async {
-            await store.isRunning
-                ? (isControllerFile(exec) ? runController() : runExec())
-                : stopExec();
-          },
-          child: FutureBuilder(
-              future: store.isRunning,
-              initialData: false,
-              builder: (context, snapshot) =>
-                  Icon(snapshot.data! ? Icons.stop : Icons.play_arrow)),
+    return Provider(
+      create: (_) => store,
+      child: Observer(
+        builder: (context) => BackdropScaffold(
+          appBar: AppBar(
+              leading: IconButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  icon: const Icon(Icons.delete)),
+              title: Text(basename(exec))),
+          stickyFrontLayer: !isControllerFile(exec),
+          subHeader: BackdropSubHeader(title: Text(store.lastStd)),
+          revealBackLayerAtStart: isControllerFile(exec),
+          backLayer: isControllerFile(exec)
+              ? GameWidget(game: PlayControllerGame(widget.exec)) // TODO: moved
+              : Container(), // TODO: message for user OR exposed code source ?
+          frontLayer: RuntimeStdView(command),
+          floatingActionButton: FloatingActionButton(
+            onPressed: () async {
+              await store.isRunning
+                  ? (isControllerFile(exec) ? runController() : runExec())
+                  : stopExec();
+            },
+            child: FutureBuilder(
+                future: store.isRunning,
+                initialData: false,
+                builder: (context, snapshot) =>
+                    Icon(snapshot.data! ? Icons.stop : Icons.play_arrow)),
+          ),
         ),
       ),
     );

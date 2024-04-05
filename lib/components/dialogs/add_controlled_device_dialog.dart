@@ -7,17 +7,21 @@ import 'package:hive/hive.dart';
 class NewControlledDeviceDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(title: Text("New device form")),
         body: ControlledDeviceForm(
-      cancel: () => Navigator.pop(context),
-      validate: (Device device) {
-        createDevice(device);
-        Navigator.pop(context, device);
-      },
-    ));
+          cancel: () => Navigator.pop(context),
+          validate: (Device device) {
+            // createDevice(device);
+            Navigator.pop(context, device);
+          },
+        ),
+      ),
+    );
   }
 
-  void createDevice(Device device) {
+  /* void createDevice(Device device) {
     Hive.box<Device>('devices').add(device);
-  }
+  } */
 }

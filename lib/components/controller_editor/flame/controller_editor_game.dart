@@ -63,12 +63,13 @@ class ControllerEditorGame extends FlameGame {
 
   Widget _introducingBuilder(
       BuildContext buildContext, ControllerEditorGame game) {
+    // TODO: set Protrait/Landscape
     return Center(
       child: Padding(
-        padding: EdgeInsets.all(widgetGutter),
+        padding: const EdgeInsets.all(widgetGutter),
         child: Card(
           child: Padding(
-            padding: EdgeInsets.all(widgetGutter / 2),
+            padding: const EdgeInsets.all(widgetGutter / 2),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -107,9 +108,10 @@ class ControllerEditorGame extends FlameGame {
           actions: [
             IconButton(
                 onPressed: () async {
-                  await ControllerMap(map: mapComponent.tileMap.map, path: path)
+                  final map = await ControllerMap(
+                          map: mapComponent.tileMap.map, path: path)
                       .saveMap();
-                  Navigator.of(context).pop();
+                  Navigator.of(context).pop(map);
                 },
                 icon: Icon(
                   Icons.save,

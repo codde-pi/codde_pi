@@ -12,15 +12,17 @@ import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hive/hive.dart';
 import 'package:path/path.dart' as p;
+import 'package:flame_tiled/flame_tiled.dart' as tiled;
 
 // ===========================================================================
 // FILE MANAGEMENT
 // ===========================================================================
 
 String getControllerName({required bool isRemote, required String path}) {
-  return isRemote
+  /* return isRemote
       ? p.join(path, "layout", "${p.basename(path)}.tmx")
-      : p.join(path, "${p.basename(path)}.tmx");
+      : p.join(path, "${p.basename(path)}.tmx"); */
+  return p.join(path, "${p.basename(path)}.tmx");
 }
 
 Future<String> getAssetControllerContent() async {
@@ -30,16 +32,16 @@ Future<String> getAssetControllerContent() async {
 
 Future<FileEntity?> createControllerMap(
     BuildContext context, String path) async {
-  if (p.dirname(path).contains("layout")) {
+  /* if (p.dirname(path).contains("layout")) {
     final dummyIsDirectory = await getBackend().dirExists(p.dirname(path));
 
     if (!dummyIsDirectory) {
-      logger.d('CREATING DIR: ${p.dirname(path)}');
       await getBackend().mkdir(p.dirname(path));
+      logger.d('CREATING DIR: ${p.dirname(path)}');
     } else {
       logger.d('NOPE');
     }
-  }
+  } */
   final map = ControllerMap.create(context: context, path: path);
   return await map.createMap();
 }
@@ -189,4 +191,12 @@ Future<Project> addExistingProject(context, String name,
 
 String getUserHome(String username) {
   return "/home/$username";
+}
+
+tiled.Property<int> turnDeviceIntoProperty(int deviceId) {
+  return tiled.Property(
+    name: 'deviceId',
+    type: tiled.PropertyType.int,
+    value: deviceId,
+  );
 }

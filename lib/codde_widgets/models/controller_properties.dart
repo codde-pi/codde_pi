@@ -41,8 +41,20 @@ class ControllerProperties extends CustomProperties {
         'deviceId':
             Property(name: "deviceId", type: PropertyType.int, value: deviceId)
       });
+  factory ControllerProperties.defaultController(Map<String, Property>? props) {
+    Iterable<MapEntry<String, Property<Object>>> map =
+        controllerSettings.map((Property<Object> e) {
+      return MapEntry(
+          e.name,
+          e
+            ..value =
+                props != null ? (props[e.name]?.value ?? e.value) : e.value);
+    });
+    return ControllerProperties(Map<String, Property<Object>>.fromEntries(map));
+  }
 
   String? get executable => getValue<String>("executable");
+  int? get deviceId => getValue<int>("deviceId");
 
   bool? get disabled => getValue<bool>("disabled");
 
@@ -50,3 +62,9 @@ class ControllerProperties extends CustomProperties {
 
   bool? get landscape => getValue<bool>("landscape");
 }
+
+final List<Property<Object>> controllerSettings = [
+  Property(name: "executable", type: PropertyType.string, value: ''),
+  Property(name: "deviceId", type: PropertyType.int, value: 0),
+  Property(name: "landscape", type: PropertyType.bool, value: false),
+];

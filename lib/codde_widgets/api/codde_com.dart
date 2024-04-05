@@ -15,16 +15,16 @@ class CoddeCom {
   Protocol protocol;
   String addr;
 
-  void connect() {
-    com.connect();
+  Future connect() {
+    return com.connect();
   }
 
-  void send(int id, WidgetRegistry data) {
-    com.send(data: Frame(id: id, data: data));
+  Future send(int id, WidgetRegistry data) {
+    return com.send(data: Frame(id: id, data: data));
   }
 
-  void disconnect() {
-    com.disconnect();
+  Future disconnect() {
+    return com.disconnect();
   }
 
   Future<ResultFrame?> receive() {

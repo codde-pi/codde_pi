@@ -1,14 +1,18 @@
+import 'package:backdrop/backdrop.dart';
 import 'package:codde_backend/codde_backend.dart';
 import 'package:codde_pi/app/pages/codde/state/codde_state.dart';
 import 'package:codde_pi/codde_widgets/codde_widgets.dart';
 import 'package:codde_pi/components/codde_controller/views/codde_device_overview.dart';
+import 'package:codde_pi/components/codde_controller/views/controller_props.dart';
 import 'package:codde_pi/components/codde_runner/codde_runner.dart';
 import 'package:codde_pi/components/controller_editor/controller_editor.dart';
+import 'package:codde_pi/components/play_controller/play_controller.dart';
 import 'package:codde_pi/components/utils/no_map_found.dart';
 import 'package:codde_pi/core/exception.dart';
 import 'package:codde_pi/core/utils.dart';
 import 'package:codde_pi/services/db/device.dart';
 import 'package:codde_pi/theme.dart';
+import 'package:flame/components.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
@@ -20,7 +24,6 @@ import 'flame/overview_controller_flame.dart';
 
 export 'store/std_controller_store.dart';
 export 'views/edit_controller_outline.dart';
-export 'flame/play_controller_game.dart';
 import 'package:flame_tiled/flame_tiled.dart' as tiled;
 
 /// Main page for controller-centered projects
@@ -46,6 +49,7 @@ class _CoddeController extends DynamicBarStateWidget<CoddeController>
   late CoddeBackend backend = getBackend();
   final controllerWidgetProvider = ControllerWidgetMode.dummy;
   String content = '';
+  final ValueNotifier<bool> mapReady = ValueNotifier<bool>(false);
 
   @override
   void setFab(BuildContext context) {
@@ -53,8 +57,8 @@ class _CoddeController extends DynamicBarStateWidget<CoddeController>
         iconData: Icons.play_arrow,
         action: () => properties.getValue<int>('deviceId') != null
             ? Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => CoddeRunner(
-                    getControllerName(isRemote: isRemote, path: path))))
+                builder: (context) => PlayController(
+                    path: getControllerName(isRemote: isRemote, path: path))))
             : ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
                   content: Text(
@@ -64,13 +68,16 @@ class _CoddeController extends DynamicBarStateWidget<CoddeController>
   }
 
   Future<tiled.TiledComponent> getMap() async {
-    await backend
-        .read(getControllerName(isRemote: isRemote, path: path))
-        .then((value) => value.forEach((element) {
-              content += "$element\n";
-            }));
-    return await CoddeTiledComponent.load(content,
-        mode: controllerWidgetProvider);
+    content = await backend
+        .readSync(getControllerName(isRemote: isRemote, path: path));
+    // ALL RIGHT !
+
+    final map =
+        await CoddeTiledComponent.load(content, mode: controllerWidgetProvider);
+    mapComponent = map;
+    assignValues();
+    mapReady.value = true;
+    return map;
   }
 
   void assignValues() {
@@ -81,8 +88,6 @@ class _CoddeController extends DynamicBarStateWidget<CoddeController>
     } catch (e) {
       print('ERROR: $e');
     } //on ControllerPropertiesException catch (_) {}
-    final Device? device =
-        Hive.box<Device>("devices").get(properties.getValue<int>("deviceId"));
   }
 
   late final AnimationController _controller = AnimationController(
@@ -161,7 +166,7 @@ class _CoddeController extends DynamicBarStateWidget<CoddeController>
                       Positioned(
                         right: (MediaQuery.of(context).size.width / 2) -
                             ((MediaQuery.of(context).size.width / 1.5) / 2),
-                        child: IconButton(
+                        child: TextButton(
                             onPressed: () async {
                               final controller = await Navigator.of(context)
                                   .push(MaterialPageRoute(
@@ -171,7 +176,7 @@ class _CoddeController extends DynamicBarStateWidget<CoddeController>
                                               path: path))));
                               if (controller != null) setState(() {});
                             },
-                            icon: const Icon(Icons.edit)),
+                            child: const Text('EDIT')),
                       ),
                       const SizedBox(height: widgetGutter),
                       SlideTransition(
@@ -181,10 +186,16 @@ class _CoddeController extends DynamicBarStateWidget<CoddeController>
                               (MediaQuery.of(context).padding.top +
                                   kToolbarHeight +
                                   kBottomNavigationBarHeight),
-                          child: CoddeDeviceOverview(
-                              deviceId: properties.getValue<int>('deviceId')),
+                          child: ControllerProps(
+                              path: getControllerName(
+                                isRemote: isRemote,
+                                path: path,
+                              ),
+                              funRefresh: () => setState(() {}),
+                              props: properties),
                         ),
                       ),
+
                       // CoddeDeviceDialog(properties: properties),
                     ],
                   ),

@@ -33,9 +33,9 @@ ColorScheme _colorScheme = const ColorScheme(
     onSecondary: onOthers,
     error: error,
     onError: onOthers,
-    background: primary,
-    onBackground: grey,
-    surface: primary,
+    background: background,
+    onBackground: primary,
+    surface: background,
     tertiary: blue,
     onTertiary: background,
     onSurface: grey);
