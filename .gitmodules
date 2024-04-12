@@ -1,0 +1,15 @@
+[submodule "codde_editor"]
+	path = packages/codde_editor
+	url = git@github.com:codde-pi/codde_editor.git
+[submodule "codde_backend"]
+	path = packages/codde_backend
+	url = git@github.com:codde-pi/codde_backend.git
+[submodule "codde_doc"]
+	path = assets/codde_doc
+	url = git@github.com:codde-pi/codde_doc.git
+[submodule "flame"]
+	path = packages/flame
+	url = git@github.com:codde-pi/flame.git
+[submodule "tiled.dart"]
+	path = packages/tiled.dart
+	url = git@github.com:codde-pi/tiled.dart.git
