@@ -1,0 +1,20 @@
+# melos_managed_dependency_overrides: codde_backend,codde_editor,flame,flame_mjpeg,flame_svg,flame_tiled,tiled,codde_protocol,flutter_codde_protocol
+dependency_overrides:
+  codde_backend:
+    path: ../../packages/codde_backend
+  codde_editor:
+    path: ../../packages/codde_editor
+  codde_protocol:
+    path: ../../packages/codde_protocol/packages/codde_protocol
+  flame:
+    path: ../../packages/flame/packages/flame
+  flame_mjpeg:
+    path: ../../packages/flame_mjpeg
+  flame_svg:
+    path: ../../packages/flame/packages/flame_svg
+  flame_tiled:
+    path: ../../packages/flame/packages/flame_tiled
+  flutter_codde_protocol:
+    path: ../../packages/codde_protocol/packages/flutter_codde_protocol
+  tiled:
+    path: ../../packages/tiled.dart/packages/tiled

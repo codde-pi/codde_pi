@@ -12,6 +12,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_codde_protocol/flutter_codde_protocol.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path/path.dart';
+import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:screenshot/screenshot.dart';
 
@@ -19,6 +20,7 @@ final ASSET_PATH = "../assets/codde_doc/";
 final PATH = "codde_doc";
 final exitCode = 0;
 final navigatorKey = GlobalKey<NavigatorState>();
+ScreenshotController screenshotController = ScreenshotController();
 
 void main(List<String> arguments) async {
   final dir = await getApplicationDocumentsDirectory();
@@ -32,14 +34,124 @@ void main(List<String> arguments) async {
   });
   await RustLib.init();
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(
+  /* runApp(
     MaterialApp(
         navigatorKey: navigatorKey,
         debugShowCheckedModeBanner: false,
         theme: cddTheme,
         home: DocGen(dir: dir)),
-  );
+  ); */
+  for (final widget in controllerWidgetDef.values) {
+    generateDocs(widget, join(dir.path, PATH));
+  }
 }
+
+void generateDocs(ControllerWidgetDef def, String output) {
+  String doc = "";
+  void appendDoc(String data) {
+    doc += "$data\n";
+  }
+
+  void addTitle(String title) {
+    appendDoc("$title\n");
+  }
+
+  final docOutput = join(output, "widgets", "${def.class_.name}.md");
+  final imgOutput = join(output, "images", "${def.class_.name}.png");
+  addTitle("# ${def.class_.name}");
+  // image
+  final component = def.component(
+      class_: def.class_,
+      id: 0,
+      // TODO: size max ?
+      position: Vector2(0, 0),
+      properties: def.defaultProperties ?? ControllerProperties.empty,
+      style: ControllerStyle.material, // TODO: pixel
+      text: null);
+  screenshotController
+      .captureFromWidget(
+    MaterialApp(
+      navigatorKey: navigatorKey,
+      home: Scaffold(
+        body: GameWidget(
+          game: DummyGame(
+              component: getComponent(controllerWidgetDef.values.first)),
+        ),
+      ),
+    ),
+  )
+      .then((Uint8List? image) async {
+    if (image != null) {
+      final imagePath = await File(imgOutput).create().then((value) async =>
+          await value
+              .writeAsBytes(image)
+              .then((value) => print("IMAGE $value written")));
+      // await imagePath.writeAsBytes(image);
+    }
+  });
+  appendDoc("![${def.class_.name}](${p.relative(imgOutput)})\n");
+
+  // description
+  addTitle("# Description");
+
+  appendDoc("${def.description}\n");
+
+  // datasheet
+  // - commitFrequency
+  // - properties
+  // - size
+  addTitle("## Datasheet");
+  doc += createTableMd([
+    "Property",
+    "Value"
+  ], [
+    {"Property": "Commitment", "Value": def.commitFrequency.name},
+    {"Property": "Size", "Value": component.sizeFactor},
+    {
+      "Property": "Properties",
+      "Value": def.defaultProperties?.toJson()
+    }, // TODO: add common properties
+  ]);
+  doc += "\n\n";
+
+  // API
+  // - command
+  // - result
+  addTitle("## API");
+  doc += createTableMd([
+    "Property",
+    "Value"
+  ], [
+    {"Property": "Command", "Value": def.command},
+    {"Property": "Result", "Value": def.response},
+  ]);
+  doc += "\n\n";
+
+  // Example
+  addTitle("## Examples");
+  // TODO: select examples
+  appendDoc("[Zumo Robot](https://github.com/codde-pi/codde_example)\n");
+
+  // Resources
+  addTitle("## Resources");
+  appendDoc(
+      "**API:** [${def.class_.name}](https://github.com/codde-pi/codde_protocol/)\n");
+
+  // output
+  final file = File(docOutput);
+  file.createSync();
+  file.writeAsStringSync(doc);
+  print('FILE ${docOutput} written !');
+}
+
+WidgetComponent getComponent(ControllerWidgetDef def) => def.component(
+    class_: def.class_,
+    id: 0,
+    // TODO: size max ?
+    position: Vector2(0, 0),
+    properties: def.defaultProperties ?? ControllerProperties.empty,
+    style: ControllerStyle.material, // TODO: pixel
+    text: null);
 
 class DummyGame extends FlameGame {
   WidgetComponent component;

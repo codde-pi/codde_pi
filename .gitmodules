@@ -4,8 +4,11 @@
 [submodule "codde_backend"]
 	path = packages/codde_backend
 	url = git@github.com:codde-pi/codde_backend.git
+[submodule "codde_protocol"]
+	path = packages/codde_protocol
+	url = git@github.com:codde-pi/codde_protocol.git
 [submodule "codde_doc"]
-	path = assets/codde_doc
+	path = apps/codde_pi/assets/codde_doc
 	url = git@github.com:codde-pi/codde_doc.git
 [submodule "flame"]
 	path = packages/flame
