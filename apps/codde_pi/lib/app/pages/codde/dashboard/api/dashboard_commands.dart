@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:codde_backend/codde_backend.dart';
+import 'package:codde_pi/logger.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 
@@ -12,8 +13,10 @@ class DashboardCommands {
   int counter = 0;
   DashboardCommands();
   // static const String command = "";
-  String starter = ">>cmd";
-  String temp = "vcgencmd measure_temp | tr -dc '[0-9].\n\r'";
+  String charStarter = '>>cmd';
+  String get starter => "echo '$charStarter'";
+  String temp =
+      "cat /sys/class/thermal/thermal_zone0/temp | awk '{ print \$1 / 1000 }'";
   // echo $(($(</sys/class/thermal/thermal_zone0/temp) / 1000))
   // mem
   String mem = """free -m | grep Mem | awk '{ print (\$3/\$2)*100 }'""";
@@ -27,8 +30,7 @@ class DashboardCommands {
   String maxCpu =
       """lscpu | grep -i 'CPU max MHZ' | tr -dc '[0-9],\n\r' | awk '{ print \$1 / 1000 }'""";
 
-  String data =
-      """lscpu | grep -i 'CPU max MHZ' | tr -dc '[0-9],\n\r' | awk '{ print \$1 / 1000 }'""";
+  String tasks = "ps aux | sed -n '1,10p'";
   // disk
   String disk =
       "df -h | grep /dev/root | awk '{ print \$3 \"/\" \$2 }' | tr -d 'G'";
@@ -42,33 +44,56 @@ class DashboardCommands {
                        capture_True).stdout) */
   // TODO: benchmark top vs ps command
 
-  String terminator = ">>end";
+  String charTerm = '>>end';
+  String get terminator => "echo '$charTerm'";
+
+  String charSep = ';';
+  String get sep => "echo '$charSep'";
 
   String get command =>
-      "echo $starter ; $temp ; $mem ; $cpu ; $data ; $disk ; $voltage ; echo $terminator";
+      "$starter ; $sep ; $temp ; $sep ; $mem ; $sep ; $cpu ; $sep ; $disk ; $sep ; $voltage ; $sep; $tasks ; $sep ; $terminator";
   CoddeBackend get backend => GetIt.I<CoddeBackend>();
+
+  bool _running = false;
 
   Stream<DashboardData?> streamCommands() async* {
     // Create while loop each second
-    Stream.periodic(const Duration(seconds: 1), (i) async {
+    _running = true;
+    while (_running) {
       counter++;
-      parse(await backend.client?.run(command));
-    });
+      print('LOADING');
+      final res = await backend.client?.run(command);
+      yield parse(res);
+      await Future<void>.delayed(const Duration(seconds: 60));
+    }
   }
 
   DashboardData? parse(Uint8List? data) {
     if (data == null) return null;
 
-    final String strData = utf8.decode(data);
-    final List<String> listData = strData.split("\n");
+    String strData = utf8.decode(data);
+    // strData = strData.replaceAll('\n', '');
+    final List<String> listData = strData.split(charSep);
+    counter = 0;
+    for (final item in listData) {
+      if (counter != listData.length - 2) {
+        // before last item
+        listData[counter] = item.replaceAll("\n", "");
+      }
+      counter++;
+    }
+    print('DATA = $listData');
     if (listData.isNotEmpty) {
-      if (listData.first != starter) {
+      if (listData.first != charStarter) {
+        logger.e("starter not found");
         return null;
       }
-      if (listData.last != terminator) {
+      if (listData.last != charTerm) {
+        logger.e("terminator not found");
         return null;
       }
       if (listData.length != 8) {
+        logger.e("listData.length != 8");
         return null;
       }
       return DashboardData(
@@ -122,13 +147,13 @@ class DashboardCommands {
   }
 
   List _parseTemp(String temp) {
-    if (double.tryParse(data) == null) {
-      Map temp = {'temp': double.nan, 'time': counter.toString()};
-      tempData.add(temp);
+    if (double.tryParse(temp) == null) {
+      Map tmp = {'temp': double.nan, 'time': counter.toString()};
+      tempData.add(tmp);
     }
-    final dataTemp = double.parse(data);
-    Map temp = {'temp': dataTemp, 'time': counter.toString()};
-    tempData.add(temp);
+    final dataTemp = double.parse(temp);
+    Map tmp = {'temp': dataTemp, 'time': counter.toString()};
+    tempData.add(tmp);
     return tempData;
   }
 }

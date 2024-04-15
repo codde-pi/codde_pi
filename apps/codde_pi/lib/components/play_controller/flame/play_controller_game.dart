@@ -5,6 +5,7 @@ import 'package:codde_pi/codde_widgets/codde_widgets.dart';
 import 'package:codde_pi/components/codde_controller/flame/codde_tiled_component.dart';
 import 'package:codde_pi/logger.dart';
 import 'package:codde_pi/services/db/device.dart';
+import 'package:codde_pi/theme.dart';
 import 'package:flame/components.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/game.dart';
@@ -14,6 +15,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_codde_protocol/flutter_codde_protocol.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hive/hive.dart';
+import 'package:flutter/material.dart' as material;
 
 class PlayControllerGame extends FlameGame with HasGameRef {
   String path;
@@ -23,6 +25,8 @@ class PlayControllerGame extends FlameGame with HasGameRef {
   late TiledComponent mapComponent;
   final backend = GetIt.I.get<CoddeBackend>();
   late CustomProperties props;
+  String?
+      errorMessage; // TODO create mixin to propagate widget errors to this game
 
   @override
   Future<void> onLoad() async {
@@ -107,8 +111,34 @@ class PlayControllerGame extends FlameGame with HasGameRef {
     Navigator.of(context).pop();
   }
 
-  Widget _loadingOverlay(context, game) =>
-      const Center(child: CircularProgressIndicator());
+  Widget _loadingOverlay(context, game) => const Center(
+      child: Padding(
+          padding: EdgeInsets.all(widgetGutter),
+          child: CircularProgressIndicator()));
+
+  Widget _notificationOverlay(context, game) {
+    return Padding(
+      padding: const EdgeInsets.all(widgetGutter),
+      child: Card(
+        child: Padding(
+          padding: const EdgeInsets.all(widgetGutter / 2),
+          child: Stack(
+            children: [
+              Positioned(
+                  right: 0, top: 0, child: material.Text(errorMessage ?? '')),
+              Positioned(
+                child: IconButton(
+                    onPressed: () {
+                      overlays.remove('Notification');
+                    },
+                    icon: const material.Icon(Icons.close)),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 class PlayControllerView extends FlameCoddeProtocol {

@@ -49,6 +49,9 @@ class _Dashboard extends DynamicBarStateWidget<Dashboard> {
             stream: dbd.streamCommands(),
             builder: (context, snapshot) {
               //print('stream is listened');
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              }
 
               if (snapshot.hasError) {
                 return const Center(
