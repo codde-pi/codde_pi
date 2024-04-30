@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/material.dart' as material;
 import 'package:flutter_codde_protocol/flutter_codde_protocol.dart';
 import 'package:get_it/get_it.dart';
+import 'package:path/path.dart';
 
 class ControllerEditorGame extends FlameGame {
   String path;
@@ -19,6 +20,8 @@ class ControllerEditorGame extends FlameGame {
   final ControllerWidgetMode mode = ControllerWidgetMode.editor;
 
   ControllerEditorGame(this.path);
+
+  List<WidgetComponent> doneList = [];
 
   @override
   Future<void> onLoad() async {
@@ -47,6 +50,7 @@ class ControllerEditorGame extends FlameGame {
           y: 50) as WidgetComponent;
       overlays.remove('AddWidget');
       mapComponent.add(widgetComponent);
+      doneList.add(widgetComponent);
       logger.d('component added');
       resumeEngine();
     }, funCancel: () {
@@ -100,22 +104,24 @@ class ControllerEditorGame extends FlameGame {
       appBar: AppBar(
           leadingWidth: 72,
           leading: TextButton(
-            child: const material.Text('CANCEL'),
-            onPressed: () => Navigator.of(context).pop(),
+            child: const material.Text('DISCARD'),
+            onPressed: () =>
+                doneList.isNotEmpty ? mapComponent.removeAll(doneList) : null,
           ),
           backgroundColor: Colors.transparent,
-          title: material.Text(path.split('/').last),
+          title: material.Text(basenameWithoutExtension(path)),
           actions: [
             IconButton(
-                onPressed: () async {
-                  final map = await ControllerMap(
-                          map: mapComponent.tileMap.map, path: path)
-                      .saveMap();
-                  Navigator.of(context).pop(map);
-                },
+                onPressed: () async => doneList.isNotEmpty
+                    ? await ControllerMap(
+                            map: mapComponent.tileMap.map, path: path)
+                        .saveMap()
+                    : null,
                 icon: Icon(
                   Icons.save,
-                  color: Theme.of(context).colorScheme.primary,
+                  color: doneList.isNotEmpty
+                      ? Theme.of(context).colorScheme.primary
+                      : Theme.of(context).disabledColor,
                 )),
             // TODO: outline
             /* IconButton(

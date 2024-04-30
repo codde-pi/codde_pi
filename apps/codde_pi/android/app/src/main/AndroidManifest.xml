@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.wddm.codde_pi">
+    package="com.wdm.dopy">
 
     
     <uses-permission android:name="android.permission.INTERNET"/>
@@ -10,7 +10,7 @@
        android:requestLegacyExternalStorage="true"
        android:label="codde_pi"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@drawable/ic_launcher">
         <activity
             android:name=".MainActivity"
             android:exported="true"

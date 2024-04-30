@@ -1,4 +1,7 @@
+import 'package:codde_pi/components/codde_controller/views/codde_device_overview.dart';
+import 'package:codde_pi/components/utils/host_details.dart';
 import 'package:codde_pi/services/db/device.dart';
+import 'package:codde_pi/theme.dart';
 import 'package:flutter/material.dart';
 
 class DeviceDetails extends StatelessWidget {
@@ -12,26 +15,11 @@ class DeviceDetails extends StatelessWidget {
     //     iconData: Icons.network_ping, action: () {/* TODO: ping action */});
     return Column(
       children: [
-        // TODO: image of model
-        Card(
-          child: Row(
-            children: [
-              const Text('Protocol:'),
-              const SizedBox(width: 24.0),
-              Text(device.protocol.toString()),
-            ],
-          ),
-        ),
-        Card(
-          child: Row(
-            children: [
-              const Text('Address:'),
-              Text(device.address ?? ''),
-              IconButton(
-                  onPressed: () {/* clipboard */}, icon: const Icon(Icons.copy))
-            ],
-          ),
-        ),
+        CoddeDeviceOverview(deviceId: device.key),
+        const SizedBox(height: widgetGutter),
+        Text('SFTP Hosting', style: Theme.of(context).textTheme.headlineMedium),
+        const SizedBox(height: widgetGutter),
+        HostDetails(host: device.host)
       ],
     );
   }

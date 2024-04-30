@@ -3,6 +3,7 @@ import 'package:codde_pi/services/db/host.dart';
 import 'package:codde_pi/theme.dart';
 import 'package:flutter/material.dart';
 
+@Deprecated("Use DeviceHostForm instead")
 class SSHHostForm extends StatelessWidget {
   final nameController = TextEditingController();
   final userController = TextEditingController();
@@ -83,7 +84,6 @@ class SSHHostForm extends StatelessWidget {
             ElevatedButton(
                 onPressed: () => validate(
                       Host(
-                        name: nameController.text,
                         user: userController.text,
                         addr: hostController.text,
                         pswd: pswdController.text,

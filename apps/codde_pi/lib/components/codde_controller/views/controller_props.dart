@@ -13,15 +13,14 @@ import 'package:hive/hive.dart';
 
 import 'package:flame_tiled/flame_tiled.dart' as tiled;
 
-class ControllerProps extends StatefulWidget {
-  final String path;
+/// Display main controller properties required for execution.
+/// Properties are editable, and can refresh parent widgets UI
+/// `ControllerProps` is a floating big size Card
+// FIXME: properties -> device migration issues. Need top be fixed
+/* class ControllerProps extends StatefulWidget {
   final Function funRefresh;
-  final ControllerProperties props;
-  ControllerProps({
-    required this.path,
-    required this.funRefresh,
-    required this.props,
-  });
+  final Device device;
+  ControllerProps({super.key, required this.funRefresh, required this.device});
   @override
   State<StatefulWidget> createState() => _ControllerProps();
 }
@@ -29,7 +28,7 @@ class ControllerProps extends StatefulWidget {
 class _ControllerProps extends State<ControllerProps> {
   bool editDeviceMode = false;
   bool editPropsMode = false;
-  late final int? deviceId = widget.props.deviceId;
+  late final int? deviceId = widget.device.key;
   final deviceOptions = ["change", 'edit', "new"];
 
   void editDevice(Device device) async {
@@ -244,4 +243,4 @@ class _EditablePropsState extends State<_EditProps> {
       )
     ]);
   }
-}
+} */

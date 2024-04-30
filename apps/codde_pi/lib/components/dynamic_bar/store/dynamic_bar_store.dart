@@ -1,12 +1,9 @@
 import 'package:codde_backend/codde_backend.dart';
 import 'package:codde_pi/app/pages/codde/state/codde_state.dart';
-import 'package:codde_pi/components/dynamic_bar/models/dynamic_bar_destination.dart';
-import 'package:codde_pi/components/dynamic_bar/models/dynamic_bar_menu.dart';
-import 'package:codde_pi/components/dynamic_bar/models/dynamic_bar_pager.dart';
-import 'package:codde_pi/components/dynamic_bar/models/dynamic_fab.dart';
+import 'package:codde_pi/components/codde_overview/codde_overview.dart';
+import 'package:codde_pi/components/dynamic_bar/dynamic_bar.dart';
 import 'package:codde_pi/main.dart';
 import 'package:codde_pi/services/db/project.dart';
-import 'package:codde_pi/services/db/project_type.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:mobx/mobx.dart';
@@ -21,19 +18,16 @@ abstract class _DynamicBarStore with Store {
   int currentPage;
   @observable
   bool nested;
-  @observable
-  ProjectType? projectType;
 
-  // @observable
   @computed
-  List<DynamicBarDestination> get destinations => nested
-      ? [
-          projectType == ProjectType.controller
-              ? DynamicBarPager.controller
-              : DynamicBarPager.coddeOverview,
-          DynamicBarPager.community
-        ]
-      : [DynamicBarPager.globalProjects, DynamicBarPager.community];
+  List<DynamicBarDestination> get destinations => [
+        nested
+            ? DynamicBarPager.coddeOverview(
+                instance: CoddeOverview()) // TODO: improve syntax
+            : DynamicBarPager.globalProjects,
+        DynamicBarPager.community,
+        DynamicBarPager.devices
+      ];
   @observable
   DynamicFab? fab;
 
@@ -46,20 +40,11 @@ abstract class _DynamicBarStore with Store {
   @observable
   int menuIndex = 0;
 
-  _DynamicBarStore(
-      {this.currentPage = 0, this.nested = false, this.projectType});
+  _DynamicBarStore({this.currentPage = 0, this.nested = false});
 
   bool get isRemoteProject {
     if (GetIt.I.isRegistered<CoddeBackend>()) {
       return GetIt.I.get<CoddeBackend>().location == BackendLocation.server;
-    }
-    return false;
-  }
-
-  bool isProjectCdd(BuildContext context) {
-    if (isInsideProject(context)) {
-      return Provider.of<CoddeState>(context).project.type ==
-          ProjectType.codde_pi;
     }
     return false;
   }
@@ -99,8 +84,10 @@ abstract class _DynamicBarStore with Store {
   @computed
   Widget? get applyMenuPage {
     if (menuIndex != 0 && menu[menuIndex].destination != null) {
+      print('returning widget');
       return getWidget(menu[menuIndex].destination);
     }
+    print('returning null');
     return null;
   }
 
@@ -108,7 +95,7 @@ abstract class _DynamicBarStore with Store {
   void setPage(DynamicBarDestination page) {
     currentPage = page.index;
     menuIndex = 0;
-    updateUI(page: currentPage);
+    updateUI();
   }
 
   @action
@@ -129,7 +116,8 @@ abstract class _DynamicBarStore with Store {
   }
 
   @action
-  void updateUI({int page = 0}) {
+  void updateUI({int? page}) {
+    page = page ?? currentPage;
     assert(destinations[page].builtWidget != null,
         'Widget should be built just before');
     // set Fab
@@ -140,10 +128,12 @@ abstract class _DynamicBarStore with Store {
     // set Indexer
     (destinations[page].builtWidget as dynamic)
         .setIndexer(navigatorKey.currentContext!);
+    // TODO: set BreadcrumbTab ?
   }
 
   @action
   void selectMenuItem(int index) {
+    print('select menu item $index');
     menuIndex = index;
   }
 
@@ -158,5 +148,37 @@ abstract class _DynamicBarStore with Store {
       selectMenuItem(index);
       indexer(index);
     };
+  }
+
+  @observable
+  List<BreadCrumbTab> breadCrumbTabs = [];
+
+  @observable
+  BreadCrumbTab? selectedBreadcrumbTab;
+
+  @action
+  setBreadCrumb(List<BreadCrumbTab> breadcrumbTabs) {
+    breadCrumbTabs = breadcrumbTabs;
+  }
+
+  @action
+  void selectBreadcrumbTab(BreadCrumbTab e, {DynamicBarWidget? widget}) {
+    if (widget != null) e.widget = widget;
+    selectedBreadcrumbTab = e;
+    selectMenuItem(0);
+    updateUI();
+  }
+
+  @observable
+  dynamic breadCrumbTabArg;
+
+  @action
+  setBreadcrumbTabArg(dynamic e) {
+    breadCrumbTabArg = e;
+  }
+
+  @computed
+  Widget? get breadCrumbWidget {
+    return applyMenuPage ?? selectedBreadcrumbTab!.widget;
   }
 }

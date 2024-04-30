@@ -2,7 +2,7 @@ import 'package:codde_backend/codde_backend.dart';
 import 'package:codde_pi/app/pages/project/store/project_store.dart';
 import 'package:codde_pi/components/dialogs/create_project_dialog.dart'
     as dialog;
-import 'package:codde_pi/components/dialogs/select_host_dialog.dart';
+import 'package:codde_pi/components/dialogs/select_device_dialog.dart';
 import 'package:codde_pi/components/dynamic_bar/models/dynamic_bar_menu.dart';
 import 'package:codde_pi/components/dynamic_bar/models/dynamic_bar_widget.dart';
 import 'package:codde_pi/components/project_launcher/project_launcher.dart';
@@ -12,6 +12,7 @@ import 'package:codde_pi/components/projects_carousel/projects_carousel.dart';
 import 'package:codde_pi/components/views/codde_tile.dart';
 import 'package:codde_pi/core/utils.dart';
 import 'package:codde_pi/main.dart';
+import 'package:codde_pi/services/db/device.dart';
 import 'package:codde_pi/services/db/host.dart';
 import 'package:codde_pi/services/db/project.dart';
 import 'package:codde_pi/theme.dart';
@@ -64,27 +65,26 @@ class GlobalProjects extends DynamicBarWidget {
   Future openProject(
       BuildContext context, dialog.ProjectLocationType projectLocType) async {
     String? path;
-    Host? host;
+    Device? device;
     if (projectLocType == dialog.ProjectLocationType.usb) {
       return;
     } else if (projectLocType == dialog.ProjectLocationType.internal) {
       path = await FilePicker.platform
           .getDirectoryPath(dialogTitle: "Select Project");
     } else if (projectLocType == dialog.ProjectLocationType.ssh) {
-      host = await showDialog(
-          context: context, builder: (context) => SelectHostDialog());
-      if (host != null) {
-        final backend = GetIt.I.registerSingleton(CoddeBackend(
-            BackendLocation.server,
-            credentials: host.toCredentials()));
+      device = await showDialog(
+          context: context,
+          builder: (context) => SelectDeviceDialog(onlyHosts: true));
+      if (device != null && device.host != null) {
         path = await Navigator.push(
             context,
             MaterialPageRoute(
                 builder: (context) =>
-                    ProjectPicker(home: getUserHome(host!.user))));
+                    ProjectPicker(home: getUserHome(device!.host!.user))));
         if (path != null) {
-          final pjt = addExistingProject(context, p.basename(path), path: path);
-          Navigator.of(context).pushNamed('/codde', arguments: pjt);
+          final pjt = await addExistingProject(context, p.basename(path),
+              path: path, device: device);
+          Navigator.of(context).pushReplacementNamed('/codde', arguments: pjt);
         } else {
           Navigator.pop(context);
           ScaffoldMessenger.of(context).showSnackBar(
@@ -92,17 +92,17 @@ class GlobalProjects extends DynamicBarWidget {
         }
       }
     }
-    if (path != null) {
+    if (path != null && device != null) {
       try {
         Project existingProject = Hive.box<Project>(projectsBox)
             .values
-            .singleWhere((e) => e.path == path && e.host == host);
+            .singleWhere((e) => e.workDir == path && e.device == device);
         launchProject(context, existingProject);
       } catch (e) {
         Project p = Project(
             name: basenameWithoutExtension(path),
-            host: host,
-            path: path,
+            device: device,
+            workDir: path,
             dateCreated: DateTime.now(),
             dateModified: DateTime.now());
         Hive.box<Project>(projectsBox).add(p);
@@ -117,7 +117,6 @@ class GlobalProjects extends DynamicBarWidget {
     // final NavigationBarState bar = GetIt.I.get<NavigationBarState>();
     // if (bar.destinations[bar.currentPage].widget.runtimeType == runtimeType) {}
     store.refreshProjects(context);
-    store.refreshHosts(context);
 
     return Observer(
       builder: (_) => Scaffold(
@@ -146,6 +145,7 @@ class GlobalProjects extends DynamicBarWidget {
                   ),
                 ),
                 // Recent projects list
+                // TODO: Add section "import project" only select projects with .coddepi-workspace file ?
                 SliverList.list(children: [
                   const SizedBox(height: widgetSpace),
                   CoddeTile(

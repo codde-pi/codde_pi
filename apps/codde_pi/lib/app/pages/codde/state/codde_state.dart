@@ -3,7 +3,7 @@ import 'dart:convert';
 
 import 'package:codde_backend/codde_backend.dart';
 import 'package:codde_pi/logger.dart';
-import 'package:codde_pi/services/db/host.dart';
+import 'package:codde_pi/services/db/device.dart';
 import 'package:codde_pi/services/db/project.dart';
 import 'package:dartssh2/dartssh2.dart';
 import 'package:flutter/services.dart';
@@ -77,7 +77,7 @@ abstract class _CoddeState with Store {
   _CoddeState(this.project);
 
   @action
-  void selectHost(Host host) {
-    project.host = host;
+  void selectDevice(Device device) {
+    project.device = device;
   }
 }

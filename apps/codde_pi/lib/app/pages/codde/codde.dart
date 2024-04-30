@@ -17,20 +17,13 @@ class Codde extends StatefulWidget {
 class _Codde extends State<Codde> {
   Future<void> registerBackend({required Project project}) async {
     if (!GetIt.I.isRegistered<CoddeBackend>()) {
-      final backend = CoddeBackend(
-          project.host == null ? BackendLocation.local : BackendLocation.server,
-          credentials: project.host?.toCredentials());
-      // TODO: conditional backend opening
+      final backend = CoddeBackend(BackendLocation.local);
       await backend.open().then(
           (_) => GetIt.I.registerLazySingleton<CoddeBackend>(() => backend));
     } else {
       final backend = GetIt.I.get<CoddeBackend>();
       if (!backend.isRunning) await backend.open();
     }
-    /* ScaffoldMessenger.of(navigatorKey.currentContext!).showSnackBar(SnackBar(
-      content: const Text("Connected !"),
-      // backgroundColor: Theme.of(context).colorScheme.tertiary,
-    )); */
   }
 
   void unregisterBackend() {
@@ -111,7 +104,7 @@ class _Codde extends State<Codde> {
               ),
             ],
             builder: (context, widget) {
-              return DynamicBar(nested: true, projectType: project.type);
+              return const DynamicBar(nested: true);
             });
       },
     );

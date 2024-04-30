@@ -27,7 +27,7 @@ class NoMapFound extends StatelessWidget {
             FileEntity? file = await showDialog(
                 context: context,
                 builder: (context) => AddControllerMapDialog(
-                    path: coddeProject.path, context: context));
+                    path: coddeProject.workDir, context: context));
             if (file != null) {
               setState(() {}); //store.askReload();
             }

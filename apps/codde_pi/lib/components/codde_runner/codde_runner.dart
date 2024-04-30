@@ -1,9 +1,11 @@
 import 'package:backdrop/backdrop.dart';
 import 'package:codde_backend/codde_backend.dart';
+import 'package:codde_pi/app/pages/codde/state/codde_state.dart';
 import 'package:codde_pi/codde_widgets/codde_widgets.dart';
 import 'package:codde_pi/components/codde_runner/store/codde_runner_store.dart';
 import 'package:codde_pi/components/play_controller/flame/play_controller_game.dart';
 import 'package:codde_pi/core/utils.dart';
+import 'package:codde_pi/services/db/project.dart';
 import 'package:dartssh2/dartssh2.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +20,8 @@ import 'views/runtime_std_view.dart';
 /// Scripts need a valid SSH connection
 /// Controllers are read and generated in [PlayControllerGame] component
 /// [CoddeCom] and [CoddeBackend] sessions are shared between these pages
-class CoddeRunner extends StatefulWidget {
+// FIXME: properties -> device migration. Need to be fixed
+/* class CoddeRunner extends StatefulWidget {
   final String exec;
   final bool play;
   const CoddeRunner(this.exec, {this.play = false, super.key});
@@ -30,6 +33,7 @@ class _CoddeRunner extends State<CoddeRunner> {
   CoddeBackend get backend => GetIt.I.get<CoddeBackend>();
   final CoddeRunnerStore store = CoddeRunnerStore();
   late String exec = widget.exec;
+  late CoddeState projectState;
 
   @override
   void initState() {
@@ -46,6 +50,7 @@ class _CoddeRunner extends State<CoddeRunner> {
 
   @override
   Widget build(BuildContext context) {
+    projectState = Provider.of<CoddeState>(context);
     return Provider(
       create: (_) => store,
       child: Observer(
@@ -84,7 +89,7 @@ class _CoddeRunner extends State<CoddeRunner> {
   }
 
   void runController() async {
-    final props = GetIt.I.get<ControllerProperties>();
+    final props = projectState.project.triggerExecutable;
     if (props.executable != null) {
       store.createSession(
           await backend.client?.execute(getCommand(props.executable!)));
@@ -113,4 +118,4 @@ class _CoddeRunner extends State<CoddeRunner> {
     store.session?.kill(SSHSignal.TERM);
     store.session?.close();
   }
-}
+} */

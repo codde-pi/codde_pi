@@ -49,8 +49,7 @@ class ProjectsCarousel extends StatelessWidget {
                     // TODO: if unable to connect, show nothing, else instantiate remote backend
                     game: OverviewControllerFlame(
                         path: getControllerName(
-                            isRemote: projectList.elementAt(itemIndex).isRemote,
-                            path: projectList.elementAt(itemIndex).path),
+                            path: projectList.elementAt(itemIndex).workDir),
                         backend: CoddeBackend(BackendLocation
                             .local)), // TODO: catch SFTP scenario `if project.host != null`
                   ),

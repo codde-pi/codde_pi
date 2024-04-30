@@ -10,7 +10,7 @@ class ProjectInstanceTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       onTap: () => select(context, project),
-      leading: project.controlledDevice != null
+      leading: project.device != null
           ? Icon(Icons.settings_remote)
           : Icon(Icons.electrical_services_sharp),
       title: Text(project.name),
