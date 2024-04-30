@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:codde_backend/codde_backend.dart';
 import 'package:codde_pi/codde_widgets/codde_widgets.dart';
 import 'package:codde_pi/components/codde_controller/flame/codde_tiled_component.dart';
+import 'package:codde_pi/core/utils.dart';
 import 'package:codde_pi/logger.dart';
 import 'package:codde_pi/services/db/device.dart';
 import 'package:codde_pi/theme.dart';
@@ -12,18 +13,22 @@ import 'package:flame/game.dart';
 import 'package:flame_tiled/flame_tiled.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_codde_protocol/flutter_codde_protocol.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hive/hive.dart';
 import 'package:flutter/material.dart' as material;
 
 class PlayControllerGame extends FlameGame with HasGameRef {
-  String path;
+  String workDir;
+  Device device;
+  bool executeMain;
 
-  PlayControllerGame(this.path);
+  PlayControllerGame(
+      {required this.workDir, required this.device, this.executeMain = true});
 
   late TiledComponent mapComponent;
-  final backend = GetIt.I.get<CoddeBackend>();
+  CoddeBackend? backend;
   late CustomProperties props;
   String?
       errorMessage; // TODO create mixin to propagate widget errors to this game
@@ -32,10 +37,26 @@ class PlayControllerGame extends FlameGame with HasGameRef {
   Future<void> onLoad() async {
     await super.onLoad();
 
+    // launch main
+    try {
+      if (executeMain) {
+        backend = CoddeBackend(BackendLocation.server,
+            credentials: device.host?.toCredentials());
+        backend?.client?.execute(getExecutablePath(workDir: workDir));
+      }
+    } catch (e) {
+      errorMessage = e.toString();
+      overlays.add('Notification');
+      // TODO: create notify service instead
+    }
+    // read map
     String content = '';
-    await backend.read(path).then((value) => value.forEach((element) {
-          content += "$element\n";
-        }));
+    await GetIt.I
+        .get<CoddeBackend>()
+        .read(getControllerName(path: workDir))
+        .then((value) => value.forEach((element) {
+              content += "$element\n";
+            }));
     mapComponent = await CoddeTiledComponent.load(content,
         mode: ControllerWidgetMode.player);
     // load props
@@ -44,30 +65,26 @@ class PlayControllerGame extends FlameGame with HasGameRef {
     } catch (e) {
       print('ERROR: $e');
     } //on ControllerPropertiesException catch (_) {}
-    final Device? device =
-        Hive.box<Device>("devices").get(props!.getValue<int>("deviceId"));
-    if (device != null) {
-      // TODO: remove assert, disable run button and show snackbar warning
-      assert(device.address != null, "Address is not device :(");
-      assert(device.protocol != null, "No protocol specified :/");
-      final view = PlayControllerView(
-          path: path, protocol: device.protocol, address: device.address!);
-      try {
-        await view.com.connect();
-      } catch (e) {
-        logger.e(e);
-        overlays.remove('Loading');
-        add(TextComponent(text: "Connection failed", anchor: Anchor.center));
-        return;
-      } finally {
-        overlays.remove('Loading');
-      }
-
-      view.add(mapComponent);
-      add(view);
-    } else {
-      add(TextComponent(text: "No linked device found", anchor: Anchor.center));
+    // TODO: remove assert, disable run button and show snackbar warning
+    assert(device.addr != null, "Address is not device :(");
+    assert(device.protocol != null, "No protocol specified :/");
+    final view = PlayControllerView(
+        path: workDir, protocol: device.protocol, address: device.addr!);
+    try {
+      await view.com.connect();
+    } catch (e) {
+      logger.e(e);
+      overlays.remove('Loading');
+      // add(TextComponent(text: "Connection failed", anchor: Anchor.center));
+      errorMessage = e.toString();
+      overlays.add('Notification');
+      return;
+    } finally {
+      overlays.remove('Loading');
     }
+
+    view.add(mapComponent);
+    add(view);
   }
 
   @override
@@ -76,7 +93,7 @@ class PlayControllerGame extends FlameGame with HasGameRef {
     print('$runtimeType onMount');
     logger.d('$runtimeType assign $props');
 
-    // TODO: useful ? remove ?
+    // serve controller properties for parent widgets
     if (GetIt.I.isRegistered<ControllerProperties>()) {
       GetIt.I.unregister<ControllerProperties>();
     }
@@ -92,6 +109,7 @@ class PlayControllerGame extends FlameGame with HasGameRef {
         initialActiveOverlays: ['Loading'],
         overlayBuilderMap: {
           'Loading': _loadingOverlay,
+          'Notification': _notificationOverlay
         },
       ),
       appBar: AppBar(
@@ -103,7 +121,7 @@ class PlayControllerGame extends FlameGame with HasGameRef {
 
   Future exitRun(BuildContext context) async {
     // Stop codde protocol execution
-    GetIt.I.get<CoddeCom>().disconnect();
+    if (GetIt.I.isRegistered<CoddeCom>()) GetIt.I.get<CoddeCom>().disconnect();
     // exit fullscreen
     await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
 
@@ -122,17 +140,28 @@ class PlayControllerGame extends FlameGame with HasGameRef {
       child: Card(
         child: Padding(
           padding: const EdgeInsets.all(widgetGutter / 2),
-          child: Stack(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              Positioned(
-                  right: 0, top: 0, child: material.Text(errorMessage ?? '')),
-              Positioned(
-                child: IconButton(
+              Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  material.Text('Error',
+                      style: Theme.of(context)
+                          .textTheme
+                          .headlineMedium
+                          ?.copyWith(
+                              color: Theme.of(context).colorScheme.error)),
+                  IconButton(
                     onPressed: () {
                       overlays.remove('Notification');
                     },
-                    icon: const material.Icon(Icons.close)),
-              )
+                    icon: const material.Icon(Icons.close),
+                  ),
+                ],
+              ),
+              Container(child: material.Text(errorMessage ?? '')),
             ],
           ),
         ),

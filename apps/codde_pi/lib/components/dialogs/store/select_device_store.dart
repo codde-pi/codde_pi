@@ -9,8 +9,6 @@ class SelectDeviceStore = _SelectDeviceStore with _$SelectDeviceStore;
 
 abstract class _SelectDeviceStore with Store {
   @observable
-  ObservableList hosts = ObservableList.of([]);
-  @observable
   Device? selectedDevice;
   @observable
   bool noDeviceError = false;
@@ -18,31 +16,6 @@ abstract class _SelectDeviceStore with Store {
   bool noPathError = false;
   @observable
   bool hostConnected = false;
-  @action
-  void refreshDevices(BuildContext context) {
-    hosts = ObservableList.of(
-      Hive.box<Device>('devices').values.map(
-            (e) => RadioMenuButton(
-              value: e,
-              groupValue: selectedDevice,
-              onChanged: (host) {
-                selectedDevice = host;
-                refreshDevices(context);
-              },
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Text(
-                    e.name,
-                    style: Theme.of(context).textTheme.bodyLarge,
-                  ),
-                  Text("${e.protocol.name} : ${e.address}")
-                ],
-              ),
-            ),
-          ),
-    );
-  }
 
   @action
   void selectDevice(Device d) {

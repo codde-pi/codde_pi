@@ -21,7 +21,7 @@ class SideloadWarningDialog extends StatelessWidget {
             child: Card(
                 child: Padding(
                     padding: const EdgeInsets.all(widgetGutter),
-                    child: Text(project.path))),
+                    child: Text(project.workDir))),
           ),
         ],
       )),
@@ -29,8 +29,7 @@ class SideloadWarningDialog extends StatelessWidget {
         TextButton(
             onPressed: Navigator.of(context).pop, child: const Text('CANCEL')),
         ElevatedButton(
-            onPressed: () async => sideloadProject(context,
-                    project: project, destinationPath: destinationPath)
+            onPressed: () async => sideloadProject(context, project: project)
                 .then((_) =>
                     Navigator.of(context).pushReplacementNamed('/codde')),
             child: const Text('RELOAD'))

@@ -1,4 +1,4 @@
-package com.wddm.codde_pi
+package com.wdm.dopy
 
 import io.flutter.embedding.android.FlutterActivity
 

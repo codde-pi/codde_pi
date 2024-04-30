@@ -30,7 +30,7 @@ class DirectionalButtonArrow extends PositionComponent with HasCoddeProtocol {
           onPressed: () =>
               com.send(id, WidgetRegistry.directionalButton(direction: packet)),
           onReleased: () => com.send(
-              id, WidgetRegistry.directionalButton(direction: packet))),
+              id, const WidgetRegistry.directionalButton(direction: 0))),
     );
   }
 

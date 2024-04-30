@@ -1,14 +1,13 @@
-import 'package:codde_backend/codde_backend.dart';
+import 'package:codde_pi/core/utils.dart';
+import 'package:json_annotation/json_annotation.dart';
 
 import 'device.dart';
-import 'host.dart';
 import 'package:hive/hive.dart';
-
-import 'project_type.dart';
 
 part 'project.g.dart';
 
 @HiveType(typeId: 0)
+@JsonSerializable()
 class Project extends HiveObject {
   @HiveField(0)
   DateTime dateCreated;
@@ -17,72 +16,52 @@ class Project extends HiveObject {
   DateTime dateModified;
 
   @HiveField(2)
-  String name; // TODO:: remove
-
-  @HiveField(3)
-  Host? host;
+  String name; // used on Radicle repo
 
   @HiveField(4, defaultValue: '')
-  String? description;
+  String? description; // used on Radicle repo
 
   @HiveField(5)
-  Device? controlledDevice;
+  Device device;
 
   @HiveField(6)
-  String path;
+  String workDir;
 
-  @HiveField(7, defaultValue: ProjectType.controller)
-  ProjectType type;
+  @HiveField(9, defaultValue: false)
+  bool triggerExecutable;
 
-  @HiveField(8, defaultValue: [])
-  List<FileEntity> executables;
+  @HiveField(10, defaultValue: '')
+  String repo;
+
+  @HiveField(11, defaultValue: false)
+  bool flashed;
+
+  @HiveField(12, defaultValue: false)
+  bool published;
+
+  bool get sftpHosting => device.host != null;
+
+  String? get remoteDestination => sftpHosting
+      ? getRemotePath(pushDir: device.host!.pushDir, projectName: name)
+      : null;
 
   Project(
       {required this.dateCreated,
       required this.dateModified,
       required this.name,
-      this.host,
       this.description,
-      this.controlledDevice,
-      this.type = ProjectType.controller,
-      this.executables = const <FileEntity>[],
-      required this.path});
+      required this.device,
+      this.triggerExecutable = false,
+      required this.workDir,
+      this.flashed = false,
+      this.published = false,
+      this.repo = ''});
 
-  bool get isRemote => host != null;
+  /// Connect the generated [_$PersonFromJson] function to the [fromJson]
+  /// factory.
+  factory Project.fromJson(Map<String, dynamic> json) =>
+      _$ProjectFromJson(json);
 
-  Map<String, dynamic> toJson() {
-    return {
-      'date_created': dateCreated,
-      'date_modified': dateModified,
-      'name': name,
-      'description': description,
-      'repo': host != null ? host!.toJson() : {},
-      'path': path
-    };
-  }
-
-  Project copyWithJson(Map<String, dynamic> map) {
-    return Project(
-        controlledDevice: map["controlledDevice"] ?? controlledDevice,
-        dateCreated: map["dateCreated"] ?? dateCreated,
-        dateModified: map["dateCreated"] ?? dateModified,
-        description: map["description"] ?? description,
-        host: map["host"] ?? host,
-        name: map["name"] ?? name,
-        path: map["path"] ?? path);
-  }
-
-  static Project fromJson(Map<String, dynamic> map) {
-    assert(map["name"] != null);
-    assert(map["path"] != null);
-    final project = Project(
-        dateCreated: map["dateCreated"] ?? DateTime.now(),
-        dateModified: map["dateModified"] ?? DateTime.now(),
-        controlledDevice: map["controlledDevice"],
-        description: map['description'],
-        host: map["host"],
-        name: map["name"],
-        path: map["path"]);
-    return project;
-  }
+  /// Connect the generated [_$ProjectToJson] function to the [toJson] method.
+  Map<String, dynamic> toJson() => _$ProjectToJson(this);
 }

@@ -1,22 +1,18 @@
-import 'package:codde_backend/codde_backend.dart';
-import 'package:codde_pi/components/dialogs/add_controlled_device_dialog.dart';
-import 'package:codde_pi/components/dialogs/new_host_dialog.dart';
 import 'package:codde_pi/services/db/device.dart';
-import 'package:codde_pi/services/db/project.dart';
 import 'package:codde_pi/theme.dart';
-import 'package:dart_ping/dart_ping.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:path/path.dart';
 
+import 'add_controlled_device_dialog.dart';
 import 'store/select_device_store.dart';
-import 'store/select_host_store.dart';
 
 class SelectDeviceDialog extends StatelessWidget {
   final store = SelectDeviceStore();
   final pathController = TextEditingController();
+
+  final bool onlyHosts;
+  SelectDeviceDialog({super.key, this.onlyHosts = false});
 
   @override
   Widget build(BuildContext context) {
@@ -49,9 +45,12 @@ class SelectDeviceDialog extends StatelessWidget {
               padding: const EdgeInsets.all(widgetGutter),
               child: Column(
                 children: [
-                  ...box.values.isEmpty
+                  ...box.values
+                          .where((element) =>
+                              onlyHosts ? element.host != null : true)
+                          .isEmpty
                       ? [
-                          Center(
+                          const Center(
                               child: /* ElevatedButton(
                                 onPressed: () => Navigator.push(
                                       context,
@@ -65,34 +64,40 @@ class SelectDeviceDialog extends StatelessWidget {
                                   Text('No device found'))
                         ]
                       : [
-                          ...box.values.map(
-                            (e) => RadioMenuButton(
-                              value: e,
-                              groupValue: store.selectedDevice,
-                              onChanged: (host) {
-                                store.selectDevice(host!);
-                              },
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    e.name,
-                                    style:
-                                        Theme.of(context).textTheme.bodyLarge,
+                          ...box.values
+                              .where((element) =>
+                                  onlyHosts ? element.host != null : true)
+                              .map(
+                                (e) => RadioMenuButton(
+                                  value: e,
+                                  groupValue: store.selectedDevice,
+                                  onChanged: (host) {
+                                    store.selectDevice(host!);
+                                  },
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        e.name,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyLarge,
+                                      ),
+                                      Text("${e.protocol.name} : ${e.addr}")
+                                    ],
                                   ),
-                                  Text("${e.protocol.name} : ${e.address}")
-                                ],
+                                ),
                               ),
-                            ),
-                          ),
-                          /* OutlinedButton(
+                          OutlinedButton(
                             onPressed: () => Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
-                                        NewControlledDeviceDialog())),
-                            child: Text("NEW DEVICE"),
-                          ), */
+                                        const NewControlledDeviceDialog(
+                                          requireHost: true,
+                                        ))),
+                            child: const Text("NEW DEVICE"),
+                          ),
                         ],
                   if (store.noDeviceError)
                     Text(

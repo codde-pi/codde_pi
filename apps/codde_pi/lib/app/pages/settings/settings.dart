@@ -1,4 +1,5 @@
 import 'package:codde_pi/app/pages/settings/license.dart';
+import 'package:codde_pi/main.dart';
 import 'package:flutter/material.dart';
 
 class Settings extends StatelessWidget {
@@ -88,16 +89,20 @@ class Settings extends StatelessWidget {
               onTap: () => showDialog(
                   context: context,
                   builder: (BuildContext context) {
-                    return AlertDialog(
-                      content: const SingleChildScrollView(
-                          child: Text(
-                              'Server icons created by Freepik - Flaticon - https://www.flaticon.com/free-icons/server\n\n'
-                              'Remote Desktop Icon - Flaticon - https://www.flaticon.com/free-icons/remote-desktop')),
-                      actions: [
-                        TextButton(
+                    return Scaffold(
+                      body: ListView.builder(
+                        itemCount: deps.length,
+                        itemBuilder: (context, index) => ListTile(
+                          title: Text("${deps[index].$1} - ${deps[index].$3}"),
+                          subtitle: Text(deps[index].$2),
+                        ),
+                      ),
+                      appBar: AppBar(
+                        title: const Text('Thanks'),
+                        leading: IconButton(
                             onPressed: () => Navigator.pop(context),
-                            child: const Text('OK')),
-                      ],
+                            icon: const Icon(Icons.close)),
+                      ),
                     );
                   }),
             ),

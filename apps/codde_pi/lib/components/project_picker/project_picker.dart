@@ -1,5 +1,7 @@
 import 'package:codde_backend/codde_backend.dart';
+import 'package:codde_pi/components/file_picker/file_picker.dart';
 import 'package:codde_pi/core/utils.dart';
+import 'package:codde_pi/logger.dart';
 import 'package:flutter/material.dart';
 
 class ProjectPicker extends StatefulWidget {
@@ -28,6 +30,21 @@ class _ProjectPicker extends State<ProjectPicker> {
     return list;
   }
 
+  Stream<List<FileEntity>> listenChildren(String path) async* {
+    if (!backend.isOpen) {
+      await backend.open();
+    }
+    yield* backend.listenChildren(path);
+  }
+
+  void onSelect(FileEntity item) {
+    item.isDir
+        ? setState(() {
+            selection = item.path;
+          })
+        : null;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,43 +60,7 @@ class _ProjectPicker extends State<ProjectPicker> {
               child: const Text('VALIDATE')),
         ],
       ),
-      body: FutureBuilder(
-          future: listChildren(selection),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
-            }
-            if (snapshot.hasError) {
-              return Center(
-                child: Text(snapshot.error.toString()),
-              );
-            } else if (snapshot.hasData) {
-              return ListView.builder(
-                itemCount: snapshot.data?.length,
-                itemBuilder: (context, index) {
-                  final FileEntity item = children.elementAt(index);
-                  return ListTile(
-                    title: item.name,
-                    leading: item.isDir
-                        ? const Icon(
-                            Icons.folder,
-                            color: Colors.blue,
-                          )
-                        : const Icon(Icons.file_open_sharp),
-                    onTap: () => item.isDir
-                        ? setState(() {
-                            selection = item.path;
-                          })
-                        : null,
-                  );
-                },
-              );
-            } else {
-              return const Center(
-                child: Text('Nothing to show. Please retry later'),
-              );
-            }
-          }),
+      body: FilePicker(backend: backend, path: selection, onSelect: onSelect),
     );
   }
 }

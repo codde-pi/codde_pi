@@ -1,7 +1,7 @@
 import 'package:codde_backend/codde_backend.dart';
 import 'package:codde_pi/app/pages/codde/dashboard/api/dashboard_commands.dart';
 import 'package:codde_pi/app/pages/codde/state/codde_state.dart';
-import 'package:codde_pi/components/dialogs/select_host_dialog.dart';
+import 'package:codde_pi/components/dialogs/select_device_dialog.dart';
 import 'package:codde_pi/components/dynamic_bar/models/dynamic_bar_menu.dart';
 import 'package:codde_pi/components/dynamic_bar/models/dynamic_bar_widget.dart';
 import 'package:flutter/material.dart';
@@ -36,9 +36,11 @@ class _Dashboard extends DynamicBarStateWidget<Dashboard> {
     return Scaffold(
         appBar: null,
         body: Observer(builder: (_) {
-          if (projectStore.project.host == null) {
+          if (projectStore.project.device.host == null) {
             return Center(
-                child: SelectHostDialog()); // TODO: button navigation instead?
+                child: SelectDeviceDialog(
+              onlyHosts: true,
+            )); // TODO: button navigation instead?
           }
 
           if (backend.client == null) {

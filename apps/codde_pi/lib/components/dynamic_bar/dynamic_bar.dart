@@ -5,10 +5,11 @@ export 'models/dynamic_bar_widget.dart';
 export 'models/dynamic_fab_selector.dart';
 export 'models/dynamic_bar_destination.dart';
 export 'store/dynamic_bar_store.dart';
+export 'models/breadcrumb.dart';
+export 'models/breadcrumb_tab.dart';
 
 import 'package:codde_pi/components/dynamic_bar/dynamic_bar.dart';
 import 'package:codde_pi/main.dart';
-import 'package:codde_pi/services/db/project_type.dart';
 import 'package:codde_pi/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -24,17 +25,14 @@ class DynamicBar extends StatefulWidget {
   State<StatefulWidget> createState() => _DynamicBar();
   final bool nested;
   final Function? popNested_;
-  final ProjectType? projectType;
-  const DynamicBar(
-      {super.key, this.nested = false, this.popNested_, this.projectType});
+  const DynamicBar({super.key, this.nested = false, this.popNested_});
 }
 
 class _DynamicBar extends State<DynamicBar> {
   late final DynamicBarStore bar;
   @override
   void initState() {
-    bar =
-        DynamicBarStore(nested: widget.nested, projectType: widget.projectType);
+    bar = DynamicBarStore(nested: widget.nested);
     if (GetIt.I.isRegistered<DynamicBarStore>()) {
       GetIt.I.unregister<DynamicBarStore>();
     }

@@ -3,9 +3,8 @@ import 'dart:io';
 import 'package:codde_backend/codde_backend.dart';
 import 'package:codde_pi/core/utils.dart';
 import 'package:codde_pi/main.dart';
-import 'package:codde_pi/services/db/host.dart';
+import 'package:codde_pi/services/db/device.dart';
 import 'package:codde_pi/services/db/project.dart';
-import 'package:codde_pi/services/db/project_type.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
@@ -28,20 +27,16 @@ Future<Project> createBackendProject(context,
     {required Project instance,
     bool demo = false,
     bool keepBackendInstance = false}) async {
-  CoddeBackend backend = instance.isRemote
-      ? CoddeBackend(BackendLocation.server,
-          credentials: instance.host!.toCredentials())
-      : CoddeBackend(BackendLocation.local);
+  CoddeBackend backend = CoddeBackend(BackendLocation.local);
   await backend.open();
-  await backend.mkdir(instance.path);
+  await backend.mkdir(instance.workDir);
   GetIt.I.registerSingleton(backend);
   if (demo) {
-    await backend.create(join(instance.path, "main.py"),
+    await backend.create(join(instance.workDir, "main.py"),
         content:
             await rootBundle.loadString("assets/samples/socketio/main.py"));
   }
-  await createControllerMap(context,
-      getControllerName(isRemote: instance.isRemote, path: instance.path));
+  await createControllerMap(context, getControllerName(path: instance.workDir));
   await Hive.box<Project>(projectsBox).add(instance);
   if (!keepBackendInstance) {
     backend
@@ -53,21 +48,18 @@ Future<Project> createBackendProject(context,
 
 /// Create project installlocally
 Future<Project> createProjectFromScratch(context, String name,
-    {ProjectType? type, Host? host, bool keepBackendInstance = false}) async {
+    {required Device device,
+    bool keepBackendInstance = false,
+    bool demo = true}) async {
   final project = Project(
       dateCreated: DateTime.now(),
       dateModified: DateTime.now(),
       name: name,
-      type: type ?? ProjectType.controller,
-      host: host,
-      path: host == null
-          ? await getApplicationSupportDirectory()
-              .then((value) => join(value.path, name))
-          : join(name)); // TODO: add field in form to customize project path
+      device: device,
+      workDir: await getApplicationSupportDirectory()
+          .then((value) => join(value.path, name)));
   return createBackendProject(context,
-      instance: project,
-      demo: type == ProjectType.codde_pi,
-      keepBackendInstance: keepBackendInstance);
+      instance: project, demo: demo, keepBackendInstance: keepBackendInstance);
 }
 
 void launchProject(BuildContext context, Project e) {

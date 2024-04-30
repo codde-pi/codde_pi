@@ -1,17 +1,13 @@
 import 'package:codde_backend/codde_backend.dart';
-import 'package:codde_pi/services/db/device.dart';
-import 'package:codde_pi/services/db/device_model.dart';
-import 'package:flutter_codde_protocol/flutter_codde_protocol.dart';
 import 'package:hive/hive.dart';
+import 'package:json_annotation/json_annotation.dart';
 import 'package:uuid/uuid.dart';
 
 part 'host.g.dart';
 
 @HiveType(typeId: 2)
+@JsonSerializable()
 class Host extends HiveObject {
-  @HiveField(0)
-  String name;
-
   @HiveField(1)
   String addr;
 
@@ -27,30 +23,27 @@ class Host extends HiveObject {
   @HiveField(5)
   String uid;
 
+  @HiveField(6, defaultValue: "/home/root")
+  String pushDir;
+
   Host(
-      {required this.name,
-      required this.addr,
+      {required this.addr,
       required this.user,
       required this.pswd,
+      String? pushDir,
       this.port,
       String? uid})
-      : uid = uid ?? const Uuid().v4();
-
-  Device toDevice() {
-    return Device(
-      uid: uid,
-      name: name,
-      model: DeviceModel.sbc,
-      address: addr,
-      protocol: Protocol.webSocket,
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {};
-  }
+      : uid = uid ?? const Uuid().v4(),
+        pushDir = pushDir ?? "/home/$user";
 
   SFTPCredentials toCredentials() {
     return SFTPCredentials(host: addr, pswd: pswd, user: user);
   }
+
+  /// Connect the generated [_$PersonFromJson] function to the [fromJson]
+  /// factory.
+  factory Host.fromJson(Map<String, dynamic> json) => _$HostFromJson(json);
+
+  /// Connect the generated [_$HostToJson] function to the [toJson] method.
+  Map<String, dynamic> toJson() => _$HostToJson(this);
 }

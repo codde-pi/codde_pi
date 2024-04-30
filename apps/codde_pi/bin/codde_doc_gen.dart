@@ -305,8 +305,12 @@ class _DocGenState extends State<DocGen> {
 
     // Example
     addTitle("## Examples");
-    // TODO: select examples
-    appendDoc("[Zumo Robot](https://github.com/codde-pi/codde_example)\n");
+    appendDoc("```python");
+    appendDoc("def ${def.command.toString().toLowerCase()}_1(*args):");
+    appendDoc("    widget: ${def.command} = args[0]");
+    appendDoc("    print('value', widget)"); // TODO: loop on attributes
+    appendDoc(
+        "server.register_action(1, '${def.command}', ${def.command.toString().toLowerCase()}_1)");
 
     // Resources
     addTitle("## Resources");

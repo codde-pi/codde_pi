@@ -53,9 +53,6 @@ class ControllerProperties extends CustomProperties {
     return ControllerProperties(Map<String, Property<Object>>.fromEntries(map));
   }
 
-  String? get executable => getValue<String>("executable");
-  int? get deviceId => getValue<int>("deviceId");
-
   bool? get disabled => getValue<bool>("disabled");
 
   int? get size => getValue<int>("size");
@@ -64,7 +61,5 @@ class ControllerProperties extends CustomProperties {
 }
 
 final List<Property<Object>> controllerSettings = [
-  Property(name: "executable", type: PropertyType.string, value: ''),
-  Property(name: "deviceId", type: PropertyType.int, value: 0),
   Property(name: "landscape", type: PropertyType.bool, value: false),
 ];

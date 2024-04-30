@@ -1,15 +1,10 @@
 import 'package:codde_pi/app/pages/codde/state/codde_state.dart';
 import 'package:codde_pi/components/codde_overview/store/host_store.dart';
-import 'package:codde_pi/components/dialogs/select_host_dialog.dart';
 import 'package:codde_pi/components/dynamic_bar/dynamic_bar.dart';
 import 'package:codde_pi/components/views/codde_card.dart';
-import 'package:codde_pi/core/utils.dart';
-import 'package:codde_pi/main.dart';
 import 'package:codde_pi/services/db/host.dart';
-import 'package:codde_pi/services/db/project.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
 
 class HostDetails extends StatelessWidget {
@@ -25,14 +20,6 @@ class HostDetails extends StatelessWidget {
             child: Column(
               children: [
                 // TODO: image of model
-                Row(
-                  children: [
-                    const Text('Name:'),
-                    const SizedBox(width: 24.0),
-                    Text(host!.name),
-                  ],
-                ),
-
                 Row(
                   children: [
                     const Text('Address:'),
@@ -63,7 +50,9 @@ class HostDetails extends StatelessWidget {
               ],
             ),
           )
-        : ValueListenableBuilder<Box>(
+        : Center(child: Text('No Host configured'));
+// TODO: uploading project to remote (bad state managment and use case)
+    /* ValueListenableBuilder<Box>(
             valueListenable: Hive.box<Project>(projectsBox)
                 .listenable(keys: [projectStore.project.key]),
             builder: (context, box, widget) =>
@@ -94,6 +83,6 @@ class HostDetails extends StatelessWidget {
                                 context, box.get(projectStore.project.key)),
                             child: Text('RELOAD')),
                       ),
-          );
+          ); */
   }
 }
