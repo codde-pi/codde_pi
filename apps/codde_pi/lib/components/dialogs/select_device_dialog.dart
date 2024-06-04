@@ -93,7 +93,7 @@ class SelectDeviceDialog extends StatelessWidget {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
-                                        const NewControlledDeviceDialog(
+                                        const ControlledDeviceDialog(
                                           requireHost: true,
                                         ))),
                             child: const Text("NEW DEVICE"),

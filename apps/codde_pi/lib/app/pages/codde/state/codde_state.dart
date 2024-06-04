@@ -36,6 +36,9 @@ abstract class _CoddeState with Store {
     if (backend.location != BackendLocation.server) {
       throw Exception("Bad backend location");
     }
+    if (!backend.isOpen) {
+      await backend.open();
+    }
     if (!backend.isRunning) throw ();
     backend.shell ??= await backend.client?.shell(
         pty: SSHPtyConfig(

@@ -18,7 +18,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'store/codde_editor_store.dart';
 
 /// Main Editor view
-class CoddeEditor extends DynamicBarWidget {
+class CoddeEditor extends DynamicBarStatelessWidget {
   String path;
   CoddeBackend backend;
   // CodeFieldRepository? fileStackInstance;

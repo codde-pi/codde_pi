@@ -12,24 +12,32 @@ import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
-class DevicePlayground extends DynamicBarWidget {
+class DevicePlayground extends DynamicBarStatefulWidget {
   DevicePlayground({Key? key, required this.project}) : super(key: key);
   final Project project;
   final backend = CoddeBackend(BackendLocation.local);
 
+  @override
+  DynamicBarState<DynamicBarStatefulWidget> createDynamicState() {
+    return _DevicePlayground();
+  }
+}
+
+class _DevicePlayground extends DynamicBarState<DevicePlayground> {
   @override
   Widget build(BuildContext context) {
     super.build(context);
     if (GetIt.I.isRegistered<CoddeBackend>()) {
       GetIt.I.unregister<CoddeBackend>();
     }
-    GetIt.I.registerSingleton(backend);
+    GetIt.I.registerSingleton(widget.backend);
 
     return Scaffold(
       // appBar: AppBar(title: Text(project.name)),
       body: GameWidget(
         game: OverviewControllerFlame(
-            path: getControllerName(path: project.workDir), backend: backend),
+            path: getControllerName(path: widget.project.workDir),
+            backend: widget.backend),
       ),
     );
   }
@@ -40,7 +48,7 @@ class DevicePlayground extends DynamicBarWidget {
             name: "Controller",
             iconData: Icons.gamepad,
             destination: DynamicBarDestination(
-                widget: () => this,
+                widget: () => widget,
                 index: 0,
                 iconData: Icons.gamepad,
                 name: "controller")),
@@ -51,7 +59,7 @@ class DevicePlayground extends DynamicBarWidget {
                 name: "code",
                 index: 1,
                 widget: () => CodeViewer(
-                      workDir: project.workDir,
+                      workDir: widget.project.workDir,
                       readOnly: true,
                     ),
                 iconData: Icons.code))
@@ -64,7 +72,7 @@ class DevicePlayground extends DynamicBarWidget {
         iconData: Icons.play_arrow,
         action: () => Navigator.of(context).push(MaterialPageRoute(
             builder: (context) => PlayController(
-                path: getControllerName(path: project.workDir)))));
+                path: getControllerName(path: widget.project.workDir)))));
   }
 
   void updateMenu(context, int index) {}

@@ -24,7 +24,7 @@ import 'package:hive/hive.dart';
 import 'package:path/path.dart';
 import 'package:path/path.dart' as p;
 
-class GlobalProjects extends DynamicBarWidget {
+class GlobalProjects extends DynamicBarStatelessWidget {
   GlobalProjects({super.key});
   final ProjectStore store = ProjectStore();
   final pageController = PageController();

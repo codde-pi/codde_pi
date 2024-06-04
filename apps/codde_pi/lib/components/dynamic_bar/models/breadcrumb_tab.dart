@@ -1,10 +1,11 @@
 import 'package:codde_pi/components/dynamic_bar/dynamic_bar.dart';
 import 'package:codde_pi/components/dynamic_bar/models/dynamic_bar_widget.dart';
+import 'package:flutter/widgets.dart';
 
 class BreadCrumbTab {
   // DynamicFab fab;
   // List<DynamicBarMenuItem> menu;
-  DynamicBarWidget? widget;
+  DynamicBarStatefulWidget? widget;
   // Function(int) indexer;
   String name;
   BreadCrumbTab({

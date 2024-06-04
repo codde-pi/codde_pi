@@ -17,11 +17,10 @@ import 'views/device_garage.dart';
 
 class Devices extends DynamicBarStatefulWidget {
   @override
-  DynamicBarStateWidget<DynamicBarStatefulWidget> createDynamicState() =>
-      _Devices();
+  DynamicBarState<DynamicBarStatefulWidget> createDynamicState() => _Devices();
 }
 
-class _Devices extends DynamicBarStateWidget<Devices> {
+class _Devices extends DynamicBarState<Devices> {
   late List<BreadCrumbTab> tabSteps = [
     BreadCrumbTab(name: "COLLECTION", widget: DeviceCollection()),
     BreadCrumbTab(name: "GARAGE", widget: null // ??=
@@ -33,10 +32,8 @@ class _Devices extends DynamicBarStateWidget<Devices> {
   // Widget Function(Object) get tabChild => bar.selectedBreadcrumbTab!.widget;
 
   @override
-  List<DynamicBarMenuItem>? get bottomMenu {
-    print('bottom menu = ${bar.selectedBreadcrumbTab!.widget!.bottomMenu}');
-    return bar.selectedBreadcrumbTab!.widget!.bottomMenu;
-  }
+  List<DynamicBarMenuItem>? get bottomMenu =>
+      bar.selectedBreadcrumbTab!.widget!.bottomMenu;
 
   @override
   void initState() {
@@ -74,18 +71,31 @@ class _Devices extends DynamicBarStateWidget<Devices> {
   Widget build(BuildContext context) {
     // TODO: implement build
     super.build(context);
-    return Observer(
-      builder: (context) => SafeArea(
-        child: Scaffold(
-          body: Column(
-            children: [
-              BreadCrumb(),
-              Expanded(
-                  child: bar.selectedBreadcrumbTab == null
-                      ? const Text('Breadcrumb loading error')
-                      : bar.breadCrumbWidget ?? // TODO:  integrate to dynamic_bar ?
-                          const Text('Breadcrumb body error'))
-            ],
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (_) {
+        final index = bar.breadCrumbTabs
+            .indexWhere((element) => element == bar.selectedBreadcrumbTab);
+        if (index == 0) {
+          // Navigator.of(context).pop();
+        } else {
+          bar.selectBreadcrumbTab(
+              bar.breadCrumbTabs[index - 1]); // FIXME: and widget!
+        }
+      },
+      child: Observer(
+        builder: (context) => SafeArea(
+          child: Scaffold(
+            body: Column(
+              children: [
+                BreadCrumb(),
+                Expanded(
+                    child: bar.selectedBreadcrumbTab == null
+                        ? const Text('Breadcrumb loading error')
+                        : bar.breadCrumbWidget ?? // TODO:  integrate to dynamic_bar ?
+                            const Text('Breadcrumb body error'))
+              ],
+            ),
           ),
         ),
       ),

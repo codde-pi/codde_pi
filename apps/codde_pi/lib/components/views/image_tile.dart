@@ -1,15 +1,18 @@
+import 'dart:io';
+
+import 'package:codde_pi/core/utils.dart';
 import 'package:codde_pi/theme.dart';
 import 'package:flutter/material.dart';
 
-class CoddeTile extends StatelessWidget {
-  Widget? leading;
+class ImageTile extends StatelessWidget {
+  String? leading;
   Widget? tailing;
   Text title;
   Text? subtitle;
   Function? onTap;
   Function? onLongPress;
   final bool selected;
-  CoddeTile(
+  ImageTile(
       {super.key,
       this.leading,
       this.tailing,
@@ -27,17 +30,21 @@ class CoddeTile extends StatelessWidget {
           selected: selected,
           // TODO: replcae Card + Padding by Ink
           child: Card(
-              child: Padding(
-                  padding: const EdgeInsets.all(widgetGutter),
-                  child: Row(children: [
-                    leading ?? Container(),
-                    Expanded(
-                        child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [title, subtitle ?? Container()],
-                    )),
-                    tailing ?? Container()
-                  ])))),
+              child: Row(children: [
+            leading != null
+                ? Image.file(File(leading!), width: 72, height: 72)
+                : Image.asset(noImageAsset, width: 72, height: 72),
+            Padding(
+              padding: const EdgeInsets.all(widgetGutter),
+              child: Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [title, subtitle ?? Container()],
+                ),
+              ),
+            ),
+            tailing ?? Container()
+          ]))),
     );
   }
 }

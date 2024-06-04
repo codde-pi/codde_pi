@@ -17,7 +17,7 @@ import 'views/project_details.dart';
 
 enum OverviewActions { downloadProject }
 
-class CoddeOverview extends DynamicBarWidget {
+class CoddeOverview extends DynamicBarStatelessWidget {
   late Project coddeProject;
   late final controllerEditor = ControllerEditor(
     path: getControllerName(path: coddeProject.workDir),
@@ -37,11 +37,13 @@ class CoddeOverview extends DynamicBarWidget {
     if (coddeProject == null) {
       throw RuntimeProjectException();
     }
+    final backend = getBackend();
 
     return Scaffold(
       appBar: AppBar(
         title: Text(coddeProject.name),
         leading: Container(),
+        // TODO: clean download code process
         actions: [
           IconButton(
             icon: Icon(
@@ -51,7 +53,16 @@ class CoddeOverview extends DynamicBarWidget {
             onPressed: () =>
                 sideloadProjectDialog(context, project: coddeProject),
           ),
-          PopupMenuButton<OverviewActions>(
+          IconButton(
+            onPressed: null,
+            icon: Icon(
+              backend.isOpen ? Icons.link : Icons.link_off,
+              color: backend.isOpen
+                  ? Colors.green
+                  : Theme.of(context).disabledColor,
+            ),
+          )
+          /*PopupMenuButton<OverviewActions>(
             initialValue: null,
             onSelected: (OverviewActions? item) {
               switch (item) {
@@ -70,7 +81,7 @@ class CoddeOverview extends DynamicBarWidget {
                 child: Text('Download embedded code'),
               ),
             ],
-          ),
+          ),*/
         ],
       ),
       body: Padding(

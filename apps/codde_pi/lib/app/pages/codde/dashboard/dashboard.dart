@@ -18,12 +18,12 @@ class Dashboard extends DynamicBarStatefulWidget {
   Dashboard({super.key});
 
   @override
-  DynamicBarStateWidget<DynamicBarStatefulWidget> createDynamicState() {
+  DynamicBarState<DynamicBarStatefulWidget> createDynamicState() {
     return _Dashboard();
   }
 }
 
-class _Dashboard extends DynamicBarStateWidget<Dashboard> {
+class _Dashboard extends DynamicBarState<Dashboard> {
   final store = DashboardStore();
   late final DashboardCommands dbd = DashboardCommands();
 

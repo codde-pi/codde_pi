@@ -2,6 +2,7 @@ import 'package:codde_backend/codde_backend.dart';
 import 'package:codde_pi/codde_widgets/codde_widgets.dart';
 import 'package:codde_pi/components/add_widget/add_widget_dialog.dart';
 import 'package:codde_pi/components/codde_controller/flame/codde_tiled_component.dart';
+import 'package:codde_pi/core/utils.dart';
 import 'package:codde_pi/logger.dart';
 import 'package:codde_pi/theme.dart';
 import 'package:enum_to_string/enum_to_string.dart';
@@ -16,10 +17,11 @@ import 'package:path/path.dart';
 class ControllerEditorGame extends FlameGame {
   String path;
   late TiledComponent mapComponent;
-  final backend = GetIt.I.get<CoddeBackend>();
+  CoddeBackend backend;
   final ControllerWidgetMode mode = ControllerWidgetMode.editor;
 
-  ControllerEditorGame(this.path);
+  ControllerEditorGame(this.path, {CoddeBackend? backend})
+      : backend = backend ?? getLocalBackend();
 
   List<WidgetComponent> doneList = [];
 
@@ -33,6 +35,11 @@ class ControllerEditorGame extends FlameGame {
     mapComponent = await CoddeTiledComponent.load(content, mode: mode);
     dummyProtocol.add(mapComponent);
     add(dummyProtocol);
+    mapComponent.add(WidgetEditor(
+        id: 2,
+        class_: ControllerClass.pressButton,
+        sizeFactor: 1.0,
+        position: Vector2(0, 0)));
   }
 
   Widget _addWidgetBuilder(

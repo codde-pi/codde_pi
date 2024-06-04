@@ -2,9 +2,12 @@ import 'package:codde_pi/components/dynamic_bar/models/dynamic_fab_selector.dart
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-abstract class DynamicBarWidget extends StatelessWidget
+// TODO: use it instead of [Widget]
+abstract class DynamicBarWidget extends Widget with DynamicFabSelector {}
+
+abstract class DynamicBarStatelessWidget extends StatelessWidget
     with DynamicFabSelector {
-  DynamicBarWidget({super.key});
+  DynamicBarStatelessWidget({super.key});
   @override
   @mustCallSuper
   @mustBeOverridden
@@ -20,7 +23,7 @@ enum WaitForAction { setFab, setMenu, setIndexer }
 abstract class DynamicBarStatefulWidget extends StatefulWidget
     with DynamicFabSelector {
   DynamicBarStatefulWidget({super.key});
-  final ValueNotifier<DynamicBarStateWidget?> _state = ValueNotifier(null);
+  final ValueNotifier<DynamicBarState?> _state = ValueNotifier(null);
   void waitForState(WaitForAction action, [dynamic arg]) {
     if (_state.value != null) {
       _callAction(action, arg);
@@ -67,10 +70,10 @@ abstract class DynamicBarStatefulWidget extends StatefulWidget
     return _state.value!;
   }
 
-  DynamicBarStateWidget createDynamicState();
+  DynamicBarState createDynamicState();
 }
 
-abstract class DynamicBarStateWidget<T extends DynamicBarStatefulWidget>
+abstract class DynamicBarState<T extends DynamicBarStatefulWidget>
     extends State<T> with DynamicFabSelector {
   @override
   @mustCallSuper

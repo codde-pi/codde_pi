@@ -75,10 +75,7 @@ class DynamicBarPager {
       index: 1,
       iconData: Icons.language);
   static final devices = DynamicBarDestination(
-      name: "devices",
-      widget: () => Devices(),
-      index: 2,
-      iconData: Icons.devices);
+      name: "devices", widget: () => Devices(), index: 2, iconData: Icons.toys);
 
   /* static final boards = DynamicBarDestination(
       name: "boards", widget: () => const Boards(), index: 2, iconData: Icons.cable); */

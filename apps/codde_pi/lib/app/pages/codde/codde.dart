@@ -17,7 +17,8 @@ class Codde extends StatefulWidget {
 class _Codde extends State<Codde> {
   Future<void> registerBackend({required Project project}) async {
     if (!GetIt.I.isRegistered<CoddeBackend>()) {
-      final backend = CoddeBackend(BackendLocation.local);
+      final backend = CoddeBackend(BackendLocation.server,
+          credentials: project.device.host?.toCredentials());
       await backend.open().then(
           (_) => GetIt.I.registerLazySingleton<CoddeBackend>(() => backend));
     } else {
@@ -74,28 +75,28 @@ class _Codde extends State<Codde> {
           ));
         }
         if (snapshot.hasError) {
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(
-                      left: widgetGutter, right: widgetGutter),
-                  child: Text(
-                    "Host connection failed. ${snapshot.error}",
-                    style: Theme.of(context).textTheme.bodyMedium,
-                  ),
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Host connection failed. ${snapshot.error}",
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                    const SizedBox(height: widgetGutter),
+                    TextButton(
+                        onPressed: () {
+                          unregisterBackend();
+                          setState(() {});
+                        },
+                        child: const Text('RETRY'))
+                  ],
                 ),
-                const SizedBox(height: widgetGutter),
-                FloatingActionButton.extended(
-                    onPressed: () {
-                      unregisterBackend();
-                      setState(() {});
-                    },
-                    label: const Text('RETRY'))
-              ],
-            ),
-          );
+              ),
+            );
+          });
         }
         return MultiProvider(
             providers: [

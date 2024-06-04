@@ -162,20 +162,21 @@ abstract class _DynamicBarStore with Store {
   }
 
   @action
-  void selectBreadcrumbTab(BreadCrumbTab e, {DynamicBarWidget? widget}) {
+  void selectBreadcrumbTab(BreadCrumbTab e,
+      {DynamicBarStatefulWidget? widget}) {
     if (widget != null) e.widget = widget;
     selectedBreadcrumbTab = e;
     selectMenuItem(0);
     updateUI();
   }
 
-  @observable
-  dynamic breadCrumbTabArg;
+  /* @observable
+  dynamic breadCrumbTabArg; */
 
-  @action
+  /* @action
   setBreadcrumbTabArg(dynamic e) {
     breadCrumbTabArg = e;
-  }
+  } */
 
   @computed
   Widget? get breadCrumbWidget {

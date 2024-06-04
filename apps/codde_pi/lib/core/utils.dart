@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:codde_backend/codde_backend.dart';
 import 'package:codde_pi/codde_widgets/codde_widgets.dart';
 import 'package:codde_pi/components/dialogs/sideload_warning_dialog.dart';
@@ -41,9 +43,9 @@ Future<String> getAssetControllerContent() async {
 Future<FileEntity?> createControllerMap(
     BuildContext context, String workDir) async {
   final dummyIsDirectory =
-      await getBackend().dirExists(p.join(workDir, "layout"));
+      await getLocalBackend().dirExists(p.join(workDir, "layout"));
   if (!dummyIsDirectory) {
-    await getBackend().mkdir(p.dirname(workDir));
+    await getLocalBackend().mkdir(p.dirname(workDir));
     logger.d('CREATING DIR: ${p.dirname(workDir)}');
   } else {
     logger.d('NOPE');
@@ -84,12 +86,18 @@ String runPrefix(String file, {bool inCwd = false}) {
 // PROJECT MANAGEMENT
 // ===========================================================================
 
+/// Get registered [CoddeBackend] session
+/// Useful when operating from different widgets/pages on single remote backend
 CoddeBackend getBackend() {
   try {
     return GetIt.I.get<CoddeBackend>();
   } on WaitingTimeOutException {
     throw NoRegsiteredBackendException();
   }
+}
+
+CoddeBackend getLocalBackend() {
+  return CoddeBackend(BackendLocation.local);
 }
 
 Future<String> createHostDir(Host host, String path) async {
@@ -109,74 +117,143 @@ void reloadProject(BuildContext context, Project project) {
           ));
 }
 
-Future sideloadProjectDialog(BuildContext context,
-    {required Project project}) async {
-  final store = LoadingProgressStore();
-  GetIt.I.registerSingleton(store);
-  await showDialog(
-    context: context,
-    builder: (context) => Observer(
-        builder: (_) => AlertDialog(
-              title: const Text("Sideloading"),
-              content: store.noProgress
-                  ? Text(
-                      "Are you sure you want to sideload this project? Every data on destination will be overwritten.\nDEVICE: ${project.device.name}\nWORKING DIR: ${project.remoteDestination}")
-                  : LinearProgressIndicator(
-                      value: store.progress,
-                    ),
-              actions: [
-                TextButton(
-                  onPressed: () =>
-                      store.noProgress ? Navigator.of(context).pop() : null,
-                  child: const Text('CANCEL'),
-                ),
-                ElevatedButton(
-                    onPressed: () => store.noProgress
-                        ? sideloadProject(context, project: project)
-                        : null,
-                    child: const Text('OK')),
-              ],
-            )),
-  );
-  GetIt.I.unregister<LoadingProgressStore>();
+void sideloadProjectDialog(BuildContext context, {required Project project}) {
+  showDialog(
+      context: context,
+      builder: (context) => SideloadWarningDialog(project: project));
+  /* .then((_) =>
+                    Navigator.of(context).pushReplacementNamed('/codde')), */
 }
 
-Future sideloadProject(BuildContext context, {required Project project}) async {
-  final CoddeBackend currentBackend = getBackend();
+Future sideloadProject2(BuildContext context,
+    {required Project project}) async {
+  final CoddeBackend currentBackend = getLocalBackend();
   assert(project.device.host != null, 'Host project should not be null');
-  final CoddeBackend targetBackend = CoddeBackend(BackendLocation.server,
-      credentials: project.device.host!.toCredentials());
-  await targetBackend.open();
-  final store = GetIt.I.get<LoadingProgressStore>();
-  // TODO: stream
-  await currentBackend
-      .listChildren(project.workDir, recursive: true)
-      .then((value) => value.forEach((e) async {
-            if (e.isDir) {
-              targetBackend.mkdir(p.joinAll([
-                project.remoteDestination!,
-                project.name,
-                p.relative(e.path, from: project.workDir)
-              ]));
-            } else {
-              targetBackend.save(
-                  p.joinAll([
-                    project.remoteDestination!,
-                    project.name,
-                    p.relative(e.path, from: project.workDir)
-                  ]),
-                  await currentBackend.readSync(e.path));
-            }
-            store.progress = store.progress + 1 / value.length;
-          }))
-      .then((value) => targetBackend.close());
+  final CoddeBackend targetBackend = getBackend();
+
+  // final store = GetIt.I.get<LoadingProgressStore>();
+  // Create a StreamController to emit progress updates
+  final progressController = StreamController<double>();
+
+  final Set<String> processedFiles = {}; // Keep track of processed files
+
+  int? totalFiles;
+  if (!targetBackend.isOpen) await targetBackend.open();
+
+  final List fileList =
+      await currentBackend.listChildren(project.workDir, recursive: true);
+  totalFiles = fileList.length;
+  // Get total files count
+  logger.i('total files: $totalFiles');
+
+  try {
+    for (var file in fileList) {
+      logger.d('uploading ${file.path}');
+      /* if (file.isDir) {
+        targetBackend.mkdir(p.joinAll([
+          project.remoteDestination!,
+          project.name,
+          p.relative(file.path, from: project.workDir)
+        ]));
+      } else {
+        targetBackend.save(
+            p.joinAll([
+              project.remoteDestination!,
+              project.name,
+              p.relative(file.path, from: project.workDir)
+            ]),
+            await currentBackend.readSync(file.path));
+      } */
+      processedFiles.add(file.path);
+    }
+  } catch (e) {
+    logger.e(e);
+  }
+}
+
+Stream<void> sideloadProject(BuildContext context,
+    {required Project project}) async* {
+  void closeStream(targetBackend, progressController) {
+    // targetBackend.close();
+    progressController.close(); // Close the stream controller when done
+  }
+
+  final CoddeBackend currentBackend = getLocalBackend();
+  assert(project.device.host != null, 'Host project should not be null');
+  final CoddeBackend targetBackend = getBackend();
+
+  // final store = GetIt.I.get<LoadingProgressStore>();
+  // Create a StreamController to emit progress updates
+  final progressController = StreamController<double>();
+
+  final Set<String> processedFiles = {}; // Keep track of processed files
+
+  int totalFiles;
+  if (!targetBackend.isOpen) await targetBackend.open();
+  logger.d("local wok dir: ${project.workDir}");
+
+  totalFiles = await getTotalFiles(
+      currentBackend, project.workDir); // Get total files count
+  logger.i('total files: $totalFiles');
+  // TODO: wrong ! missing dirs
+
+  try {
+    // project Destination
+    // FIXME: Is RemoteDestination safe?
+    if (!await targetBackend.dirExists(project.remoteDestination!))
+      await targetBackend.mkdir(project.remoteDestination!);
+
+    // children
+    await for (var fileList
+        in currentBackend.listenChildren(project.workDir, recursive: true)) {
+      for (var file in fileList) {
+        if ((file.isDir && file.name == 'layout') ||
+            (p.dirname(file.path) == 'layout')) {
+          continue;
+        }
+        if (!processedFiles.contains(file.path)) {
+          logger.d('uploading ${file.path}');
+          if (file.isDir) {
+            await targetBackend.mkdir(p.joinAll([
+              project.remoteDestination!,
+              p.relative(file.path, from: project.workDir)
+            ]));
+          } else {
+            await targetBackend.save(
+                p.joinAll([
+                  project.remoteDestination!,
+                  p.relative(file.path, from: project.workDir)
+                ]),
+                await currentBackend.readSync(file.path));
+          }
+          processedFiles.add(file.path);
+        }
+        // Emit progress update
+        progressController.add(processedFiles.length / totalFiles);
+      }
+    }
+  } catch (e) {
+    // Handle errors
+    logger.e('Sideload Error: $e');
+    yield* Stream.error(e);
+  } finally {
+    closeStream(targetBackend, progressController);
+  }
+
+  yield* progressController.stream; // Yield the progress updates
+}
+
+Future<int> getTotalFiles(CoddeBackend backend, String workDir) async {
+  final fileList = await backend.listChildren(workDir, recursive: true);
+  return fileList.length;
 }
 
 Future downloadProject(BuildContext context, {required Project project}) async {
-  final CoddeBackend refBackend = CoddeBackend(BackendLocation.server,
-      credentials: project.device.host!.toCredentials());
+  final CoddeBackend refBackend =
+      getBackend(); /* CoddeBackend(BackendLocation.server,
+      credentials: project.device.host!.toCredentials()); */
   assert(project.device.host != null, 'Host project should not be null');
-  final CoddeBackend targetBackend = getBackend();
+  final CoddeBackend targetBackend = getLocalBackend();
   await targetBackend.open();
   final store = GetIt.I.get<LoadingProgressStore>();
   await refBackend
@@ -324,3 +401,5 @@ Future<String> getAbsoluteLocalFilePath(String name) async {
 Size getSize(BuildContext context) {
   return MediaQuery.of(context).size;
 }
+
+final noImageAsset = "assets/images/no_image.jpg";

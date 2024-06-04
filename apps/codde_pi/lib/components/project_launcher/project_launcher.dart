@@ -17,15 +17,18 @@ class ProjectLauncher extends StatelessWidget {
 
   ProjectLauncher({super.key});
 
+  // TODO: add description
   void createProject(BuildContext context, {required String title}) {
     if (projNameController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Project name cannot be empty")));
     }
     store.selectedDevice != null
-        ? createProjectFromScratch(context, title,
-                device: store.selectedDevice!, keepBackendInstance: true)
-            .then((value) => goToProject(context: context, instance: value))
+        ? createProjectFromScratch(
+            context,
+            title,
+            device: store.selectedDevice!,
+          ).then((value) => goToProject(context: context, instance: value))
         : ScaffoldMessenger.of(context)
             .showSnackBar(const SnackBar(content: Text("No device selected")));
   }
@@ -49,15 +52,18 @@ class ProjectLauncher extends StatelessWidget {
           icon: const Icon(Icons.close),
         ),
         actions: [
-          ElevatedButton(
-              onPressed: validable
-                  ? () {
-                      if (store.validate()) {
-                        createProject(context, title: projNameController.text);
+          Observer(
+            builder: (context) => ElevatedButton(
+                onPressed: validable
+                    ? () {
+                        if (store.validate()) {
+                          createProject(context,
+                              title: projNameController.text);
+                        }
                       }
-                    }
-                  : null,
-              child: const Text('CREATE')),
+                    : null,
+                child: const Text('CREATE')),
+          ),
         ],
       ),
       body: SingleChildScrollView(
@@ -114,6 +120,16 @@ class ProjectLauncher extends StatelessWidget {
                                   ),
                                   const SizedBox(width: widgetGutter / 2),
                                   Text(e.addr),
+                                  if (e.host == null) ...[
+                                    const SizedBox(width: widgetGutter / 2),
+                                    Text(
+                                      "missing host credentials",
+                                      style: TextStyle(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .error),
+                                    ),
+                                  ]
                                 ]),
                               );
                             },
@@ -126,7 +142,7 @@ class ProjectLauncher extends StatelessWidget {
                           context,
                           MaterialPageRoute(
                               builder: (context) =>
-                                  const NewControlledDeviceDialog()),
+                                  const ControlledDeviceDialog()),
                         );
                         if (res != null) {
                           await addDevice(res).then((value) {
