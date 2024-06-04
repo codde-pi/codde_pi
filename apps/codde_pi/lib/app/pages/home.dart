@@ -11,6 +11,12 @@ class Home extends StatelessWidget {
     } else {
       GetIt.I.get<NavigationBarState>();
     } */
-    return const DynamicBar();
+    return DynamicBar(
+      children: [
+        DynamicBarPager.globalProjects,
+        DynamicBarPager.community,
+        DynamicBarPager.devices
+      ],
+    );
   }
 }
