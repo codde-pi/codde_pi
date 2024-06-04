@@ -104,7 +104,7 @@ dependencies:
   carousel_slider: ^4.2.1
   backdrop: ^0.9.1
   logger: ^2.1.0
-  flutter_codde_protocol: ^0.1.2
+  flutter_codde_protocol: ^0.1.5
     # path: ../codde_protocol/packages/flutter_codde_protocol
     # path: ../codde_protocol
   flutter_staggered_grid_view: ^0.7.0
@@ -115,6 +115,7 @@ dependencies:
   ffigen: ^11.0.0
   path_provider: ^2.1.2
   flutter_code_editor: ^0.3.1
+  flutter_native_splash: ^2.4.0
 
 dev_dependencies:
   flutter_test:
@@ -148,6 +149,12 @@ flutter:
     - assets/widgets/unknown/classic/
     - assets/images/hatch_background_export.png
     - assets/codde_doc/widgets/
+    - assets/images/no_image.jpg
+
+  fonts:
+    - family: ShareTechMono
+      fonts:
+        - asset: assets/fonts/Share_Tech_Mono/ShareTechMono-Regular.ttf
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

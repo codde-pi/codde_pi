@@ -1,3 +1,5 @@
+// ignore_for_file: curly_braces_in_flow_control_structures
+
 import 'package:codde_backend/codde_backend.dart';
 import 'package:codde_pi/components/dialogs/add_file_dialog.dart';
 import 'package:codde_pi/logger.dart';
@@ -48,7 +50,9 @@ class FilePicker extends StatelessWidget {
             );
           } else if (snapshot.hasData) {
             // logger.d("Children: ${snapshot.data?.length}");
-            snapshot.data?.add(FileEntity('', false));
+            if (!readOnly)
+              snapshot.data?.add(
+                  FileEntity('', false)); // create new entry for `Add` button
             return ListView.builder(
               itemCount: snapshot.data?.length,
               itemBuilder: (context, index) {

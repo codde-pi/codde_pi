@@ -1,0 +1,16 @@
+flutter_native_splash:
+  color: "#121212"
+  image: assets/images/coddepi_logo.png
+  branding: assets/images/coddepi_logo.png
+  color_dark: "#121212"
+  image_dark: assets/images/coddepi_logo.png
+  branding_dark: assets/images/coddepi_logo.png
+
+  android_12:
+    image: assets/images/coddepi_logo.png
+
+    icon_background_color: "#121212"
+    image_dark: assets/images/coddepi_logo.png
+    icon_background_color_dark: "#121212"
+
+  web: false

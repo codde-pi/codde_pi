@@ -22,9 +22,9 @@ void main() async {
     ..registerAdapter(DeviceModelAdapter())
     ..registerAdapter(DeviceAdapter())
     ..registerAdapter(ProtocolAdapter());
-  await Hive.openBox<Device>('devices');
   Hive.registerAdapter(HostAdapter());
-  await Hive.openBox<Host>('hosts');
+  await Hive.openBox<Device>('devices');
+  // await Hive.openBox<Host>('hosts'); // TODO: useful ?
   Hive.registerAdapter(ProjectAdapter());
   await Hive.openBox<Project>(projectsBox);
   await RustLib.init();
