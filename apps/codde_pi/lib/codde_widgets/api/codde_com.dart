@@ -19,8 +19,9 @@ class CoddeCom {
     return com.connect();
   }
 
-  Future send(int id, WidgetRegistry data) {
-    return com.send(data: Frame(id: id, data: data));
+  Future send(int id, WidgetRegistry data) async {
+    await com.send(data: Frame(id: id, data: data));
+    await HapticFeedback.mediumImpact();
   }
 
   Future disconnect() {

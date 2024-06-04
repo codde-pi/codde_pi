@@ -3,11 +3,10 @@ import 'package:codde_pi/codde_widgets/codde_widgets.dart';
 import 'package:codde_pi/components/codde_controller/flame/codde_tiled_component.dart';
 import 'package:codde_pi/core/exception.dart';
 import 'package:codde_pi/logger.dart';
+import 'package:codde_pi/theme.dart';
 import 'package:flame/components.dart';
 import 'package:flame/game.dart';
-import 'package:flame/palette.dart';
 import 'package:flame_tiled/flame_tiled.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_codde_protocol/flutter_codde_protocol.dart';
 import 'package:get_it/get_it.dart';
 
@@ -45,7 +44,7 @@ class OverviewControllerFlame extends FlameGame with HasGameRef {
         // TODO: export no map found error
         mapComponent = TextComponent(
           text: 'No map found',
-          textRenderer: regular, // TODO: follow material colors
+          textRenderer: flameTextRenderer,
           anchor: Anchor.topCenter,
           position: Vector2(size.x / 2, size.y / 2),
         );
@@ -58,7 +57,16 @@ class OverviewControllerFlame extends FlameGame with HasGameRef {
       } catch (e) {
         mapComponent = TextComponent(
           text: 'Invalid map: $e',
-          textRenderer: regular, // TODO: follow material colors
+          textRenderer: flameTextRenderer,
+          anchor: Anchor.topCenter,
+          position: Vector2(size.x / 2, size.y / 2),
+        );
+      }
+
+      if (mapComponent != null && mapComponent!.children.isEmpty) {
+        mapComponent = TextComponent(
+          text: "Wow! it's empty here",
+          textRenderer: flameTextRenderer,
           anchor: Anchor.topCenter,
           position: Vector2(size.x / 2, size.y / 2),
         );
@@ -70,10 +78,3 @@ class OverviewControllerFlame extends FlameGame with HasGameRef {
     add(dummyProtocol);
   }
 }
-
-final regular = TextPaint(
-  style: TextStyle(
-    fontSize: 24.0,
-    color: BasicPalette.white.color,
-  ),
-);
