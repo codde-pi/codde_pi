@@ -1,5 +1,9 @@
+import 'package:codde_pi/app/pages/project/project.dart';
 import 'package:codde_pi/components/dynamic_bar/dynamic_bar.dart';
 import 'package:flutter/material.dart';
+
+import 'community.dart';
+import 'devices/devices.dart';
 
 class Home extends StatelessWidget {
   const Home({super.key});
@@ -12,10 +16,15 @@ class Home extends StatelessWidget {
       GetIt.I.get<NavigationBarState>();
     } */
     return DynamicBar(
-      children: [
+      pagers: [
         DynamicBarPager.globalProjects,
         DynamicBarPager.community,
-        DynamicBarPager.devices
+        DynamicBarPager.deviceCollection
+      ],
+      children: [
+        GlobalProjects(),
+        Community(),
+        Devices(),
       ],
     );
   }

@@ -1,47 +1,29 @@
 import 'dart:async';
 
-import 'dart:async';
 import 'dart:convert';
 
 import 'package:codde_backend/codde_backend.dart';
-import 'package:codde_pi/app/pages/codde/state/codde_state.dart';
-import 'package:codde_pi/components/codde_terminal/toolbar_event_handler.dart';
 import 'package:codde_pi/components/toolbar/toolbar_store.dart';
 import 'package:codde_pi/core/utils.dart';
 import 'package:codde_pi/logger.dart';
 import 'package:dartssh2/dartssh2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
 // import 'package:flutter_pty/flutter_pty.dart';
-import 'package:get_it/get_it.dart';
 import 'package:mobx/mobx.dart';
-import 'package:provider/provider.dart';
 import 'package:xterm/xterm.dart';
-import 'package:codde_backend/codde_backend.dart';
-import 'package:codde_pi/app/pages/codde/state/codde_state.dart';
-import 'package:codde_pi/components/codde_terminal/codde_terminal_view.dart';
-import 'package:codde_pi/components/dynamic_bar/models/dynamic_bar_menu.dart';
-import 'package:codde_pi/components/dynamic_bar/models/dynamic_bar_widget.dart';
 import 'package:codde_pi/components/toolbar/toolbar.dart';
-import 'package:codde_pi/components/toolbar/toolbar_store.dart';
-import 'package:codde_pi/core/utils.dart';
-import 'package:codde_pi/logger.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:provider/provider.dart';
-import 'package:xterm/xterm.dart';
 
-class CoddeTerminal extends DynamicBarStatefulWidget {
+class CoddeTerminal extends StatefulWidget {
   CoddeTerminal({super.key});
 
   @override
-  DynamicBarState<DynamicBarStatefulWidget> createDynamicState() {
+  State<StatefulWidget> createState() {
     return _CoddeTerminal();
   }
 }
 
-class _CoddeTerminal extends DynamicBarState<CoddeTerminal> {
+class _CoddeTerminal extends State<CoddeTerminal> {
   String title = '';
   Terminal terminal = Terminal(
     maxLines: 100000,
@@ -241,7 +223,6 @@ class _CoddeTerminal extends DynamicBarState<CoddeTerminal> {
             return const Text('Terminal instance has not been initialized');
           }
  */
-    super.build(context);
     return Scaffold(
       appBar: AppBar(
         leading: null,
@@ -265,15 +246,4 @@ class _CoddeTerminal extends DynamicBarState<CoddeTerminal> {
     );
     // });
   }
-
-  @override
-  setFab(BuildContext context) {
-    bar.disableFab();
-  }
-
-  @override
-  void setIndexer(context) {}
-
-  @override
-  List<DynamicBarMenuItem>? get bottomMenu => null;
 }

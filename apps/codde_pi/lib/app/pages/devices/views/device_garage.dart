@@ -5,11 +5,7 @@ import 'package:codde_pi/app/pages/codde/codde_diagram.dart';
 import 'package:codde_pi/app/pages/devices/views/device_playground.dart';
 import 'package:codde_pi/components/dialogs/add_controlled_device_dialog.dart';
 import 'package:codde_pi/components/dynamic_bar/dynamic_bar.dart';
-import 'package:codde_pi/components/forms/controlled_device_form.dart';
-import 'package:codde_pi/components/forms/device_host_form.dart';
-import 'package:codde_pi/components/project_launcher/project_launcher.dart';
 import 'package:codde_pi/components/utils/host_details.dart';
-import 'package:codde_pi/components/views/codde_tile.dart';
 import 'package:codde_pi/core/utils.dart';
 import 'package:codde_pi/main.dart';
 import 'package:codde_pi/services/db/device.dart';
@@ -18,22 +14,18 @@ import 'package:codde_pi/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
-class DeviceGarage extends DynamicBarStatefulWidget {
+class DeviceGarage extends StatefulWidget {
   DeviceGarage({Key? key, required this.deviceKey}) : super(key: key);
-
-  late CoddeDiagram diagramEditor = CoddeDiagram();
-
   final int deviceKey;
+
   @override
-  DynamicBarState<DynamicBarStatefulWidget> createDynamicState() {
+  State<StatefulWidget> createState() {
     return _DeviceGarage();
   }
 }
 
-class _DeviceGarage extends DynamicBarState<DeviceGarage> {
+class _DeviceGarage extends State<DeviceGarage> {
   late Device device;
-  late List<Widget> carouselItems;
-
   @override
   void initState() {
     device = Hive.box<Device>("devices").get(widget.deviceKey)!;
@@ -42,7 +34,56 @@ class _DeviceGarage extends DynamicBarState<DeviceGarage> {
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
+    return DynamicBarScaffold(
+      pages: [
+        // TODO: add overview page, with button at top redirecting to project list
+        DynamicBarMenuItem(
+          name: "Projects list",
+          iconData: Icons.gamepad,
+          widget: DeviceGarageView(device: device),
+        ),
+        DynamicBarMenuItem(
+          name: "Diagram editor",
+          iconData: Icons.cable,
+          widget: CoddeDiagram(),
+        ),
+      ],
+      fab: DynamicFab(
+        iconData: Icons.edit,
+        action: () async => editDevice(),
+      ),
+      section: DynamicBarPager.deviceGarage,
+    );
+  }
+
+  Future editDevice() async {
+    return await showDialog(
+        context: context,
+        builder: (context) => ControlledDeviceDialog(
+              existingDevice: device,
+              requireHost: device.isSBC,
+            )).then((value) async {
+      print('res $value');
+      if (value != null) {
+        print('host ${value.host}');
+        await Hive.box<Device>("devices")
+            .put(widget.deviceKey, value)
+            .then((value) => setState(() {
+                  device = Hive.box<Device>("devices").get(widget.deviceKey)!;
+                  print('set state');
+                }));
+      }
+    });
+  }
+}
+
+class DeviceGarageView extends StatelessWidget {
+  final Device device;
+  late List<Widget> carouselItems;
+  DeviceGarageView({Key? key, required this.device}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
     carouselItems = [
       device.imagePath == null
           ? Image.asset(
@@ -109,17 +150,20 @@ class _DeviceGarage extends DynamicBarState<DeviceGarage> {
                       ),
                       Center(
                           child: TextButton(
-                              onPressed: () => bar.setPage(bar.destinations[0]),
+                              onPressed: () => selectSection(context, 0),
                               child: const Text('Go To Projects ->')))
                     ]
                   : [
                       ...box.values.map(
                         (e) => InkWell(
                           onTap: () {
-                            bar.selectBreadcrumbTab(bar.breadCrumbTabs[2],
-                                widget: DevicePlayground(
+                            addStep(
+                                context,
+                                DevicePlayground(
                                   project: e,
                                 ));
+                            moveStepForward(
+                                context, DynamicBarPager.devicePlayground);
                           },
                           child: Card(
                             child: Padding(
@@ -166,61 +210,5 @@ class _DeviceGarage extends DynamicBarState<DeviceGarage> {
         ),
       ),
     );
-  }
-
-  @override
-  List<DynamicBarMenuItem>? get bottomMenu => [
-        DynamicBarMenuItem(
-            name: "Projects list",
-            iconData: Icons.gamepad,
-            destination: DynamicBarDestination(
-                widget: () => widget,
-                index: 0,
-                iconData: Icons.settings,
-                name: "Garage")),
-        DynamicBarMenuItem(
-          name: "Diagram editor",
-          iconData: Icons.cable,
-          destination: DynamicBarPager.deviceDiagramEditor(
-              instance: widget.diagramEditor),
-        ),
-      ];
-
-  @override
-  void setFab(BuildContext context) {
-    bar.setFab(
-      iconData: Icons.edit,
-      action: () async => editDevice(),
-    );
-    // bar.disableFab();
-  }
-
-  Future editDevice() async {
-    return await showDialog(
-        context: context,
-        builder: (context) => ControlledDeviceDialog(
-              existingDevice: device,
-              requireHost: device.isSBC,
-            )).then((value) async {
-      print('res $value');
-      if (value != null) {
-        print('host ${value.host}');
-        await Hive.box<Device>("devices")
-            .put(widget.deviceKey, value)
-            .then((value) => setState(() {
-                  device = Hive.box<Device>("devices").get(widget.deviceKey)!;
-                  print('set state');
-                }));
-      }
-    });
-  }
-
-  void updateMenu(context, int index) {
-    print('menu $index');
-  }
-
-  @override
-  void setIndexer(BuildContext context) {
-    bar.setIndexer((p0) => updateMenu(context, p0));
   }
 }

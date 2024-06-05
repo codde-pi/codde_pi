@@ -1,6 +1,6 @@
 import 'package:codde_backend/codde_backend.dart';
+import 'package:codde_pi/app/pages/codde/codde_wrapper.dart';
 import 'package:codde_pi/app/pages/codde/state/codde_state.dart';
-import 'package:codde_pi/components/codde_overview/codde_overview.dart';
 import 'package:codde_pi/components/dynamic_bar/dynamic_bar.dart';
 import 'package:codde_pi/services/db/project.dart';
 import 'package:codde_pi/theme.dart';
@@ -106,11 +106,13 @@ class _Codde extends State<Codde> {
               ),
             ],
             builder: (context, widget) {
-              return DynamicBar(nested: true, children: [
-                DynamicBarPager.coddeOverview(instance: CoddeOverview()),
-                DynamicBarPager.community,
-                DynamicBarPager.devices
-              ]);
+              return DynamicBar(
+                nested: true,
+                pagers: [
+                  DynamicBarPager.coddeOverview,
+                ],
+                child: const CoddeWrapper(),
+              );
             });
       },
     );

@@ -1,13 +1,17 @@
 import 'package:codde_pi/components/dynamic_bar/dynamic_bar.dart';
 import 'package:flutter/material.dart';
 
-class DynamicBarNotifier extends ChangeNotifier {
-  DynamicBarNotifier(this._destinations);
+class DynamicSectionNotifier extends ChangeNotifier {
+  DynamicSectionNotifier(this._destinations);
 
   // ============================ SECTIONS ============================
   List<DynamicBarDestination> _destinations;
+  DynamicBarDestination? _tmpDestination;
 
   int _selectedSection = 0;
+  bool isCurrentSection(DynamicBarDestination e) => _tmpDestination != null
+      ? _tmpDestination!.name == e.name
+      : _destinations[_selectedSection] == e;
 
   int get currentSection => _selectedSection;
 
@@ -18,31 +22,24 @@ class DynamicBarNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  void selectSection(DynamicBarDestination dest) {
-    _selectedSection = dest.index;
-    changePage(); // FIXME: do better please
+  void selectSection(int index, [DynamicBarDestination? section]) {
+    print('selecting $section');
+    _selectedSection = index;
+    _tmpDestination = section;
     notifyListeners();
   }
+}
 
-  List<DynamicBarDestination> get indexedDestinations {
-    return destinations..sort((a, b) => a.index.compareTo(b.index));
-  }
-
-  Widget? getWidget(e) => e?.builtWidget ?? e?.widget();
-
-  List<Widget> get sections =>
-      indexedDestinations.map<Widget>((e) => getWidget(e)!).toList();
-
-  // ============================ MENU LIST ============================
-
+// ============================ MENU LIST ============================
+class DynamicMenuNotifier extends ChangeNotifier {
   List<DynamicBarMenuItem>? _bottomMenuList;
   int _selectedMenuItem = 0;
   bool Function(BuildContext, int)? _indexer;
 
   List<DynamicBarMenuItem>? get menu => _bottomMenuList;
 
-  static List<Widget>? menuPages(List<DynamicBarMenuItem> list) => list
-      .map((e) => e.destination?.widget())
+  static List<Widget>? menuPages(List<DynamicBarMenuItem>? list) => list
+      ?.map((e) => e.widget)
       .where((e) => e != null)
       .toList()
       .cast<Widget>();
@@ -63,8 +60,10 @@ class DynamicBarNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
+  int get getLastMenuIndex => _bottomMenuList!.length - 1;
+
   void setMenuList(
-      {required List<DynamicBarMenuItem> menuList,
+      {required List<DynamicBarMenuItem>? menuList,
       required bool Function(BuildContext, int)? indexer,
       int index = 0}) {
     _bottomMenuList = menuList;
@@ -79,12 +78,10 @@ class DynamicBarNotifier extends ChangeNotifier {
     _indexer = null;
     notifyListeners();
   }
+}
 
-  void changePage() {
-    notifyListeners();
-  }
-
-  // ================================= FAB ==================================
+// ================================= FAB ==================================
+class DynamicFabNotifier extends ChangeNotifier {
   DynamicFab? _fab;
 
   DynamicFab? get fab => _fab;
@@ -98,9 +95,60 @@ class DynamicBarNotifier extends ChangeNotifier {
       action: action,
       extended: extended,
     );
+    notifyListeners();
+  }
+
+  void setFromFab(DynamicFab? fab) {
+    _fab = fab;
+    notifyListeners();
   }
 
   disableFab() {
     _fab = null;
+    notifyListeners();
   }
+}
+
+// ================================= BREADCRUMB ==============================
+class DynamicBreadNotifier extends ChangeNotifier {
+  final List<Widget> _steps;
+  DynamicBreadNotifier(this._steps);
+
+  int _selectedStep = 0;
+
+  int get currentStep => _selectedStep;
+
+  List<Widget> get steps => _steps;
+
+  void selectStep(int index) {
+    _selectedStep = index;
+    if (_selectedStep < steps.length - 1) {
+      _steps.removeRange(index + 1, _steps.length);
+    }
+    notifyListeners();
+  }
+
+  void addStep(Widget step) {
+    _steps.add(step);
+    notifyListeners();
+  }
+
+  void removeLastStep() {
+    _steps.removeLast();
+    notifyListeners();
+  }
+
+  void moveForward() {
+    if (currentStep < steps.length - 1) {
+      _selectedStep = currentStep + 1;
+    } else {
+      throw DynamicStateException("Can't go forward on last step");
+    }
+    notifyListeners();
+  }
+}
+
+class DynamicStateException implements Exception {
+  final String message;
+  DynamicStateException(this.message);
 }

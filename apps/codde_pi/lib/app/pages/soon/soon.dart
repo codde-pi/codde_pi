@@ -4,21 +4,15 @@ import 'package:flutter/material.dart';
 
 import 'package:codde_pi/components/dynamic_bar/dynamic_bar.dart';
 
-class Soon extends DynamicBarStatelessWidget {
+class Soon extends StatelessWidget {
   final String title;
   Soon({super.key, required this.title});
-  @override
-  setFab(context) {
-    bar.disableFab();
-  }
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
-    /* if (bar.destinations[bar.currentPage].widget == this) {
-      bar.disableFab();
-    } */
+    setFab(context: context, fab: null);
     return DynamicBarScaffold(
+      section: DynamicBarPager.community,
       indexer: _setIndexer,
       pages: [
         DynamicBarMenuItem(name: "Get Notified", iconData: Icons.notifications),
@@ -46,23 +40,6 @@ class Soon extends DynamicBarStatelessWidget {
         ),
       ),
     );
-  }
-
-  @override
-  final List<DynamicBarMenuItem> bottomMenu = [
-    DynamicBarMenuItem(name: "Get Notified", iconData: Icons.notifications),
-    DynamicBarMenuItem(name: "Support Development", iconData: Icons.coffee)
-  ];
-
-  @override
-  void setIndexer(context) {
-    bar.setIndexer((p) {
-      switch (p) {
-        case 1:
-          Navigator.of(context)
-              .push(MaterialPageRoute(builder: (context) => Donation()));
-      }
-    });
   }
 
   bool _setIndexer(BuildContext context, int p) {
