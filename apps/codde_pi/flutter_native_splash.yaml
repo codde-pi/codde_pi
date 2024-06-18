@@ -1,16 +1,14 @@
 flutter_native_splash:
   color: "#121212"
   image: assets/images/coddepi_logo.png
-  branding: assets/images/coddepi_logo.png
-  color_dark: "#121212"
-  image_dark: assets/images/coddepi_logo.png
-  branding_dark: assets/images/coddepi_logo.png
+  # branding: assets/images/branding.png
+  # branding_mode: bottom
+  android_gravity: center
 
   android_12:
-    image: assets/images/coddepi_logo.png
-
+    image: assets/images/coddepi_logo_a12.png
+    # branding: assets/images/branding.png
+    # branding_mode: bottom
+    color: "#121212"
     icon_background_color: "#121212"
-    image_dark: assets/images/coddepi_logo.png
-    icon_background_color_dark: "#121212"
 
-  web: false
