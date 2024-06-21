@@ -8,7 +8,6 @@ import 'package:provider/provider.dart';
 /// (aka [DynamicBarDestination] page)
 class DynamicBarScaffold extends StatefulWidget {
   final List<DynamicBarMenuItem>? pages;
-  final bool Function(BuildContext, int)? indexer;
   final Widget? body;
   final DynamicFab? fab;
   final DynamicBarDestination section;
@@ -38,7 +37,6 @@ class DynamicBarScaffold extends StatefulWidget {
       {required this.section,
       this.body,
       required this.pages,
-      this.indexer,
       this.fab,
       // scaffold stuff
       this.appBar,
@@ -124,7 +122,7 @@ class _DynamicBarScaffoldState extends State<DynamicBarScaffold> {
     logger.d(
         '${widget.section.name}: ${sectionProvider.isCurrentSection(widget.section)}');
     if (sectionProvider.isCurrentSection(widget.section)) {
-      menuProvider.setMenuList(menuList: widget.pages, indexer: widget.indexer);
+      menuProvider.setMenuList(menuList: widget.pages);
       if (widget.body != null) setFab(context: context, fab: widget.fab);
     }
   }

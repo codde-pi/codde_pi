@@ -4,6 +4,7 @@ import 'package:codde_pi/logger.dart';
 import 'package:flutter/material.dart';
 
 import 'package:codde_pi/components/dynamic_bar/dynamic_bar.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Soon extends StatelessWidget {
   final String title;
@@ -13,10 +14,20 @@ class Soon extends StatelessWidget {
   Widget build(BuildContext context) {
     return DynamicBarScaffold(
       section: DynamicBarPager.community,
-      indexer: _setIndexer,
       pages: [
-        DynamicBarMenuItem(destination: DynamicBarPager.getNotified),
-        DynamicBarMenuItem(destination: DynamicBarPager.donation),
+        DynamicBarMenuItem(
+            destination: DynamicBarPager.getNotified,
+            onPressed: (_) async => await launchUrl(
+                    Uri.parse("https://discord.com/invite/VvQfNWZPw3"))
+                .then((value) => true)),
+        DynamicBarMenuItem(
+          destination: DynamicBarPager.donation,
+          onPressed: (context) {
+            Navigator.of(context);
+            showDialog(context: context, builder: (context) => Donation());
+            return true;
+          },
+        ),
       ],
       body: Center(
         child: Column(
@@ -40,17 +51,6 @@ class Soon extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  bool _setIndexer(BuildContext context, int p) {
-    switch (p) {
-      case 1:
-        logger.d('Go to Donation');
-        Navigator.of(context).pop();
-        goToDonation(context);
-        break;
-    }
-    return true; // usually false
   }
 
   Future goToDonation(context) async {

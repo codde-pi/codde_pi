@@ -103,7 +103,6 @@ class GlobalProjects extends StatelessWidget {
 
     return DynamicBarScaffold(
       section: DynamicBarPager.globalProjects,
-      indexer: null,
       pages: null,
       fab: DynamicFab(
           iconData: Icons.add,

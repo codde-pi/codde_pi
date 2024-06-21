@@ -29,15 +29,6 @@ class _CoddeWrapperState extends State<CoddeWrapper> {
       throw RuntimeProjectException();
     }
     return DynamicBarScaffold(
-      indexer: (context, index) {
-        if (index == provider.getLastMenuIndex) {
-          // TODO: improve
-          Navigator.of(context).pop();
-          Navigator.of(context).pushReplacementNamed('/');
-          return true;
-        }
-        return false;
-      },
       section: DynamicBarPager.coddeWorkspace,
       pages: [
         DynamicBarMenuItem(

@@ -10,6 +10,8 @@ class Donation extends StatelessWidget {
             host: "patreon.com",
             path: "user",
             query: "u=95462777"));
+
+  Donation({super.key});
   @override
   Widget build(BuildContext context) {
     return Scaffold(

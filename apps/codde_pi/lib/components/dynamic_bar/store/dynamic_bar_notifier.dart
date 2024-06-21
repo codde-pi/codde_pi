@@ -48,20 +48,19 @@ class DynamicMenuNotifier extends ChangeNotifier {
 
   void selectMenuItem(BuildContext context, int index) async {
     bool res = false;
+    logger.d("menu selected");
     if (menu?[index].onPressed != null) {
       res = await menu![index].onPressed!(context);
+      logger.d("custom function");
     }
     if (!res) _selectedMenuItem = index;
-    logger.d("item selected $currentMenuItem");
     notifyListeners();
   }
 
   int get getLastMenuIndex => _bottomMenuList!.length - 1;
 
   void setMenuList(
-      {required List<DynamicBarMenuItem>? menuList,
-      required bool Function(BuildContext, int)? indexer,
-      int index = 0}) {
+      {required List<DynamicBarMenuItem>? menuList, int index = 0}) {
     _bottomMenuList = menuList;
     _selectedMenuItem = index;
     notifyListeners();
