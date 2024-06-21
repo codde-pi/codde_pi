@@ -63,6 +63,10 @@ bool isControllerFile(String file) {
   return file.endsWith('.tmx');
 }
 
+bool isControllerRelatedFile(FileEntity file) =>
+    (file.isDir && file.name == 'layout') ||
+    p.basename(p.dirname(file.path)) == 'layout';
+
 bool isShellFile(String file) {
   return file.endsWith(".sh");
 }
@@ -117,8 +121,9 @@ void reloadProject(BuildContext context, Project project) {
           ));
 }
 
-void sideloadProjectDialog(BuildContext context, {required Project project}) {
-  showDialog(
+Future sideloadProjectDialog(BuildContext context, {required Project project}) {
+  print('sideloading Project: ${project.name}');
+  return showDialog(
       context: context,
       builder: (context) => SideloadWarningDialog(project: project));
   /* .then((_) =>
@@ -207,24 +212,31 @@ Stream<void> sideloadProject(BuildContext context,
     await for (var fileList
         in currentBackend.listenChildren(project.workDir, recursive: true)) {
       for (var file in fileList) {
-        if ((file.isDir && file.name == 'layout') ||
-            (p.dirname(file.path) == 'layout')) {
-          continue;
-        }
+        if (isControllerRelatedFile(file)) continue;
         if (!processedFiles.contains(file.path)) {
-          logger.d('uploading ${file.path}');
+          logger.d('uploading ${p.joinAll([
+                project.remoteDestination!,
+                p.relative(file.path, from: project.workDir)
+              ])}');
           if (file.isDir) {
+            logger.d('mkdir');
             await targetBackend.mkdir(p.joinAll([
               project.remoteDestination!,
               p.relative(file.path, from: project.workDir)
             ]));
           } else {
-            await targetBackend.save(
-                p.joinAll([
-                  project.remoteDestination!,
-                  p.relative(file.path, from: project.workDir)
-                ]),
-                await currentBackend.readSync(file.path));
+            logger.d('write');
+            final path = p.joinAll([
+              project.remoteDestination!,
+              p.relative(file.path, from: project.workDir)
+            ]);
+            if (await (targetBackend.fileExists(path))) {
+              await targetBackend.save(
+                  path, await currentBackend.readSync(file.path));
+            } else {
+              await targetBackend.create(path,
+                  content: await currentBackend.readSync(file.path));
+            }
           }
           processedFiles.add(file.path);
         }

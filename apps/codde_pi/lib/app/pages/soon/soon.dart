@@ -1,5 +1,6 @@
 import 'package:codde_pi/app/pages/soon/donation.dart';
 import 'package:codde_pi/app/pages/soon/newsletter_registration.dart';
+import 'package:codde_pi/logger.dart';
 import 'package:flutter/material.dart';
 
 import 'package:codde_pi/components/dynamic_bar/dynamic_bar.dart';
@@ -10,13 +11,12 @@ class Soon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    setFab(context: context, fab: null);
     return DynamicBarScaffold(
       section: DynamicBarPager.community,
       indexer: _setIndexer,
       pages: [
-        DynamicBarMenuItem(name: "Get Notified", iconData: Icons.notifications),
-        DynamicBarMenuItem(name: "Support Development", iconData: Icons.coffee)
+        DynamicBarMenuItem(destination: DynamicBarPager.getNotified),
+        DynamicBarMenuItem(destination: DynamicBarPager.donation),
       ],
       body: Center(
         child: Column(
@@ -45,9 +45,15 @@ class Soon extends StatelessWidget {
   bool _setIndexer(BuildContext context, int p) {
     switch (p) {
       case 1:
-        Navigator.of(context)
-            .push(MaterialPageRoute(builder: (context) => Donation()));
+        logger.d('Go to Donation');
+        Navigator.of(context).pop();
+        goToDonation(context);
+        break;
     }
     return true; // usually false
+  }
+
+  Future goToDonation(context) async {
+    return await showDialog(context: context, builder: (context) => Donation());
   }
 }

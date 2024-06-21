@@ -53,7 +53,7 @@ class OverviewControllerFlame extends FlameGame with HasGameRef {
       }
       try {
         mapComponent = await CoddeTiledComponent.load(content,
-            mode: controllerWidgetMode, scale: Vector2.all(0.5));
+            mode: controllerWidgetMode, scale: Vector2.all(0.75));
       } catch (e) {
         mapComponent = TextComponent(
           text: 'Invalid map: $e',
@@ -63,7 +63,8 @@ class OverviewControllerFlame extends FlameGame with HasGameRef {
         );
       }
 
-      if (mapComponent != null && mapComponent!.children.isEmpty) {
+      if (mapComponent != null &&
+          (mapComponent as CoddeTiledComponent).tileMap.map.layers.isEmpty) {
         mapComponent = TextComponent(
           text: "Wow! it's empty here",
           textRenderer: flameTextRenderer,

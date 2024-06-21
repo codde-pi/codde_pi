@@ -1,4 +1,5 @@
 import 'package:codde_pi/components/dynamic_bar/dynamic_bar.dart';
+import 'package:codde_pi/logger.dart';
 import 'package:flutter/material.dart';
 
 class DynamicSectionNotifier extends ChangeNotifier {
@@ -34,7 +35,6 @@ class DynamicSectionNotifier extends ChangeNotifier {
 class DynamicMenuNotifier extends ChangeNotifier {
   List<DynamicBarMenuItem>? _bottomMenuList;
   int _selectedMenuItem = 0;
-  bool Function(BuildContext, int)? _indexer;
 
   List<DynamicBarMenuItem>? get menu => _bottomMenuList;
 
@@ -46,17 +46,13 @@ class DynamicMenuNotifier extends ChangeNotifier {
 
   int get currentMenuItem => _selectedMenuItem;
 
-  void selectMenuItem(BuildContext context, int index) {
+  void selectMenuItem(BuildContext context, int index) async {
     bool res = false;
-    if (_indexer != null) {
-      res = _indexer!(context, index);
+    if (menu?[index].onPressed != null) {
+      res = await menu![index].onPressed!(context);
     }
     if (!res) _selectedMenuItem = index;
-    notifyListeners();
-  }
-
-  void overrideIndexer(bool Function(BuildContext, int) indexer) {
-    _indexer = indexer;
+    logger.d("item selected $currentMenuItem");
     notifyListeners();
   }
 
@@ -68,16 +64,17 @@ class DynamicMenuNotifier extends ChangeNotifier {
       int index = 0}) {
     _bottomMenuList = menuList;
     _selectedMenuItem = index;
-    _indexer = indexer;
     notifyListeners();
   }
 
   void resetMenuList() {
     _bottomMenuList = null;
     _selectedMenuItem = 0;
-    _indexer = null;
     notifyListeners();
   }
+
+  bool isCurrentPage(DynamicBarDestination page) =>
+      page == menu?[currentMenuItem].destination;
 }
 
 // ================================= FAB ==================================

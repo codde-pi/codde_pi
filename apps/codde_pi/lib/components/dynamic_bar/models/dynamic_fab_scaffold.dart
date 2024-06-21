@@ -6,12 +6,10 @@ import 'package:provider/provider.dart';
 /// Update the bottom menu and the FAB dynamically when selected
 /// [DynamicBarScaffold] is usually implemented in a section
 /// (aka [DynamicBarDestination] page)
-class DynamicBarScaffold extends StatefulWidget {
-  final List<DynamicBarMenuItem>? pages;
-  final bool Function(BuildContext, int)? indexer;
-  final Widget? body;
+class DynamicFabScaffold extends StatefulWidget {
   final DynamicFab? fab;
-  final DynamicBarDestination section;
+  final Widget body;
+  final DynamicBarDestination destination;
 
   // scaffold stuff
   final PreferredSizeWidget? appBar;
@@ -34,13 +32,11 @@ class DynamicBarScaffold extends StatefulWidget {
   final void Function(bool)? onDrawerChanged;
   final void Function(bool)? onEndDrawerChanged;
 
-  const DynamicBarScaffold(
-      {required this.section,
-      this.body,
-      required this.pages,
-      this.indexer,
-      this.fab,
+  const DynamicFabScaffold(
+      {this.fab,
+      required this.destination,
       // scaffold stuff
+      required this.body,
       this.appBar,
       /* this.floatingActionButtonLocation,
       this.floatingActionButtonAnimator, */
@@ -65,27 +61,23 @@ class DynamicBarScaffold extends StatefulWidget {
       super.key});
 
   @override
-  State<DynamicBarScaffold> createState() => _DynamicBarScaffoldState();
+  State<DynamicFabScaffold> createState() => _DynamicBarScaffoldState();
 }
 
-class _DynamicBarScaffoldState extends State<DynamicBarScaffold> {
+class _DynamicBarScaffoldState extends State<DynamicFabScaffold> {
   late final provider =
       Provider.of<DynamicMenuNotifier>(context, listen: false);
   @override
   void initState() {
-    final p = Provider.of<DynamicSectionNotifier>(context, listen: false);
-    updateUI(context, sectionProvider: p, menuProvider: provider);
-    p.addListener(() {
-      updateUI(context, sectionProvider: p, menuProvider: provider);
+    updateFab(context, menuProvider: provider);
+    provider.addListener(() {
+      updateFab(context, menuProvider: provider);
     });
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    assert(widget.body != null || widget.pages != null,
-        'Either body or children must be set');
-
     return Scaffold(
       key: widget.key,
       persistentFooterButtons: widget.persistentFooterButtons,
@@ -108,24 +100,16 @@ class _DynamicBarScaffoldState extends State<DynamicBarScaffold> {
       restorationId: widget.restorationId,
       appBar: widget.appBar,
       body: Consumer<DynamicMenuNotifier>(
-        builder: (context, provider, _) =>
-            widget.body ??
-            IndexedStack(
-              index: provider.currentMenuItem,
-              children: DynamicMenuNotifier.menuPages(widget.pages)!,
-            ),
-      ),
+          builder: (context, provider, _) => widget.body),
     );
   }
 
-  void updateUI(BuildContext context,
-      {required DynamicSectionNotifier sectionProvider,
-      required DynamicMenuNotifier menuProvider}) {
+  void updateFab(BuildContext context,
+      {required DynamicMenuNotifier menuProvider}) {
     logger.d(
-        '${widget.section.name}: ${sectionProvider.isCurrentSection(widget.section)}');
-    if (sectionProvider.isCurrentSection(widget.section)) {
-      menuProvider.setMenuList(menuList: widget.pages, indexer: widget.indexer);
-      if (widget.body != null) setFab(context: context, fab: widget.fab);
+        '${widget.destination.name}: ${menuProvider.isCurrentPage(widget.destination)}');
+    if (menuProvider.isCurrentPage(widget.destination)) {
+      setFab(context: context, fab: widget.fab);
     }
   }
 }

@@ -8,11 +8,11 @@ export 'store/dynamic_bar_notifier.dart';
 export 'store/utils.dart';
 export 'models/breadcrumb.dart';
 export 'models/dynamic_bar_scaffold.dart';
+export 'models/dynamic_fab_scaffold.dart';
 
 import 'package:codde_pi/components/dynamic_bar/dynamic_bar.dart';
-import 'package:codde_pi/main.dart';
+import 'package:codde_pi/logger.dart';
 import 'package:codde_pi/theme.dart';
-import 'package:flame/palette.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -59,7 +59,7 @@ class _DynamicBar extends State<DynamicBar> {
     super.dispose();
   }
 
-  Color? get backgroundColor => widget.nested ? Colors.blue.darken(0.75) : null;
+  // Color? get backgroundColor => widget.nested ? Colors.blue.darken(0.75) : null;
 
   @override
   Widget build(BuildContext context) {
@@ -85,7 +85,6 @@ class _DynamicBar extends State<DynamicBar> {
               : widget.child!,
         ),
         bottomNavigationBar: BottomAppBar(
-          color: backgroundColor,
           child: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
             Expanded(
               child: Consumer<DynamicSectionNotifier>(
@@ -97,7 +96,6 @@ class _DynamicBar extends State<DynamicBar> {
                               ? null
                               : () {
                                   showModalBottomSheet(
-                                    backgroundColor: backgroundColor,
                                     context: context,
                                     useRootNavigator: true,
                                     builder: (context) => SizedBox(
@@ -136,10 +134,15 @@ class _DynamicBar extends State<DynamicBar> {
                                                                   right:
                                                                       widgetGutter),
                                                           leading: Icon(
-                                                              e.value.iconData),
-                                                          title: Text(
-                                                              e.value.name),
+                                                              e.value.destination
+                                                                  .iconData),
+                                                          title: Text(e
+                                                              .value
+                                                              .destination
+                                                              .name),
                                                           onTap: () {
+                                                            logger.d(
+                                                                "click ${e.value.destination.name}");
                                                             menuProvider
                                                                 .selectMenuItem(
                                                                     context,
@@ -207,7 +210,7 @@ class _DynamicBar extends State<DynamicBar> {
                       FloatingActionButton(
                           onPressed: () async => p.fab!.action != null
                               ? await p.fab!.action!()
-                              : {},
+                              : null,
                           child: Icon(p.fab!.iconData),
                         )),
             ),

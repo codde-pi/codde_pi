@@ -22,31 +22,24 @@ class DevicePlayground extends StatefulWidget {
 
 class _DevicePlayground extends State<DevicePlayground> {
   @override
-  Widget build(BuildContext context) {
+  void initState() {
     if (GetIt.I.isRegistered<CoddeBackend>()) {
       GetIt.I.unregister<CoddeBackend>();
     }
     GetIt.I.registerSingleton(widget.backend);
+    super.initState();
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return DynamicBarScaffold(
-      fab: DynamicFab(
-          iconData: Icons.play_arrow,
-          action: () => Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => PlayController(
-                  path: getControllerName(path: widget.project.workDir))))),
       pages: [
         DynamicBarMenuItem(
-          name: "Controller",
-          iconData: Icons.gamepad,
-          widget: GameWidget(
-            game: OverviewControllerFlame(
-                path: getControllerName(path: widget.project.workDir),
-                backend: widget.backend),
-          ),
-        ),
+            destination: DynamicBarPager.controllerPlayer,
+            widget: DevicePlayGroundView(
+                project: widget.project, backend: widget.backend)),
         DynamicBarMenuItem(
-          name: "Code",
-          iconData: Icons.code,
+          destination: DynamicBarPager.codeEditor,
           widget: CodeViewer(
             workDir: widget.project.workDir,
             readOnly: true,
@@ -56,6 +49,28 @@ class _DevicePlayground extends State<DevicePlayground> {
       ],
       section: DynamicBarPager.devicePlayground,
       // appBar: AppBar(title: Text(project.name)),
+    );
+  }
+}
+
+class DevicePlayGroundView extends StatelessWidget {
+  final Project project;
+  final CoddeBackend backend;
+  DevicePlayGroundView(
+      {super.key, required this.project, required this.backend});
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return DynamicFabScaffold(
+      fab: DynamicFab(
+          iconData: Icons.play_arrow,
+          action: () => Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => PlayController(project: project)))),
+      body: GameWidget(
+        game: OverviewControllerFlame(
+            path: getControllerName(path: project.workDir), backend: backend),
+      ),
+      destination: DynamicBarPager.controllerPlayer,
     );
   }
 }

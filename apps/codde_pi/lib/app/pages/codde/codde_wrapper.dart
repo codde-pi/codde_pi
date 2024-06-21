@@ -6,16 +6,25 @@ import 'package:codde_pi/components/controller_editor/flame/controller_editor_ga
 import 'package:codde_pi/components/dynamic_bar/dynamic_bar.dart';
 import 'package:codde_pi/core/exception.dart';
 import 'package:codde_pi/core/utils.dart';
+import 'package:codde_pi/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class CoddeWrapper extends StatelessWidget {
+class CoddeWrapper extends StatefulWidget {
   const CoddeWrapper({super.key});
 
   @override
+  State<CoddeWrapper> createState() {
+    return _CoddeWrapperState();
+  }
+}
+
+class _CoddeWrapperState extends State<CoddeWrapper> {
+  late final coddeProject = Provider.of<CoddeState>(context).project;
+  late final provider = Provider.of<DynamicMenuNotifier>(context);
+
+  @override
   Widget build(BuildContext context) {
-    final coddeProject = Provider.of<CoddeState>(context).project;
-    final provider = Provider.of<DynamicMenuNotifier>(context);
     if (coddeProject == null) {
       throw RuntimeProjectException();
     }
@@ -29,23 +38,20 @@ class CoddeWrapper extends StatelessWidget {
         }
         return false;
       },
-      section: DynamicBarPager.coddeOverview,
+      section: DynamicBarPager.coddeWorkspace,
       pages: [
         DynamicBarMenuItem(
-          name: "Overview",
-          iconData: Icons.gamepad,
+          destination: DynamicBarPager.coddeOverview,
           widget: CoddeOverview(),
         ),
         DynamicBarMenuItem(
-          name: "Controller",
-          iconData: Icons.gamepad,
+          destination: DynamicBarPager.controllerEditor,
           widget: ControllerEditorGame(
                   getControllerName(path: coddeProject.workDir))
               .overlayBuilder(context),
         ),
         DynamicBarMenuItem(
-          name: "Editor",
-          iconData: Icons.code,
+          destination: DynamicBarPager.codeEditor,
           widget: CodeViewer(readOnly: false, workDir: coddeProject.workDir),
         ),
         /* if (bar.isRemoteProject)
@@ -55,11 +61,16 @@ class CoddeWrapper extends StatelessWidget {
               destination: DynamicBarPager.dashboard), */
         if (coddeProject.device.host != null)
           DynamicBarMenuItem(
-              name: "Terminal",
-              iconData: Icons.terminal,
-              widget: CoddeTerminal()),
-        DynamicBarMenuItem(name: "Exit", iconData: Icons.exit_to_app)
+              destination: DynamicBarPager.terminal, widget: CoddeTerminal()),
+        DynamicBarMenuItem(destination: DynamicBarPager.exit, onPressed: exit),
       ],
     );
+  }
+
+  bool exit(BuildContext context) {
+    // TODO: improve
+    Navigator.of(context).pop();
+    Navigator.of(context).pushReplacementNamed('/');
+    return true;
   }
 }

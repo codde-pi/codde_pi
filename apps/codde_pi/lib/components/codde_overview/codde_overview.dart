@@ -22,22 +22,24 @@ class CoddeOverview extends StatelessWidget {
       throw RuntimeProjectException();
     }
     final backend = getLocalBackend();
-    setFab(context: context, fab: null);
 
-    return Scaffold(
+    return DynamicFabScaffold(
+      destination: DynamicBarPager.coddeOverview,
+      fab: DynamicFab(
+          action: () => sideloadProjectDialog(context, project: coddeProject),
+          iconData: Icons.flash_on),
       appBar: AppBar(
         title: Text(coddeProject.name),
         leading: Container(),
-        // TODO: clean download code process
         actions: [
-          IconButton(
+          /* IconButton(
             icon: Icon(
               Icons.flash_on,
               color: Theme.of(context).colorScheme.primary,
             ),
             onPressed: () =>
                 sideloadProjectDialog(context, project: coddeProject),
-          ),
+          ), */
           IconButton(
             onPressed: null,
             icon: Icon(
@@ -47,6 +49,8 @@ class CoddeOverview extends StatelessWidget {
                   : Theme.of(context).disabledColor,
             ),
           )
+          // TODO: clean download code process
+          // TODO: reconnect button (need Flutter Bloc event)
           /*PopupMenuButton<OverviewActions>(
             initialValue: null,
             onSelected: (OverviewActions? item) {

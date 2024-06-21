@@ -1,3 +1,4 @@
+import 'package:codde_pi/theme.dart';
 import 'package:flame/palette.dart';
 import 'package:flutter/material.dart';
 
@@ -74,11 +75,7 @@ class PixelButtonPainter extends CustomPainter {
     final textPainter = TextPainter(
       text: TextSpan(
         text: text,
-        style: TextStyle(
-          fontSize: pixelSize * 2,
-          fontFamily: 'Courier',
-          color: Colors.black,
-        ),
+        style: flameTextRenderer.style,
       ),
       textDirection: TextDirection.ltr,
     );

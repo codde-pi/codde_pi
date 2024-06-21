@@ -10,6 +10,8 @@ import 'package:highlight/languages/python.dart';
 class CodeWriter extends StatelessWidget {
   Function? funBack;
   CoddeBackend backend;
+  late final loadFile = backend.readSync(path);
+
   CodeWriter(
       {Key? key,
       required this.path,
@@ -53,7 +55,7 @@ class CodeWriter extends StatelessWidget {
         ],
       ),
       body: FutureBuilder(
-          future: backend.readSync(path),
+          future: loadFile,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
@@ -70,6 +72,10 @@ class CodeWriter extends StatelessWidget {
               data: CodeThemeData(styles: codeTheme.xt256Theme),
               child: SingleChildScrollView(
                 child: CodeField(
+                  gutterStyle: const GutterStyle(
+                      margin: 0.0, showFoldingHandles: false, width: 60.0),
+                  /* lineNumberBuilder: (i, __) => TextSpan(
+                      text: '$i', style: Theme.of(context).textTheme.bodySmall), */
                   background: Theme.of(context).colorScheme.background,
                   onChanged: (value) => saved.value = false,
                   controller: controller,

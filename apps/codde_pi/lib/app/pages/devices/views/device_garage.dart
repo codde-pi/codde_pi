@@ -38,13 +38,11 @@ class _DeviceGarage extends State<DeviceGarage> {
       pages: [
         // TODO: add overview page, with button at top redirecting to project list
         DynamicBarMenuItem(
-          name: "Projects list",
-          iconData: Icons.gamepad,
+          destination: DynamicBarPager.projectsList,
           widget: DeviceGarageView(device: device),
         ),
         DynamicBarMenuItem(
-          name: "Diagram editor",
-          iconData: Icons.cable,
+          destination: DynamicBarPager.diagram,
           widget: CoddeDiagram(),
         ),
       ],

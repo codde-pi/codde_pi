@@ -1,10 +1,9 @@
-import 'package:codde_pi/components/toolbar/toolbar_event.dart';
 import 'package:codde_pi/components/toolbar/toolbar_store.dart';
 import 'package:codde_pi/components/utils/footer_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
-// import 'package:provider/provider.dart';
+import 'package:xterm/xterm.dart';
 
 class ToolBar extends StatelessWidget {
   Widget child;
@@ -67,7 +66,7 @@ class ToolBarView extends StatelessWidget {
             //SizedBox(width: space),
             TextButton(
               onPressed: () {
-                notifier.sendEvent(ToolBarEvent.tab);
+                notifier.sendEvent(TerminalKey.tab);
               },
               child: Text(
                 'TAB',
@@ -81,28 +80,28 @@ class ToolBarView extends StatelessWidget {
               icon: const Icon(Icons.west),
               color: Color(Colors.white.value),
               onPressed: () {
-                notifier.sendEvent(ToolBarEvent.west);
+                notifier.sendEvent(TerminalKey.arrowLeft);
               },
             ),
             IconButton(
               icon: const Icon(Icons.north),
               color: Color(Colors.white.value),
               onPressed: () {
-                notifier.sendEvent(ToolBarEvent.north);
+                notifier.sendEvent(TerminalKey.arrowUp);
               },
             ),
             IconButton(
               icon: const Icon(Icons.south),
               color: Color(Colors.white.value),
               onPressed: () {
-                notifier.sendEvent(ToolBarEvent.south);
+                notifier.sendEvent(TerminalKey.arrowDown);
               },
             ),
             IconButton(
               icon: const Icon(Icons.east),
               color: Color(Colors.white.value),
               onPressed: () {
-                notifier.sendEvent(ToolBarEvent.east);
+                notifier.sendEvent(TerminalKey.arrowRight);
               },
             ),
             /*IconButton(

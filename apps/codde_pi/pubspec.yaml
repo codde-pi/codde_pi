@@ -150,6 +150,11 @@ flutter:
     - assets/images/hatch_background_export.png
     - assets/codde_doc/widgets/
     - assets/images/no_image.jpg
+    - assets/images/icons/trash.webp
+    - assets/images/icons/folder.webp
+    - assets/images/icons/pen.webp
+    - assets/images/icons/settings.png
+    - assets/images/icons/save.png
 
   fonts:
     - family: ShareTechMono

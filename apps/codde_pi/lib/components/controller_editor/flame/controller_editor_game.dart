@@ -1,18 +1,25 @@
 import 'package:codde_backend/codde_backend.dart';
 import 'package:codde_pi/codde_widgets/codde_widgets.dart';
+import 'package:codde_pi/codde_widgets/paint/pixel_button_painter.dart';
 import 'package:codde_pi/components/add_widget/add_widget_dialog.dart';
 import 'package:codde_pi/components/codde_controller/flame/codde_tiled_component.dart';
+import 'package:codde_pi/components/dynamic_bar/dynamic_bar.dart';
 import 'package:codde_pi/core/utils.dart';
 import 'package:codde_pi/logger.dart';
 import 'package:codde_pi/theme.dart';
 import 'package:enum_to_string/enum_to_string.dart';
+import 'package:flame/components.dart';
 import 'package:flame/game.dart';
+import 'package:flame/input.dart';
 import 'package:flame_tiled/flame_tiled.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart' as material;
 import 'package:flutter_codde_protocol/flutter_codde_protocol.dart';
-import 'package:get_it/get_it.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:path/path.dart';
+
+import '../store/controller_editor_store.dart';
+import 'saving_button.dart';
 
 class ControllerEditorGame extends FlameGame {
   String path;
@@ -23,23 +30,72 @@ class ControllerEditorGame extends FlameGame {
   ControllerEditorGame(this.path, {CoddeBackend? backend})
       : backend = backend ?? getLocalBackend();
 
-  List<WidgetComponent> doneList = [];
+  final store = ControllerEditorStore();
 
   @override
   Future<void> onLoad() async {
     await super.onLoad();
 
+    logger.i("LOADING");
     final dummyProtocol =
         FlameCoddeProtocol(protocol: Protocol.webSocket, address: '');
     String content = await backend.readSync(path);
     mapComponent = await CoddeTiledComponent.load(content, mode: mode);
     dummyProtocol.add(mapComponent);
     add(dummyProtocol);
-    mapComponent.add(WidgetEditor(
-        id: 2,
-        class_: ControllerClass.pressButton,
-        sizeFactor: 1.0,
-        position: Vector2(0, 0)));
+
+    await loadSavingButton();
+    // await loadSaveButton();
+  }
+
+  /* Future loadSaveButton() async {
+      final sprite = Sprite.load()
+      add(HudMarginComponent(
+        anchor: Anchor.topRight, margin: const EdgeInsets.all(widgetGutter), children: SpriteComponent(sprite: )));
+
+  } */
+  Future<void> loadSavingButton() async {
+    final sprite = await Sprite.load("icons/save.png");
+    add(HudButtonComponent(
+        anchor: Anchor.topRight,
+        size: Vector2.all(50.0),
+        margin: const EdgeInsets.only(right: widgetGutter, top: widgetGutter),
+        onPressed: () async =>
+            await ControllerMap(map: mapComponent.tileMap.map, path: path)
+                .saveMap(),
+        button: CustomPainterComponent(
+          priority: 5,
+          size: Vector2.all(56.0),
+          painter: PixelButtonPainter(
+              outlineWidth: cOutlineWidth,
+              text: "SAVE",
+              pixelSize: cPixelSize,
+              fillColor: accent), // TODO: get OnSurface color
+
+          /* children: [
+            SpriteComponent(
+              size: Vector2.all(60.0),
+              sprite: sprite,
+            )
+          ], */
+        ),
+        buttonDown: CustomPainterComponent(
+          priority: 5,
+          size: Vector2.all(56.0),
+          painter: PixelButtonPainter(
+              pressed: true,
+              outlineWidth: cOutlineWidth,
+              text: "SAVE",
+              pixelSize: cPixelSize,
+              fillColor: accent), // TODO: get OnSurface color
+
+          /* children: [
+            SpriteComponent(
+              size: Vector2.all(60.0),
+              sprite: sprite,
+            )
+          ], */
+        )));
   }
 
   Widget _addWidgetBuilder(
@@ -57,7 +113,7 @@ class ControllerEditorGame extends FlameGame {
           y: 50) as WidgetComponent;
       overlays.remove('AddWidget');
       mapComponent.add(widgetComponent);
-      doneList.add(widgetComponent);
+      store.add(widgetComponent);
       logger.d('component added');
       resumeEngine();
     }, funCancel: () {
@@ -106,35 +162,46 @@ class ControllerEditorGame extends FlameGame {
   }
 
   Widget overlayBuilder(BuildContext context) {
-    return Scaffold(
+    return /* Observer(
+      builder: (context) => */
+        DynamicFabScaffold(
+      destination: DynamicBarPager.controllerEditor,
+      fab: DynamicFab(
+          iconData: Icons.add,
+          action: () async {
+            print('add widget');
+            /* await showDialog(
+                context: context,
+                builder: (context) => AddWidgetDialog(
+                    funSelect: (ControllerWidgetDef def) {
+                      final WidgetComponent widgetComponent = generateWidget(
+                          mode: mode,
+                          context: context,
+                          id: getNextObjectId(),
+                          class_: EnumToString.fromString(
+                                  ControllerClass.values, def.class_.name) ??
+                              ControllerClass.error,
+                          properties:
+                              def.defaultProperties ?? CustomProperties.empty,
+                          x: 50,
+                          y: 50) as WidgetComponent;
+                      Navigator.of(context).pop(widgetComponent);
+                      // mapComponent.add(widgetComponent);
+                      // store.add(widgetComponent);
+                      // logger.d('component added');
+                      // logger.d('list : ${mapComponent.children}');
+                    },
+                    funCancel: Navigator.of(context).pop)).then((value) {
+              print('after dialog');
+              mapComponent.add(value);
+              // store.add(value);
+              logger.d('component added');
+              logger.d('list : ${mapComponent.children}');
+            }); */
+            overlays.add('AddWidget');
+            pauseEngine();
+          }),
       // key: scaffoldKey,
-      appBar: AppBar(
-          leadingWidth: 72,
-          leading: TextButton(
-            child: const material.Text('DISCARD'),
-            onPressed: () =>
-                doneList.isNotEmpty ? mapComponent.removeAll(doneList) : null,
-          ),
-          backgroundColor: Colors.transparent,
-          title: material.Text(basenameWithoutExtension(path)),
-          actions: [
-            IconButton(
-                onPressed: () async => doneList.isNotEmpty
-                    ? await ControllerMap(
-                            map: mapComponent.tileMap.map, path: path)
-                        .saveMap()
-                    : null,
-                icon: Icon(
-                  Icons.save,
-                  color: doneList.isNotEmpty
-                      ? Theme.of(context).colorScheme.primary
-                      : Theme.of(context).disabledColor,
-                )),
-            // TODO: outline
-            /* IconButton(
-                onPressed: () => scaffoldKey.currentState?.openEndDrawer(),
-                icon: const Icon(Icons.menu)), */
-          ]),
       body: SafeArea(
         child: GameWidget<ControllerEditorGame>(
           game: this,
@@ -148,14 +215,13 @@ class ControllerEditorGame extends FlameGame {
           ], // TODO: check "don't show again" value
         ),
       ),
-
-      floatingActionButton: FloatingActionButton(
+      /* floatingActionButton: FloatingActionButton(
         onPressed: () {
           overlays.add('AddWidget');
           pauseEngine();
         },
         child: const Icon(Icons.add),
-      ),
+      ), */ // ),
     );
   }
 }

@@ -1,3 +1,6 @@
 class NoRegsiteredBackendException {}
 
-class RuntimeProjectException {}
+class RuntimeProjectException {
+  final String? message;
+  RuntimeProjectException([this.message]);
+}

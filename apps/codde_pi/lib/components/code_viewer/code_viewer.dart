@@ -1,9 +1,8 @@
 import 'package:codde_backend/codde_backend.dart';
+import 'package:codde_pi/components/dynamic_bar/dynamic_bar.dart';
 import 'package:codde_pi/components/file_picker/file_picker.dart';
 import 'package:codde_pi/core/utils.dart';
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
-import 'package:mobx/mobx.dart';
 import 'package:path/path.dart';
 
 import 'views/code_writer.dart';
@@ -35,7 +34,9 @@ class _CodeViewer extends State<CodeViewer> {
   @override
   Widget build(BuildContext context) {
     if (item.isDir) {
-      return Scaffold(
+      return DynamicFabScaffold(
+        destination: DynamicBarPager.codeEditor,
+        fab: null,
         appBar: AppBar(
             title: Text(item.name),
             leading: IconButton(

@@ -56,6 +56,16 @@ final flameTextRenderer = TextPaint(
     color: BasicPalette.white.color,
   ),
 );
+final flameTextRendererBlack = TextPaint(
+  style: TextStyle(
+    fontSize: 18.0,
+    fontFamily: 'ShareTechMono',
+    color: BasicPalette.black.color,
+  ),
+);
+
+final flameButtonPaint = Paint()..color = BasicPalette.gray.color;
+final flameButtonDownPaint = Paint()..color = BasicPalette.darkGray.color;
 
 class CheckboxColor extends MaterialStateColor {
   const CheckboxColor() : super(_defaultColor);

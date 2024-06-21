@@ -19,9 +19,9 @@ class _DeviceCollection extends State<DeviceCollection> {
   Widget build(BuildContext context) {
     return DynamicBarScaffold(
       pages: [
-        DynamicBarMenuItem(name: "Personal", iconData: Icons.home),
-        DynamicBarMenuItem(name: "Community", iconData: Icons.language),
-        DynamicBarMenuItem(name: "Brands", iconData: Icons.toys)
+        DynamicBarMenuItem(destination: DynamicBarPager.personalDevices),
+        DynamicBarMenuItem(destination: DynamicBarPager.communityDevices),
+        DynamicBarMenuItem(destination: DynamicBarPager.brandDevices),
       ],
       fab: DynamicFab(
           iconData: Icons.add,
@@ -49,7 +49,7 @@ class _DeviceCollection extends State<DeviceCollection> {
                       const SizedBox(
                         height: 48.0,
                       ),
-                      Text('No Device found. Please regsiter one.'),
+                      const Text('No Device found. Please regsiter one.'),
                       const SizedBox(height: 48.0),
                       FloatingActionButton.extended(
                         onPressed: () async {

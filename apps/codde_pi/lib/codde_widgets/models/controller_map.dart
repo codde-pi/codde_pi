@@ -1,9 +1,9 @@
 import 'package:codde_backend/codde_backend.dart';
 import 'package:codde_pi/codde_widgets/codde_widgets.dart';
+import 'package:codde_pi/core/utils.dart';
 import 'package:flame_tiled/flame_tiled.dart';
 import 'package:flutter/widgets.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:get_it/get_it.dart';
 import 'package:xml/xml.dart';
 
 part 'controller_map.freezed.dart';
@@ -39,15 +39,13 @@ class ControllerMap with _$ControllerMap {
 
   String get name => path.split("/").last;
 
-  CoddeBackend get backend => GetIt.I.get<CoddeBackend>();
-
   XmlDocument get document => map.build();
 
   Future<FileEntity> createMap() {
-    return backend.create(path, content: document.toXmlString());
+    return getLocalBackend().create(path, content: document.toXmlString());
   }
 
   Future<FileEntity> saveMap() {
-    return backend.save(path, document.toXmlString());
+    return getLocalBackend().save(path, document.toXmlString());
   }
 }
