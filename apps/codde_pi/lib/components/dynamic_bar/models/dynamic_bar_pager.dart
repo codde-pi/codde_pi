@@ -77,4 +77,6 @@ class DynamicBarPager {
       name: "Get Notified", iconData: Icons.notifications);
   static DynamicBarDestination donation = const DynamicBarDestination(
       name: "Support Development", iconData: Icons.coffee);
+  static DynamicBarDestination tools =
+      const DynamicBarDestination(iconData: Icons.build, name: "Tools");
 }

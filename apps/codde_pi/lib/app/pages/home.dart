@@ -19,12 +19,13 @@ class Home extends StatelessWidget {
       pagers: [
         DynamicBarPager.globalProjects,
         DynamicBarPager.community,
-        DynamicBarPager.deviceCollection
+        DynamicBarPager.deviceCollection,
+        // DynamicBarPager.tools,
       ],
       children: [
         GlobalProjects(),
         Community(),
-        Devices(),
+        Devices(), /* Tools() */
       ],
     );
   }
