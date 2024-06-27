@@ -14,8 +14,15 @@ Future<Component> createPlayerOf(BuildContext context, ControllerClass class_,
       text: text);
 }
 
-Component createEditorOf(BuildContext context, ControllerClass class_, id,
-    position, style, text, ControllerProperties properties) {
+Component createEditorOf(
+  BuildContext context,
+  ControllerClass class_,
+  id,
+  position,
+  style,
+  text,
+  ControllerProperties properties,
+) {
   final ControllerWidgetDef? def = controllerWidgetDef[class_.name];
   final WidgetComponent component = def!.component(
       class_: class_,
@@ -23,6 +30,7 @@ Component createEditorOf(BuildContext context, ControllerClass class_, id,
       position: Vector2(0, 0),
       properties: properties,
       style: style,
+      // buildContext: context,
       text: text);
 
   assert(def != null);
@@ -69,8 +77,15 @@ dynamic generateWidget(
   final ControllerProperties props = ControllerProperties(properties.byName);
   switch (mode) {
     case ControllerWidgetMode.editor:
-      return createEditorOf(context, class_, id,
-          Vector2(x.toDouble(), y.toDouble()), style, text, props);
+      return createEditorOf(
+        context,
+        class_,
+        id,
+        Vector2(x.toDouble(), y.toDouble()),
+        style,
+        text,
+        props,
+      );
     case ControllerWidgetMode.player: // player
       return createPlayerOf(
         context,

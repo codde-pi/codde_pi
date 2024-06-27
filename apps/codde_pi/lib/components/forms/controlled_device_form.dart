@@ -58,9 +58,16 @@ class _ControlledDeviceForm extends State<ControlledDeviceForm> {
   void initState() {
     if (widget.existingDevice != null) {
       nameController.text = widget.existingDevice!.name;
-      addressController.text = widget.existingDevice!.addr ?? '';
+      addressController.text = widget.existingDevice!.addr;
       store.setModel(widget.existingDevice!.model);
       store.setProtocol(widget.existingDevice!.protocol);
+
+      if (widget.existingDevice!.host != null) {
+        userController.text = widget.existingDevice!.host!.user;
+        pswdController.text = widget.existingDevice!.host!.pswd;
+        portController.text = widget.existingDevice!.host!.port.toString();
+        hostController.text = widget.existingDevice!.host!.addr;
+      }
     }
     super.initState();
   }
@@ -73,6 +80,7 @@ class _ControlledDeviceForm extends State<ControlledDeviceForm> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // TODO: Image viewing + picking
             TextField(
               decoration: const InputDecoration(hintText: "name"),
               controller: nameController,

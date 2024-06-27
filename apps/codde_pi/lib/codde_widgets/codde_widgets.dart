@@ -1,6 +1,10 @@
 import 'package:codde_pi/components/sheets/widget_details_sheet.dart';
+import 'package:codde_pi/logger.dart';
+import 'package:codde_pi/theme.dart';
 import 'package:flame/game.dart';
+import 'package:flutter/services.dart';
 
+import '../components/controller_editor/flame/toolbar.dart';
 import 'registry/registry.dart';
 import 'package:flame/components.dart';
 

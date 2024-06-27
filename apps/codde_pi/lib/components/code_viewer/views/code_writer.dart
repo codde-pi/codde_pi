@@ -1,4 +1,5 @@
 import 'package:codde_backend/codde_backend.dart';
+import 'package:codde_pi/core/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:path/path.dart';
@@ -8,9 +9,17 @@ import 'package:highlight/languages/python.dart';
 
 class CodeWriter extends StatelessWidget {
   Function? funBack;
+  CoddeBackend backend;
+  late final loadFile = backend.readSync(path);
+
   CodeWriter(
-      {Key? key, required this.path, this.readOnly = false, this.funBack})
-      : super(key: key);
+      {Key? key,
+      required this.path,
+      this.readOnly = false,
+      this.funBack,
+      CoddeBackend? backend})
+      : backend = backend ?? getLocalBackend(),
+        super(key: key);
   final String path;
   bool readOnly;
   late final controller = CodeController(
@@ -18,8 +27,6 @@ class CodeWriter extends StatelessWidget {
     language: python,
   );
   ValueNotifier<bool> saved = ValueNotifier<bool>(true);
-
-  late CoddeBackend backend = GetIt.I.get<CoddeBackend>();
 
   void save() {
     backend.save(path, controller.text);
@@ -48,7 +55,7 @@ class CodeWriter extends StatelessWidget {
         ],
       ),
       body: FutureBuilder(
-          future: backend.readSync(path),
+          future: loadFile,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
@@ -65,6 +72,10 @@ class CodeWriter extends StatelessWidget {
               data: CodeThemeData(styles: codeTheme.xt256Theme),
               child: SingleChildScrollView(
                 child: CodeField(
+                  gutterStyle: const GutterStyle(
+                      margin: 0.0, showFoldingHandles: false, width: 60.0),
+                  /* lineNumberBuilder: (i, __) => TextSpan(
+                      text: '$i', style: Theme.of(context).textTheme.bodySmall), */
                   background: Theme.of(context).colorScheme.background,
                   onChanged: (value) => saved.value = false,
                   controller: controller,

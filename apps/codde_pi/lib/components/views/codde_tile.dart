@@ -2,7 +2,7 @@ import 'package:codde_pi/theme.dart';
 import 'package:flutter/material.dart';
 
 class CoddeTile extends StatelessWidget {
-  Icon? leading;
+  Widget? leading;
   Widget? tailing;
   Text title;
   Text? subtitle;

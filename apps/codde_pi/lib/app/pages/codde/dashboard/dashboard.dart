@@ -2,8 +2,6 @@ import 'package:codde_backend/codde_backend.dart';
 import 'package:codde_pi/app/pages/codde/dashboard/api/dashboard_commands.dart';
 import 'package:codde_pi/app/pages/codde/state/codde_state.dart';
 import 'package:codde_pi/components/dialogs/select_device_dialog.dart';
-import 'package:codde_pi/components/dynamic_bar/models/dynamic_bar_menu.dart';
-import 'package:codde_pi/components/dynamic_bar/models/dynamic_bar_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -14,16 +12,16 @@ import 'api/dashboard_data.dart';
 import 'store/dashboard_store.dart';
 import 'views/cards.dart';
 
-class Dashboard extends DynamicBarStatefulWidget {
+class Dashboard extends StatefulWidget {
   Dashboard({super.key});
 
   @override
-  DynamicBarStateWidget<DynamicBarStatefulWidget> createDynamicState() {
+  State<StatefulWidget> createState() {
     return _Dashboard();
   }
 }
 
-class _Dashboard extends DynamicBarStateWidget<Dashboard> {
+class _Dashboard extends State<Dashboard> {
   final store = DashboardStore();
   late final DashboardCommands dbd = DashboardCommands();
 
@@ -31,7 +29,6 @@ class _Dashboard extends DynamicBarStateWidget<Dashboard> {
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     final projectStore = Provider.of<CoddeState>(context);
     return Scaffold(
         appBar: null,
@@ -106,15 +103,4 @@ class _Dashboard extends DynamicBarStateWidget<Dashboard> {
           ));
         }));
   }
-
-  @override
-  setFab(BuildContext context) {
-    bar.disableFab();
-  }
-
-  @override
-  void setIndexer(context) {}
-
-  @override
-  List<DynamicBarMenuItem>? get bottomMenu => null;
 }

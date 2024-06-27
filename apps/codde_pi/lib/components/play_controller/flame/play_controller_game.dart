@@ -6,6 +6,7 @@ import 'package:codde_pi/components/codde_controller/flame/codde_tiled_component
 import 'package:codde_pi/core/utils.dart';
 import 'package:codde_pi/logger.dart';
 import 'package:codde_pi/services/db/device.dart';
+import 'package:codde_pi/services/db/project.dart';
 import 'package:codde_pi/theme.dart';
 import 'package:flame/components.dart';
 import 'package:flame/flame.dart';
@@ -13,22 +14,21 @@ import 'package:flame/game.dart';
 import 'package:flame_tiled/flame_tiled.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_codde_protocol/flutter_codde_protocol.dart';
 import 'package:get_it/get_it.dart';
-import 'package:hive/hive.dart';
 import 'package:flutter/material.dart' as material;
 
 class PlayControllerGame extends FlameGame with HasGameRef {
-  String workDir;
-  Device device;
+  Project project;
   bool executeMain;
 
-  PlayControllerGame(
-      {required this.workDir, required this.device, this.executeMain = true});
+  PlayControllerGame({required this.project, this.executeMain = true});
+
+  String? get remoteDestination => project.remoteDestination;
+  Device get device => project.device;
+  String get workDir => project.workDir;
 
   late TiledComponent mapComponent;
-  CoddeBackend? backend;
+  SFTPBackend? backend;
   late CustomProperties props;
   String?
       errorMessage; // TODO create mixin to propagate widget errors to this game
@@ -40,23 +40,31 @@ class PlayControllerGame extends FlameGame with HasGameRef {
     // launch main
     try {
       if (executeMain) {
-        backend = CoddeBackend(BackendLocation.server,
-            credentials: device.host?.toCredentials());
-        backend?.client?.execute(getExecutablePath(workDir: workDir));
+        backend = SFTPBackend(credentials: device.host?.toCredentials());
+        await backend!.open();
+        await backend!.ssh
+            .execute(getExecutablePath(workDir: remoteDestination!))
+            .then((value) => value.stderr.listen((event) {
+                  errorMessage = event.toString();
+                  overlays.add('Notification');
+                }))
+            .onError((error, stackTrace) {
+          throw ExecutionException(error.toString());
+        });
       }
     } catch (e) {
+      logger.e("Execution failed: $e");
       errorMessage = e.toString();
       overlays.add('Notification');
       // TODO: create notify service instead
     }
+    if (overlays.isActive('Notification')) {
+      return;
+    }
+    // GetIt.I.registerSingleton<SFTPBackend>(backend!);
     // read map
-    String content = '';
-    await GetIt.I
-        .get<CoddeBackend>()
-        .read(getControllerName(path: workDir))
-        .then((value) => value.forEach((element) {
-              content += "$element\n";
-            }));
+    String content =
+        await getLocalBackend().readSync(getControllerName(path: workDir));
     mapComponent = await CoddeTiledComponent.load(content,
         mode: ControllerWidgetMode.player);
     // load props
@@ -66,10 +74,8 @@ class PlayControllerGame extends FlameGame with HasGameRef {
       print('ERROR: $e');
     } //on ControllerPropertiesException catch (_) {}
     // TODO: remove assert, disable run button and show snackbar warning
-    assert(device.addr != null, "Address is not device :(");
-    assert(device.protocol != null, "No protocol specified :/");
-    final view = PlayControllerView(
-        path: workDir, protocol: device.protocol, address: device.addr!);
+    final view =
+        PlayControllerView(protocol: device.protocol, address: device.addr);
     try {
       await view.com.connect();
     } catch (e) {
@@ -87,26 +93,13 @@ class PlayControllerGame extends FlameGame with HasGameRef {
     add(view);
   }
 
-  @override
-  void onMount() {
-    super.onMount();
-    print('$runtimeType onMount');
-    logger.d('$runtimeType assign $props');
-
-    // serve controller properties for parent widgets
-    if (GetIt.I.isRegistered<ControllerProperties>()) {
-      GetIt.I.unregister<ControllerProperties>();
-    }
-    GetIt.I.registerLazySingleton(() => ControllerProperties(props.byName));
-  }
-
   Future<Widget> overlayBuilder(BuildContext context) async {
     await Flame.device.fullScreen();
     // TODO: set Protrait/Landscape
     return Scaffold(
       body: GameWidget<PlayControllerGame>(
         game: this,
-        initialActiveOverlays: ['Loading'],
+        initialActiveOverlays: const ['Loading'],
         overlayBuilderMap: {
           'Loading': _loadingOverlay,
           'Notification': _notificationOverlay
@@ -122,6 +115,7 @@ class PlayControllerGame extends FlameGame with HasGameRef {
   Future exitRun(BuildContext context) async {
     // Stop codde protocol execution
     if (GetIt.I.isRegistered<CoddeCom>()) GetIt.I.get<CoddeCom>().disconnect();
+    backend?.close();
     // exit fullscreen
     await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
 
@@ -171,9 +165,7 @@ class PlayControllerGame extends FlameGame with HasGameRef {
 }
 
 class PlayControllerView extends FlameCoddeProtocol {
-  String path;
-  PlayControllerView(
-      {required this.path, required super.protocol, required super.address});
+  PlayControllerView({required super.protocol, required super.address});
   @override
   FutureOr<void> onLoad() {
     super.onLoad();

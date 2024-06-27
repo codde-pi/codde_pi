@@ -1,8 +1,10 @@
 import 'package:codde_pi/core/utils.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:path_provider/path_provider.dart';
 
 import 'device.dart';
 import 'package:hive/hive.dart';
+import 'package:path/path.dart' as p;
 
 part 'project.g.dart';
 
@@ -26,6 +28,8 @@ class Project extends HiveObject {
 
   @HiveField(6)
   String workDir;
+  /* Future<String> get workDir async => p.join(
+      await getApplicationSupportDirectory().then((value) => value.path), name); */
 
   @HiveField(9, defaultValue: false)
   bool triggerExecutable;
@@ -40,6 +44,8 @@ class Project extends HiveObject {
   bool published;
 
   bool get sftpHosting => device.host != null;
+
+  String? get pushDir => sftpHosting ? device.host!.pushDir : null;
 
   String? get remoteDestination => sftpHosting
       ? getRemotePath(pushDir: device.host!.pushDir, projectName: name)

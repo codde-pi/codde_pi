@@ -1,14 +1,23 @@
 import 'package:codde_pi/codde_widgets/codde_widgets.dart';
+import 'package:codde_pi/components/add_widget/widget_api.dart';
 import 'package:codde_pi/theme.dart';
 import 'package:flame_tiled/flame_tiled.dart';
 import 'package:flutter/material.dart' hide Text;
 import 'package:flutter/material.dart' as material;
+import 'package:flutter/services.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 
 class WidgetDetailsSheet extends StatefulWidget {
   final ControllerClass class_;
-  final Layer widgetLayer;
+  final int id;
+  final CustomProperties? properties;
+  final Function funDelete;
   const WidgetDetailsSheet(
-      {super.key, required this.class_, required this.widgetLayer});
+      {super.key,
+      required this.id,
+      required this.class_,
+      required this.properties,
+      required this.funDelete});
   @override
   State<StatefulWidget> createState() {
     return _WidgetDetailsSheet();
@@ -16,108 +25,75 @@ class WidgetDetailsSheet extends StatefulWidget {
 }
 
 class _WidgetDetailsSheet extends State<WidgetDetailsSheet> {
-  final Map<String, TextEditingController> controllers = {};
+  late ControllerProperties widgetProperties;
+  late final WidgetApi _api = WidgetApi(class_: widget.class_, id: widget.id);
 
-  late CustomProperties widgetProperties = widget.widgetLayer.properties;
-  CustomProperties? get defaultProperties => widgetDef.defaultProperties;
-
-  ControllerWidgetDef get widgetDef => controllerWidgetDef[widget.class_]!;
+  // ControllerWidgetDef get widgetDef => controllerWidgetDef[widget.class_]!;
 
   @override
   void initState() {
-    super.initState();
-    if (defaultProperties != null) {
-      for (var attr in defaultProperties!) {
-        controllers[attr.name] = TextEditingController(
+    /* final widgetDef = controllerWidgetDef[widget.class_]!;
+    print("widgetDef is $widgetDef");
+    print("widgetProperties is ${widget.properties}");
+    widgetProperties = ControllerProperties(
+        (widgetDef.defaultProperties?.byName ??
+            ControllerProperties.defaultWidget().byName)
+          ..updateAll(
+              (key, value) => value = widget.properties?.byName[key] ?? value));
+    if (widgetProperties != null) {
+      for (var attr in widgetProperties!) {
+        print('attr: ${attr.name}');
+        /* controllers[attr.name] = TextEditingController(
             text:
-                (widgetProperties.byName[attr.name] ?? attr).value.toString());
+                (widgetProperties.byName[attr.name] ?? attr).value.toString()); */
       }
-    }
+    } */
+    super.initState();
   }
 
-  void updateProp(Property defaultProp, String value) {
-    setState(() {
-      widgetProperties.byName[defaultProp.name] = Property(
-          name: defaultProp.name, type: defaultProp.type, value: value);
-    });
+  /* @override
+  Widget build(BuildContext context) {
+    return material.Text('hello');
+  } */
+  Future<String> getWidgetDoc(ControllerWidgetDef def) {
+    return rootBundle
+        .loadString('assets/codde_doc/widgets/${def.class_.name}.md');
   }
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: MediaQuery.of(context).size.height / 2,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          if (defaultProperties != null)
-            ...defaultProperties!
-                .map(
-                  (e) => Row(
-                    children: [
-                      Expanded(flex: 3, child: material.Text(e.name)),
-                      Expanded(
-                        flex: 1,
-                        child: TextField(
-                          controller: controllers[e.name],
-                          onSubmitted: (value) => updateProp(e, value),
-                          /* onTapOutside: (value) =>
-                            udpatePos(context, x: posX.text), */
-                        ),
-                      ),
-                    ],
-                  ),
-                )
-                .toList(),
-          // TODO: add properties from the commonly allowed properties
-          const SizedBox(height: widgetGutter),
-          Table(
-            border: TableBorder.all(),
-            children: [
-              TableRow(children: [
-                const material.Text('Id'),
-                material.Text(widget.widgetLayer.id.toString()),
-              ]),
-              TableRow(children: [
-                const material.Text('Name'),
-                material.Text(widget.widgetLayer.name)
-              ]),
-              TableRow(children: [
-                const Expanded(flex: 2, child: material.Text('X')),
-                material.Text(widget.widgetLayer.x.toString()),
-              ]),
-              TableRow(children: [
-                const Expanded(flex: 2, child: material.Text('Y')),
-                material.Text(widget.widgetLayer.y.toString()),
-              ]),
-              TableRow(children: [
-                const material.Text('Data'),
-                material.Text(widgetDef.commitFrequency.name),
-              ]),
-              const TableRow(children: [material.Text("Properties")]),
-              ...widgetProperties
-                  .map((e) => TableRow(children: [
-                        material.Text(e.name),
-                        material.Text(e.value.toString())
-                      ]))
-                  .toList(), // material.Text(e.name))
-            ],
-
-            // TODO: insert well known doc
+    // TODO: implement build
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(widgetGutter / 2),
+          child: Container(
+            // color: Theme.of(context).colorScheme.surface,
+            child: Row(
+              children: [
+                Expanded(child: material.Text("${_api.name}_${widget.id}")),
+                TextButton(
+                    onPressed: () => widget.funDelete(),
+                    child: const material.Text('DELETE')),
+                ElevatedButton(
+                    onPressed: () =>
+                        Navigator.of(context).pop(widgetProperties),
+                    child: const material.Text('SAVE'))
+              ],
+            ),
           ),
-          const SizedBox(height: widgetGutter),
-          FloatingActionButton.extended(
-              onPressed: () {
-                Navigator.pop(context, widgetProperties);
-              },
-              label: const material.Text('REMOVE'),
-              icon: const Icon(Icons.delete)),
-        ],
-      ),
+        ),
+        Expanded(
+            child: Markdown(
+          data: _api.getApi(),
+          selectable: true,
+        )) // TODO: tab_container
+      ],
     );
   }
 }
 
-final widgetNotFoundBuidler = (context) => SizedBox(
+final widgetNotFoundBuidler = (BuildContext context) => SizedBox(
       height: MediaQuery.of(context).size.height / 2,
       child: const Center(child: material.Text('No widget found')),
     );

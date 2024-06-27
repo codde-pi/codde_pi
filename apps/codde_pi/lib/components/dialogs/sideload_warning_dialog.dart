@@ -21,7 +21,7 @@ class SideloadWarningDialog extends StatelessWidget {
             child: Card(
                 child: Padding(
                     padding: const EdgeInsets.all(widgetGutter),
-                    child: Text(project.workDir))),
+                    child: Text(project.remoteDestination ?? '---'))),
           ),
         ],
       )),
@@ -29,10 +29,42 @@ class SideloadWarningDialog extends StatelessWidget {
         TextButton(
             onPressed: Navigator.of(context).pop, child: const Text('CANCEL')),
         ElevatedButton(
-            onPressed: () async => sideloadProject(context, project: project)
-                .then((_) =>
-                    Navigator.of(context).pushReplacementNamed('/codde')),
-            child: const Text('RELOAD'))
+            onPressed: () {
+              Navigator.pop(context);
+              showDialog(
+                  context: context,
+                  builder: (context) =>
+                      SideloadProgressDialog(project: project));
+            },
+            child: const Text('FLASH'))
+      ],
+    );
+  }
+}
+
+class SideloadProgressDialog extends StatelessWidget {
+  Project project;
+  SideloadProgressDialog({super.key, required this.project});
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text("Sideload"),
+      content: StreamBuilder(
+          stream: sideloadProject(context, project: project),
+          builder: (context, snapshot) {
+            if (snapshot.hasError) {
+              return Text(snapshot.error.toString());
+            }
+            if (snapshot.connectionState == ConnectionState.done) {
+              return const Text('Done');
+            }
+            return LinearProgressIndicator(
+                // value: snapshot.data,
+                );
+          }),
+      actions: [
+        TextButton(
+            onPressed: Navigator.of(context).pop, child: const Text('CANCEL')),
       ],
     );
   }

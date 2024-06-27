@@ -32,13 +32,25 @@ class WidgetEditor extends WidgetComponent
   @override
   void onTapUp(TapUpEvent event) async {
     // navigation to bottom sheet
+    logger.d("context is : $context");
+    logger.d("layer is : ${getLayer(id)}");
     final props = await showModalBottomSheet(
-        context: gameRef.buildContext!,
-        builder: (context) =>
-            WidgetDetailsSheet(widgetLayer: getLayer(id)!, class_: class_));
-    if (props != null) {
+        context: context,
+        builder: (context) => WidgetDetailsSheet(
+              properties: getLayer(id)!.properties,
+              class_: class_,
+              id: id,
+              funDelete: _funDelete,
+            ));
+    // gameRef.add(ToolBar(name: "${class_}_$id", position: position));
+    /* if (props != null) {
       getLayer(id)!.properties = props;
-    }
+    } */
+  }
+
+  void _funDelete() {
+    tiledComponent.remove(this);
+    Navigator.of(context).pop();
   }
 
   @override

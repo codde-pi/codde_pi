@@ -9,12 +9,12 @@ import 'package:provider/provider.dart';
 
 class HostDetails extends StatelessWidget {
   Host? host;
-  HostDetails({Host? host, super.key});
+  HostDetails({required this.host, super.key});
 
   final store = HostStore();
   @override
   Widget build(BuildContext context) {
-    final projectStore = Provider.of<CoddeState>(context);
+    // final projectStore = Provider.of<CoddeState>(context);
     return host != null
         ? CoddeCard(
             child: Column(
@@ -38,7 +38,7 @@ class HostDetails extends StatelessWidget {
                         icon: const Icon(Icons.copy))
                   ],
                 ),
-                Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                /* Row(mainAxisAlignment: MainAxisAlignment.end, children: [
                   // Do not add EDIT button here since th whole project is currently running based on the Host values
                   ElevatedButton(
                       onPressed: () {
@@ -46,7 +46,7 @@ class HostDetails extends StatelessWidget {
                             2); // <=> [Dashboard]. See [CoddeOverview.bottomMenu]
                       },
                       child: const Text('DASHBOARD')),
-                ]),
+                ]), */
               ],
             ),
           )

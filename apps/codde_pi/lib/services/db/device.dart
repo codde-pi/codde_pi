@@ -25,15 +25,20 @@ class Device extends HiveObject {
   @HiveField(4)
   String uid;
 
-  @JsonKey(includeFromJson: true, includeToJson: false)
+  // @JsonKey(includeFromJson: true, includeToJson: false)
   @HiveField(5)
   Host? host;
 
-  @HiveField(6, defaultValue: '')
-  String repo;
+  @HiveField(6)
+  String? repo;
 
   @HiveField(7, defaultValue: false)
   bool published;
+
+  @HiveField(8)
+  String? imagePath;
+
+  get isSBC => model == DeviceModel.sbc;
 
   Device(
       {String? uid,
@@ -43,37 +48,37 @@ class Device extends HiveObject {
       required this.addr,
       this.host,
       this.published = false,
-      this.repo = ''})
+      this.imagePath,
+      this.repo})
       : uid = uid ?? const Uuid().v4();
 
-  Device.andHost(
-      {required this.name,
-      required this.addr,
-      required this.protocol,
-      required this.model,
+  factory Device.andHost(
+      {required String name,
+      required String addr,
+      required Protocol protocol,
+      required DeviceModel model,
       String? uid,
       required String user,
       required String pswd,
       String? pushDir,
       int? port,
-      this.published = false,
-      this.repo = ''})
-      : uid = uid ?? const Uuid().v4() {
-    host = toHost(user: user, pswd: pswd, port: port, pushDir: pushDir);
-  }
-
-  Host toHost(
-      {required String user,
-      required String pswd,
-      String? pushDir,
-      int? port}) {
-    return Host(
-        addr: addr.split(":").first,
-        user: user,
-        pswd: pswd,
-        port: port,
-        pushDir: pushDir,
-        uid: uid);
+      bool published = false,
+      String? imagePath,
+      String repo = ''}) {
+    return Device(
+      name: name,
+      addr: addr,
+      protocol: protocol,
+      model: model,
+      uid: uid ?? const Uuid().v4(),
+      host: Host.fromDevice(
+          user: user,
+          pswd: pswd,
+          addr: addr,
+          pushDir: pushDir,
+          uid: uid,
+          port: port),
+    );
   }
 
   /// Connect the generated [_$PersonFromJson] function to the [fromJson]

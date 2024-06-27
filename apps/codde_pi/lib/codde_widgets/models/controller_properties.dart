@@ -36,14 +36,9 @@ class ControllerProperties extends CustomProperties {
     return ControllerProperties(map);
   }
 
-  factory ControllerProperties.fromDevice(int deviceId) =>
-      ControllerProperties({
-        'deviceId':
-            Property(name: "deviceId", type: PropertyType.int, value: deviceId)
-      });
   factory ControllerProperties.defaultController(Map<String, Property>? props) {
     Iterable<MapEntry<String, Property<Object>>> map =
-        controllerSettings.map((Property<Object> e) {
+        defaultControllerSettings.map((Property<Object> e) {
       return MapEntry(
           e.name,
           e
@@ -52,6 +47,9 @@ class ControllerProperties extends CustomProperties {
     });
     return ControllerProperties(Map<String, Property<Object>>.fromEntries(map));
   }
+  factory ControllerProperties.defaultWidget() => ControllerProperties(
+      Map<String, Property<Object>>.fromEntries(defaultWidgetSettings
+          .map((Property<Object> e) => MapEntry(e.name, e))));
 
   bool? get disabled => getValue<bool>("disabled");
 
@@ -60,6 +58,11 @@ class ControllerProperties extends CustomProperties {
   bool? get landscape => getValue<bool>("landscape");
 }
 
-final List<Property<Object>> controllerSettings = [
+final List<Property<Object>> defaultControllerSettings = [
   Property(name: "landscape", type: PropertyType.bool, value: false),
+];
+
+final List<Property<Object>> defaultWidgetSettings = [
+  Property(name: "disabled", type: PropertyType.bool, value: false),
+  // Property(name: "size", type: PropertyType.int, value: 1),
 ];

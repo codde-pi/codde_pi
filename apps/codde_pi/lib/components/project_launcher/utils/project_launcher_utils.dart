@@ -24,13 +24,10 @@ void goToProject(
 /// Create Project
 /// if [demo], create default python and controller files
 Future<Project> createBackendProject(context,
-    {required Project instance,
-    bool demo = false,
-    bool keepBackendInstance = false}) async {
-  CoddeBackend backend = CoddeBackend(BackendLocation.local);
+    {required Project instance, bool demo = false}) async {
+  CoddeBackend backend = getLocalBackend();
   await backend.open();
   await backend.mkdir(instance.workDir);
-  GetIt.I.registerSingleton(backend);
   if (demo) {
     await backend.create(join(instance.workDir, "main.py"),
         content:
@@ -38,11 +35,6 @@ Future<Project> createBackendProject(context,
   }
   await createControllerMap(context, getControllerName(path: instance.workDir));
   await Hive.box<Project>(projectsBox).add(instance);
-  if (!keepBackendInstance) {
-    backend
-        .close(); // TODO: good idea (to close) or not ? Need to re-open just after when loading project, but conditional
-    GetIt.I.unregister<CoddeBackend>();
-  }
   return instance;
 }
 
@@ -58,8 +50,7 @@ Future<Project> createProjectFromScratch(context, String name,
       device: device,
       workDir: await getApplicationSupportDirectory()
           .then((value) => join(value.path, name)));
-  return createBackendProject(context,
-      instance: project, demo: demo, keepBackendInstance: keepBackendInstance);
+  return createBackendProject(context, instance: project, demo: demo);
 }
 
 void launchProject(BuildContext context, Project e) {

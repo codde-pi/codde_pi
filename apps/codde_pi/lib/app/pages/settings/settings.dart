@@ -19,18 +19,6 @@ class Settings extends StatelessWidget {
               const Padding(
                 padding: EdgeInsets.only(top: 16.0, bottom: 16.0),
                 child: Text(
-                    'Device' /*, style: Theme.of(context).textTheme.headline5*/),
-              ),
-              const SizedBox(
-                width: 8.0,
-              ),
-              Expanded(child: Container(color: Colors.white, height: 1.0)),
-            ]),
-            // TODO: Device list ?
-            Row(mainAxisSize: MainAxisSize.max, children: [
-              const Padding(
-                padding: EdgeInsets.only(top: 16.0, bottom: 16.0),
-                child: Text(
                     'Conditions of use' /*, style: Theme.of(context).textTheme.headline5*/),
               ),
               const SizedBox(

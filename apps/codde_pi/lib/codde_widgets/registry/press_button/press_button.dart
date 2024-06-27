@@ -6,7 +6,7 @@ class PressButton extends WidgetComponent with HasCoddeProtocol {
       {required super.id,
       required super.class_,
       super.style,
-      super.text,
+      super.text = "Press",
       super.margin,
       super.position,
       super.size,
@@ -18,13 +18,26 @@ class PressButton extends WidgetComponent with HasCoddeProtocol {
     add(
       ButtonComponent(
         button: CustomPainterComponent(
-            size: size,
-            painter: PressButtonPainter(
-                colorscheme: colorscheme, style: style, pressed: false)),
+          size: size,
+          painter: PixelButtonPainter(
+              outlineWidth: cOutlineWidth,
+              text: "Press",
+              pixelSize: cPixelSize,
+              fillColor: colorscheme.onSurface),
+        ) /*PixelCirclePainter(
+                radius: size.x,
+                outlineWidth: 2.0,
+                pixelSize:
+                    7.0)) */ /* PressButtonPainter(
+                colorscheme: colorscheme, style: style, pressed: false)) */
+        ,
         buttonDown: CustomPainterComponent(
             size: size,
-            painter: PressButtonPainter(
-                colorscheme: colorscheme, style: style, pressed: true)),
+            painter: PixelButtonPainter(
+                outlineWidth: cOutlineWidth,
+                pixelSize: cPixelSize,
+                pressed: true,
+                fillColor: colorscheme.onSurface)),
         onPressed: () =>
             com.send(id, const WidgetRegistry.pressButton(pressed: true)),
         onReleased: () =>

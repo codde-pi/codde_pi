@@ -1,3 +1,5 @@
+import 'package:flame/palette.dart';
+import 'package:flame/text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_treeview/flutter_treeview.dart';
 // import 'package:flutter_html/flutter_html.dart';
@@ -46,6 +48,24 @@ ThemeData cddTheme = ThemeData(
     listTileTheme: const ListTileThemeData(
         contentPadding: EdgeInsets.all(8.0), style: ListTileStyle.list),
     dividerTheme: const DividerThemeData(thickness: 2.0));
+
+final flameTextRenderer = TextPaint(
+  style: TextStyle(
+    fontSize: 18.0,
+    fontFamily: 'ShareTechMono',
+    color: BasicPalette.white.color,
+  ),
+);
+final flameTextRendererBlack = TextPaint(
+  style: TextStyle(
+    fontSize: 18.0,
+    fontFamily: 'ShareTechMono',
+    color: BasicPalette.black.color,
+  ),
+);
+
+final flameButtonPaint = Paint()..color = BasicPalette.gray.color;
+final flameButtonDownPaint = Paint()..color = BasicPalette.darkGray.color;
 
 class CheckboxColor extends MaterialStateColor {
   const CheckboxColor() : super(_defaultColor);
@@ -193,3 +213,7 @@ class TerminalThemes {
         //todo: th scope row and col
       };
 }*/
+
+const double cPixelSize = 7.0;
+const double cOutlineWidth = 2.0;
+const double cNoWidth = 0.0;

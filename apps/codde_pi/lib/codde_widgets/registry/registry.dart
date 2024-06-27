@@ -1,6 +1,9 @@
 import 'dart:math';
 
 import 'package:codde_pi/codde_widgets/codde_widgets.dart';
+import 'package:codde_pi/codde_widgets/paint/four_direction_button_painter.dart';
+import 'package:codde_pi/codde_widgets/paint/pixel_circle_painter.dart';
+import 'package:codde_pi/theme.dart';
 import 'dart:async';
 
 import 'package:flame/components.dart';
@@ -10,6 +13,8 @@ import 'package:flame_tiled/flame_tiled.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flame/input.dart';
+
+import 'package:codde_pi/codde_widgets/paint/pixel_button_painter.dart';
 
 part 'click_button/click_button_painter.dart';
 part 'click_button/click_button.dart';

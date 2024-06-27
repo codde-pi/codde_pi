@@ -1,23 +1,5 @@
-import 'package:codde_pi/app/pages/boards.dart';
-import 'package:codde_pi/app/pages/codde/codde_diagram.dart';
-import 'package:codde_pi/app/pages/codde/dashboard/dashboard.dart';
-import 'package:codde_pi/app/pages/codde/editor/codde_editor.dart';
-import 'package:codde_pi/app/pages/community.dart';
-import 'package:codde_pi/app/pages/devices/devices.dart';
-import 'package:codde_pi/app/pages/project/project.dart';
-import 'package:codde_pi/app/pages/settings/settings.dart';
-import 'package:codde_pi/app/pages/tools.dart';
-import 'package:codde_pi/components/codde_controller/codde_controller.dart';
-import 'package:codde_pi/components/codde_overview/codde_overview.dart';
-import 'package:codde_pi/components/codde_terminal/codde_terminal.dart';
-import 'package:codde_pi/components/code_viewer/code_viewer.dart';
-import 'package:codde_pi/components/controller_editor/controller_editor.dart';
 import 'package:codde_pi/components/dynamic_bar/models/dynamic_bar_destination.dart';
-import 'package:codde_pi/components/play_controller/play_controller.dart';
-import 'package:codde_pi/core/utils.dart';
-import 'package:codde_pi/services/db/device.dart';
 import 'package:flutter/material.dart';
-import 'package:path/path.dart' as p;
 
 class DynamicBarPager {
   /* static final dummyDestination = DynamicBarDestination(
@@ -28,101 +10,73 @@ class DynamicBarPager {
       iconData: Icons.collections,
       index: 1); */
   // Codde menu
-  static DynamicBarDestination coddeOverview(
-          {required CoddeOverview instance}) =>
-      DynamicBarDestination(
-          name: "WORKSPACE",
-          widget: () => CoddeOverview(),
-          index: 0,
-          iconData: Icons.tab);
-  static DynamicBarDestination editor({required CodeViewer instance}) =>
-      DynamicBarDestination(
-          name: "code editor",
-          widget: () => instance,
-          index: 1,
-          iconData: Icons.code);
+  static DynamicBarDestination coddeWorkspace = const DynamicBarDestination(
+      name: "WORKSPACE - EDIT MODE", iconData: Icons.tab);
+  static DynamicBarDestination coddeOverview =
+      const DynamicBarDestination(name: "Overview", iconData: Icons.tab);
+  static DynamicBarDestination codeEditor =
+      const DynamicBarDestination(name: "Code", iconData: Icons.code);
+  static DynamicBarDestination exit =
+      const DynamicBarDestination(name: "Exit", iconData: Icons.exit_to_app);
   /* static final device = DynamicBarDestination(
       name: "device",
       widget: CoddeDeviceDetails(),
-      index: 2,
+      
       iconData: Icons.toys); */
-  static final dashboard = DynamicBarDestination(
-      name: "dashboard",
-      widget: () => Dashboard(),
-      index: 2,
-      iconData: Icons.dns);
-  static DynamicBarDestination terminal({required CoddeTerminal instance}) =>
-      DynamicBarDestination(
-          name: "terminal",
-          widget: () => CoddeTerminal(),
-          index: 3,
-          iconData: Icons.terminal);
-  static final diagram = DynamicBarDestination(
-      name: "diagram",
-      widget: () => CoddeDiagram(),
-      index: 4,
-      iconData: Icons.cable);
+  static const dashboard =
+      DynamicBarDestination(name: "dashboard", iconData: Icons.dns);
+  static DynamicBarDestination terminal =
+      const DynamicBarDestination(name: "Terminal", iconData: Icons.terminal);
+  static const diagram =
+      DynamicBarDestination(name: "Diagram", iconData: Icons.cable);
   // Main menu
-  static final globalProjects = DynamicBarDestination(
+  static const globalProjects = DynamicBarDestination(
     name: "projects",
-    widget: () => GlobalProjects(),
     iconData: Icons.tab,
-    index: 0,
   );
-  static final community = DynamicBarDestination(
-      name: "community",
-      widget: () => Community(),
-      index: 1,
-      iconData: Icons.language);
-  static final devices = DynamicBarDestination(
-      name: "devices",
-      widget: () => Devices(),
-      index: 2,
-      iconData: Icons.devices);
+  static const community =
+      DynamicBarDestination(name: "community", iconData: Icons.language);
+  static const devices =
+      DynamicBarDestination(name: "devices", iconData: Icons.toys);
+  static const deviceCollection =
+      DynamicBarDestination(name: "COLLECTION", iconData: Icons.toys);
+  static const deviceGarage =
+      DynamicBarDestination(name: "GARAGE", iconData: Icons.toys);
+  static const devicePlayground =
+      DynamicBarDestination(name: "PLAYGROUND", iconData: Icons.toys);
 
   /* static final boards = DynamicBarDestination(
-      name: "boards", widget: () => const Boards(), index: 2, iconData: Icons.cable); */
-  static final settings = DynamicBarDestination(
-      name: "settings",
-      widget: () => Settings(),
-      index: 2,
-      iconData: Icons.settings);
+      name: "boards", widget: () => const Boards(),  iconData: Icons.cable); */
+  static const settings =
+      DynamicBarDestination(name: "settings", iconData: Icons.settings);
   /* static final tools = DynamicBarDestination(
-      name: "tools", widget: () => const Tools(), index: 3, iconData: Icons.pan_tool); */
-  /* static DynamicBarDestination deviceProjects({required Device device}) =>
-      DynamicBarDestination(
-        name: "device projects",
-        widget: () => DeviceGarage(device: device),
-        index: 0,
-        iconData: Icons.devices,
-      ); */
-  static DynamicBarDestination deviceDiagramEditor(
-      {required CoddeDiagram instance}) {
-    print('diagram destination');
-    return DynamicBarDestination(
-      name: "device diagram editor",
-      widget: () {
-        print('diagram call');
-        return instance;
-      },
-      index: 1,
-      iconData: Icons.devices,
-    );
-  }
+      name: "tools", widget: () => const Tools(),  iconData: Icons.pan_tool); */
+  static DynamicBarDestination deviceDiagramEditor =
+      const DynamicBarDestination(
+    name: "device diagram editor",
+    iconData: Icons.devices,
+  );
 
-  static DynamicBarDestination controllerEditor(
-          {required ControllerEditor instance}) =>
-      DynamicBarDestination(
-        name: "controller editor",
-        widget: () => instance,
-        index: 2,
-        iconData: Icons.roller_shades,
-      );
-  static DynamicBarDestination controllerPlayer({required String workdir}) =>
-      DynamicBarDestination(
-        name: "controller",
-        widget: () => PlayController(path: getControllerName(path: workdir)),
-        index: 2,
-        iconData: Icons.roller_shades,
-      );
+  static DynamicBarDestination controllerEditor = const DynamicBarDestination(
+    name: "Controller",
+    iconData: Icons.roller_shades,
+  );
+  static DynamicBarDestination controllerPlayer = const DynamicBarDestination(
+    name: "Controller",
+    iconData: Icons.gamepad,
+  );
+  static DynamicBarDestination personalDevices =
+      const DynamicBarDestination(name: "Personal", iconData: Icons.home);
+  static DynamicBarDestination brandDevices =
+      const DynamicBarDestination(name: "Brands", iconData: Icons.toys);
+  static DynamicBarDestination communityDevices =
+      const DynamicBarDestination(name: "Community", iconData: Icons.language);
+  static DynamicBarDestination projectsList = const DynamicBarDestination(
+      name: "Project List", iconData: Icons.gamepad);
+  static DynamicBarDestination getNotified = const DynamicBarDestination(
+      name: "Get Notified", iconData: Icons.notifications);
+  static DynamicBarDestination donation = const DynamicBarDestination(
+      name: "Support Development", iconData: Icons.coffee);
+  static DynamicBarDestination tools =
+      const DynamicBarDestination(iconData: Icons.build, name: "Tools");
 }

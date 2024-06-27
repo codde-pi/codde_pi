@@ -40,6 +40,22 @@ class Host extends HiveObject {
     return SFTPCredentials(host: addr, pswd: pswd, user: user);
   }
 
+  factory Host.fromDevice(
+      {required String user,
+      required String pswd,
+      String? pushDir,
+      required String addr,
+      String? uid,
+      int? port}) {
+    return Host(
+        addr: addr.split(":").first,
+        user: user,
+        pswd: pswd,
+        port: port,
+        pushDir: pushDir,
+        uid: uid);
+  }
+
   /// Connect the generated [_$PersonFromJson] function to the [fromJson]
   /// factory.
   factory Host.fromJson(Map<String, dynamic> json) => _$HostFromJson(json);

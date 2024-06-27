@@ -40,11 +40,8 @@ abstract class WidgetComponent extends HudMarginComponent
   // String get name => "$id_${class_.name}";
 
   TextComponent get textComponent {
-    final regular = TextStyle(
-        fontWeight: FontWeight.w700,
-        color: Theme.of(gameRef.buildContext!).textTheme.bodyMedium?.color);
     return TextComponent(
-        size: size, text: text, textRenderer: TextPaint(style: regular))
+        size: size, text: text, textRenderer: flameTextRendererBlack)
       ..anchor = Anchor.center
       ..x = size.x / 2 // size is a property from game
       ..y = size.y / 2;
